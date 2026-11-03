@@ -1110,3 +1110,326 @@ function printIdCard(name, admissionNo, roll, className) {
 function exportBackup() {
   window.location.href = '/api/backup';
 }
+
+// ==========================================
+// মাদ্রাসা সফটওয়্যার খরচ ক্যালকুলেটর ইঞ্জিন
+// ==========================================
+function updateCostCalculator() {
+  const range = document.getElementById('calcStudentRange');
+  const display = document.getElementById('calcStudentDisplay');
+  if (!range || !display) return;
+
+  const students = parseInt(range.value, 10);
+  display.innerText = students;
+
+  // প্যাকেজ চেক
+  const pkg = document.querySelector('input[name="calcPackage"]:checked')?.value || 'yearly';
+  
+  // প্যাকেজ রেডিও লেবেল স্টাইলিং
+  ['lblPkgYearly', 'lblPkgMonthly', 'lblPkgLifetime'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.className = 'cursor-pointer border-2 border-slate-200 rounded-xl p-3 text-center transition flex flex-col items-center';
+    }
+  });
+
+  let licenseCost = 5000;
+  let monthsCount = 12;
+
+  if (pkg === 'monthly') {
+    licenseCost = 500;
+    monthsCount = 1;
+    document.getElementById('lblPkgMonthly')?.classList.add('border-emerald-700', 'bg-emerald-50/40');
+  } else if (pkg === 'lifetime') {
+    licenseCost = 20000;
+    monthsCount = 36; // ৩ বছরের হিসাবে গড়
+    document.getElementById('lblPkgLifetime')?.classList.add('border-emerald-700', 'bg-emerald-50/40');
+  } else {
+    licenseCost = 5000;
+    monthsCount = 12;
+    document.getElementById('lblPkgYearly')?.classList.add('border-emerald-700', 'bg-emerald-50/40');
+  }
+
+  // ইনস্টলেশন চার্জ (২০০ এর কম হলে ২,০০০৳, বেশি হলে ৫,০০০৳)
+  const installCost = students < 200 ? 2000 : 5000;
+
+  // আরএফআইডি আইডি কার্ড (১৫০৳ প্রতি কার্ড)
+  const includeCards = document.getElementById('calcIncludeCards')?.checked;
+  const cardCost = includeCards ? (students * 150) : 0;
+
+  // এসএমএস প্যাক (২,০০০৳)
+  const includeSms = document.getElementById('calcIncludeSms')?.checked;
+  const smsCost = includeSms ? 2000 : 0;
+
+  // মোট প্রাথমিক বিনিয়োগ
+  const totalCost = licenseCost + installCost + cardCost + smsCost;
+
+  // প্রতি ছাত্রের মাসিক খরচ
+  const perStudentMonthly = ((totalCost / monthsCount) / students).toFixed(2);
+
+  // ডিসপ্লে আপডেট
+  document.getElementById('resLicenseCost').innerText = `${licenseCost.toLocaleString('bn-BD')} ৳`;
+  document.getElementById('resInstallCost').innerText = `${installCost.toLocaleString('bn-BD')} ৳`;
+  document.getElementById('resCardCost').innerText = `${cardCost.toLocaleString('bn-BD')} ৳`;
+  document.getElementById('resSmsCost').innerText = `${smsCost.toLocaleString('bn-BD')} ৳`;
+  document.getElementById('resTotalCost').innerText = `${totalCost.toLocaleString('bn-BD')} ৳`;
+  
+  const perStudentEl = document.getElementById('resPerStudentCost');
+  if (perStudentEl) {
+    perStudentEl.innerHTML = `প্রতি ছাত্রের মাসিক খরচ মাত্র: <strong>${perStudentMonthly} টাকা</strong>`;
+  }
+}
+
+// ==========================================
+// FAQ টগল হ্যান্ডলার
+// ==========================================
+function toggleFaq(id) {
+  const content = document.getElementById(id);
+  const icon = document.getElementById(`${id}-icon`);
+  if (!content) return;
+
+  const isHidden = content.classList.contains('hidden');
+  if (isHidden) {
+    content.classList.remove('hidden');
+    icon?.classList.add('rotate-180');
+  } else {
+    content.classList.add('hidden');
+    icon?.classList.remove('rotate-180');
+  }
+}
+
+// ==========================================
+// প্রিন্ট ডকুমেন্ট প্রিভিউয়ার
+// ==========================================
+function previewPrintDoc(type) {
+  const titles = {
+    'admit-card': '১২টি ভিন্ন ইসলামিক ও আধুনিক এডমিট কার্ড ডিজাইন',
+    'money-receipt': '৩ কপি কার্বনলেস মানি রসিদ (ছাত্র, অফিস ও ক্যাশিয়ার কপি)',
+    'marksheet': 'বেফাকুল মাদারিসিল আরাবিয়া ও সাধারণ মার্কশিট শিট',
+    'id-card': '৮টি ভিন্ন রেডিমেড ডিজিটাল পিভিসি আইডি কার্ড',
+    'seat-plan': 'পরীক্ষা হলের সিট প্ল্যান ও বেঞ্চ নম্বর স্টিকার',
+    'certificate': 'চারিত্রিক সনদপত্র, টিসি ও প্রশংসাপত্র'
+  };
+
+  alert(`📄 ${titles[type] || 'ডকুমেন্ট প্রিভিউ'}\n\nহেদায়েত টেক মাদ্রাসা সফটওয়্যার থেকে এই ডকুমেন্টটি স্বয়ংক্রিয়ভাবে মাদ্রাসার নাম, লোগো ও শিক্ষার্থীর ছবিসহ সরাসরি এ৪ ও থার্মাল পেপারে প্রিন্ট হবে।`);
+}
+
+// ==========================================
+// প্রিন্ট ডকুমেন্টেশন সেন্টার ফাংশনসমূহ (SABAAQ-STYLE PRINT CENTER)
+// ==========================================
+
+// ১. তিন-কপি মানি রসিদ (ছাত্র, অফিস ও ক্যাশিয়ার কপি)
+function print3PartReceipt(voucherNo, date, studentName, className, amount, desc) {
+  const w = window.open('', '', 'width=900,height=700');
+  const createSlip = (copyName) => `
+    <div style="flex: 1; border: 1.5px dashed #15803d; border-radius: 12px; padding: 12px; background: #fff; margin: 0 4px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="text-align: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">
+          <h3 style="margin: 0; color: #0c351f; font-size: 15px; font-weight: bold;">উম্মে কুলসুম (রাঃ) কওমি মাদরাসা</h3>
+          <p style="margin: 2px 0 0; font-size: 10px; color: #64748b;">চান্দগাঁও, চট্টগ্রাম | মোবা: +880 1884-636312</p>
+          <div style="display: inline-block; background: #0c351f; color: #fbbf24; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-top: 4px;">
+            ${copyName}
+          </div>
+        </div>
+        <div style="font-size: 11px; margin-top: 8px; line-height: 1.6; color: #1e293b;">
+          <div><strong>রসিদ নং:</strong> ${voucherNo}</div>
+          <div><strong>তারিখ:</strong> ${date}</div>
+          <div><strong>শিক্ষার্থী:</strong> ${studentName}</div>
+          <div><strong>বিভাগ:</strong> ${className}</div>
+          <div><strong>খাত:</strong> ${desc}</div>
+        </div>
+      </div>
+      <div style="margin-top: 15px;">
+        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: bold; color: #14532d;">
+          <span>মোট আদায়:</span>
+          <span style="font-size: 14px; font-family: monospace;">৳ ${amount}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 25px; font-size: 9px; color: #64748b;">
+          <span>গ্রহীতার স্বাক্ষর</span>
+          <span>ক্যাশিয়ার / মুহতামিম</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  w.document.write(`
+    <html>
+      <head>
+        <title>৩-কপি মানি রসিদ - ${voucherNo}</title>
+        <style>
+          @page { size: landscape; margin: 10mm; }
+          body { font-family: 'Anek Bangla', 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 10px; background: #f8fafc; }
+          .container { display: flex; width: 100%; height: 95vh; box-sizing: border-box; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          ${createSlip('১. ছাত্র কপি (Student Copy)')}
+          ${createSlip('২. অফিস কপি (Office Copy)')}
+          ${createSlip('৩. ক্যাশিয়ার কপি (Cashier Copy)')}
+        </div>
+        <script>window.print();</script>
+      </body>
+    </html>
+  `);
+  w.document.close();
+}
+
+// ২. ১২টি স্টাইলের এডমিট কার্ড প্রিন্ট
+function printSampleAdmitCard() {
+  const w = window.open('', '', 'width=750,height=800');
+  w.document.write(`
+    <html>
+      <head>
+        <title>প্রবেশপত্র (Admit Card) - বার্ষিক পরীক্ষা ২০২৬</title>
+        <style>
+          body { font-family: 'Anek Bangla', 'Segoe UI', sans-serif; margin: 20px; background: #fff; color: #0f172a; }
+          .card { border: 3px double #0c351f; border-radius: 16px; padding: 20px; max-width: 650px; margin: 0 auto; position: relative; background: #fafdfb; }
+          .header { text-align: center; border-bottom: 2px solid #0c351f; padding-bottom: 10px; }
+          .header h2 { margin: 0; color: #0c351f; font-size: 22px; font-weight: 900; }
+          .header p { margin: 3px 0 0; font-size: 12px; color: #475569; }
+          .badge { display: inline-block; background: #0c351f; color: #fbbf24; font-size: 12px; font-weight: bold; padding: 4px 14px; border-radius: 20px; margin-top: 6px; }
+          .student-info { display: flex; justify-content: space-between; margin-top: 15px; font-size: 13px; line-height: 1.8; }
+          .photo-box { width: 90px; height: 110px; border: 2px dashed #0c351f; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; background: #fff; }
+          .routine { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
+          .routine th, .routine td { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: center; }
+          .routine th { background: #0c351f; color: #fff; }
+          .footer { display: flex; justify-content: space-between; margin-top: 40px; font-size: 12px; font-weight: bold; }
+          .rules { margin-top: 15px; font-size: 10px; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 8px; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <div class="header">
+            <h2>উম্মে কুলসুম (রাঃ) মহিলা ও কওমি মাদরাসা</h2>
+            <p>চান্দগাঁও, চট্টগ্রাম | স্থাপিত: ২০১৮ | কোড: MDR-2026-01</p>
+            <div class="badge">প্রবেশপত্র (ADMIT CARD) - বার্ষিক পরীক্ষা ২০২৬</div>
+          </div>
+          <div class="student-info">
+            <div>
+              <div><strong>শিক্ষার্থীর নাম:</strong> মো: আব্দুল্লাহ আল কারিফ</div>
+              <div><strong>পিতার নাম:</strong> মুফতি আব্দুর রহিম</div>
+              <div><strong>দাখেলা নং:</strong> ADM-2026-001 | <strong>রোল:</strong> ০১</div>
+              <div><strong>জামাত/বিভাগ:</strong> হিফজুল কুরআন ও কিতাব বিভাগ</div>
+              <div><strong>পরীক্ষা কেন্দ্র:</strong> মাদরাসা কেন্দ্রীয় মিলনায়তন</div>
+            </div>
+            <div class="photo-box">
+              ছবি সংযুক্ত করুন
+            </div>
+          </div>
+          <table class="routine">
+            <thead>
+              <tr>
+                <th>তারিখ</th>
+                <th>বার</th>
+                <th>বিষয়</th>
+                <th>সময়</th>
+                <th>পরিদর্শকের স্বাক্ষর</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>১০/১২/২০২৬</td><td>বৃহস্পতিবার</td><td>আল-কুরআন ও তাজবিদ</td><td>সকাল ৯:০০ - ১২:০০</td><td></td></tr>
+              <tr><td>১২/১২/২০২৬</td><td>শনিবার</td><td>হাদিস ও উসুলুল হাদিস</td><td>সকাল ৯:০০ - ১২:০০</td><td></td></tr>
+              <tr><td>১৪/১২/২০২৬</td><td>সোমবার</td><td>ফিকহ ও আরবি ব্যাকরণ</td><td>সকাল ৯:০০ - ১২:০০</td><td></td></tr>
+              <tr><td>১৬/১২/২০২৬</td><td>বুধবার</td><td>বাংলা, ইংরেজি ও গণিত</td><td>সকাল ৯:০০ - ১২:০০</td><td></td></tr>
+            </tbody>
+          </table>
+          <div class="rules">
+            <strong>নির্দেশাবলী:</strong> পরীক্ষা শুরুর ১৫ মিনিট পূর্বে হলে প্রবেশ করতে হবে। প্রবেশপত্র প্রদর্শন ব্যতিরেকে পরীক্ষায় অংশগ্রহণ নিষেধ।
+          </div>
+          <div class="footer">
+            <div>শ্রেণি শিক্ষকের স্বাক্ষর</div>
+            <div>পরীক্ষা নিয়ন্ত্রক</div>
+            <div>মুহতামিমের সিল ও দস্তখত</div>
+          </div>
+        </div>
+        <script>window.print();</script>
+      </body>
+    </html>
+  `);
+  w.document.close();
+}
+
+// ৩. প্রশংসাপত্র ও চারিত্রিক সনদ প্রিন্ট
+function printSampleCertificate() {
+  const w = window.open('', '', 'width=800,height=600');
+  w.document.write(`
+    <html>
+      <head>
+        <title>চারিত্রিক প্রশংসাপত্র (Certificate)</title>
+        <style>
+          @page { size: landscape; margin: 15mm; }
+          body { font-family: 'Anek Bangla', 'Amiri', serif; margin: 0; background: #fff; text-align: center; color: #1e293b; }
+          .frame { border: 8px double #15803d; border-radius: 20px; padding: 30px; position: relative; background: #fcfdfc; }
+          .ar-bismillah { font-family: 'Amiri', serif; font-size: 24px; color: #15803d; font-weight: bold; }
+          h1 { margin: 8px 0 0; color: #0c351f; font-size: 28px; }
+          .title { display: inline-block; border-bottom: 2px solid #b45309; color: #b45309; font-size: 20px; font-weight: bold; margin: 15px 0; padding-bottom: 3px; }
+          .content { font-size: 15px; line-height: 2; max-width: 700px; margin: 10px auto; text-align: justify; }
+          .footer { display: flex; justify-content: space-between; margin-top: 50px; font-size: 13px; font-weight: bold; }
+        </style>
+      </head>
+      <body>
+        <div class="frame">
+          <div class="ar-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+          <h1>উম্মে কুলসুম (রাঃ) মহিলা ও কওমি মাদরাসা</h1>
+          <p style="margin: 0; font-size: 12px; color: #64748b;">চান্দগাঁও, চট্টগ্রাম | স্থাপিত: ২০১৮ খ্রিষ্টাব্দ</p>
+          <div class="title">চারিত্রিক প্রশংসাপত্র ও প্রত্যয়ন</div>
+          <div class="content">
+            এই মর্মে প্রত্যয়ন করা যাইতেছে যে, <strong>মো: মাহদী হাসান</strong>, পিতা: মো: নুরুল হুদা, গ্রাম: চান্দগাঁও, ডাকঘর: চান্দগাঁও, উপজেলা: চান্দগাঁও, জেলা: চট্টগ্রাম অত্র মাদ্রাসার হিফজুল কুরআন বিভাগের একজন নিয়মিত শিক্ষার্থী ছিল। সে অত্র প্রতিষ্ঠানে অধ্যয়নকালীন সময়ে পবিত্র কুরআনের ৩০ পারা হিফজ কৃতিত্বের সাথে সম্পন্ন করিয়াছে। মাদ্রাসায় অবস্থানকালীন তাহার স্বভাব-চরিত্র প্রশংসনীয় এবং সে কখনো প্রতিষ্ঠানবিরোধী কোনো কার্যকলাপে লিপ্ত ছিল না।
+            <br>
+            আমরা তাহার ইহকালীন ও পরকালীন সর্বাঙ্গীন মঙ্গল ও সাফল্য কামনা করি।
+          </div>
+          <div class="footer">
+            <div>তারিখ: ০৩ নভেম্বর ২০২৬</div>
+            <div>হিফজ প্রধান উস্তাদ</div>
+            <div>মুহতামিম / প্রিন্সিপাল</div>
+          </div>
+        </div>
+        <script>window.print();</script>
+      </body>
+    </html>
+  `);
+  w.document.close();
+}
+
+// ৪. সিট প্ল্যান ও বেঞ্চ স্টিকার প্রিন্ট
+function printSeatStickers() {
+  const w = window.open('', '', 'width=750,height=700');
+  const sticker = (roll, name, jamat) => `
+    <div style="border: 2px solid #0c351f; border-radius: 10px; padding: 12px; text-align: center; background: #fff; box-sizing: border-box;">
+      <div style="font-size: 11px; font-weight: bold; color: #0c351f;">হেদায়েত টেক মাদ্রাসা পরীক্ষা ২০২৬</div>
+      <div style="font-size: 32px; font-weight: 900; color: #b45309; line-height: 1; margin: 6px 0;">রোল: ${roll}</div>
+      <div style="font-size: 13px; font-weight: bold; color: #1e293b;">${name}</div>
+      <div style="font-size: 11px; color: #64748b;">জামাত: ${jamat}</div>
+    </div>
+  `;
+
+  w.document.write(`
+    <html>
+      <head>
+        <title>পরীক্ষা হল সিট স্টিকার</title>
+        <style>
+          body { font-family: 'Anek Bangla', sans-serif; margin: 15px; }
+          .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        </style>
+      </head>
+      <body>
+        <div class="grid">
+          ${sticker('০১', 'আব্দুর রহমান', 'হিফজুল কুরআন')}
+          ${sticker('০২', 'মুহাম্মদ কাসিম', 'হিফজুল কুরআন')}
+          ${sticker('০৩', 'মাহদী হাসান', 'নূরানি ১ম শ্রেণি')}
+          ${sticker('০৪', 'তাহসিন আহমেদ', 'নূরানি ২য় শ্রেণি')}
+          ${sticker('০৫', 'জুনায়েদ জামশেদ', 'ইবতেদায়ী ৩য় শ্রেণি')}
+          ${sticker('০৬', 'আবু বকর সিদ্দিক', 'হিফজুল কুরআন')}
+        </div>
+        <script>window.print();</script>
+      </body>
+    </html>
+  `);
+  w.document.close();
+}
+
+// পেজ লোড হলে খরচ ক্যালকুলেটর চালু করা
+document.addEventListener('DOMContentLoaded', () => {
+  updateCostCalculator();
+});

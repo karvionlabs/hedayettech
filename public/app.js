@@ -1265,7 +1265,7 @@ function print3PartReceipt(voucherNo, date, studentName, className, amount, desc
     <div style="flex: 1; border: 1.5px dashed #15803d; border-radius: 12px; padding: 12px; background: #fff; margin: 0 4px; display: flex; flex-direction: column; justify-content: space-between;">
       <div>
         <div style="text-align: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">
-          <h3 style="margin: 0; color: #0c351f; font-size: 15px; font-weight: bold;">উম্মে কুলসুম (রাঃ) কওমি মাদরাসা</h3>
+          <h3 style="margin: 0; color: #0c351f; font-size: 15px; font-weight: bold;">মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা</h3>
           <p style="margin: 2px 0 0; font-size: 10px; color: #64748b;">চান্দগাঁও, চট্টগ্রাম | মোবা: +880 1884-636312</p>
           <div style="display: inline-block; background: #0c351f; color: #fbbf24; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-top: 4px;">
             ${copyName}
@@ -1341,8 +1341,8 @@ function printSampleAdmitCard() {
       <body>
         <div class="card">
           <div class="header">
-            <h2>উম্মে কুলসুম (রাঃ) মহিলা ও কওমি মাদরাসা</h2>
-            <p>চান্দগাঁও, চট্টগ্রাম | স্থাপিত: ২০১৮ | কোড: MDR-2026-01</p>
+            <h2>মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা</h2>
+            <p>চান্দগাঁও, চট্টগ্রাম | স্থাপিত: ২০১৮ | কোড: MMM-2026-01</p>
             <div class="badge">প্রবেশপত্র (ADMIT CARD) - বার্ষিক পরীক্ষা ২০২৬</div>
           </div>
           <div class="student-info">
@@ -1411,7 +1411,7 @@ function printSampleCertificate() {
       <body>
         <div class="frame">
           <div class="ar-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-          <h1>উম্মে কুলসুম (রাঃ) মহিলা ও কওমি মাদরাসা</h1>
+          <h1>মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা</h1>
           <p style="margin: 0; font-size: 12px; color: #64748b;">চান্দগাঁও, চট্টগ্রাম | স্থাপিত: ২০১৮ খ্রিষ্টাব্দ</p>
           <div class="title">চারিত্রিক প্রশংসাপত্র ও প্রত্যয়ন</div>
           <div class="content">
@@ -1999,7 +1999,7 @@ async function openMuhtamimClosing() {
     currentClosingData = data;
     const s = data.summary;
 
-    document.getElementById('closingInstName').innerText = data.institution?.name_bn || 'হেদায়েত টেক জামিয়া মাদরাসা';
+    document.getElementById('closingInstName').innerText = data.institution?.name_bn || 'মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা';
     document.getElementById('closingDateStr').innerText = `তারিখ: ${data.date} (দৈনিক অডিট রেকর্ড)`;
     document.getElementById('closingIncome').innerText = `৳ ${(s.todayIncome || 0).toLocaleString()}`;
     document.getElementById('closingExpense').innerText = `৳ ${(s.todayExpense || 0).toLocaleString()}`;
@@ -2052,7 +2052,7 @@ function shareClosingWhatsApp() {
   if (!currentClosingData) return;
   const d = currentClosingData;
   const s = d.summary;
-  const text = `*🕌 ${d.institution?.name_bn || 'হেদায়েত টেক জামিয়া মাদরাসা'}*\n` +
+  const text = `*🕌 ${d.institution?.name_bn || 'মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা'}*\n` +
     `*📋 দৈনিক সান্ধ্যকালীন ক্যাশ ও অডিট ক্লোজিং রিপোর্ট*\n` +
     `তারিখ: ${d.date}\n` +
     `----------------------------------------\n` +
@@ -2463,7 +2463,7 @@ function printSingleSponsorCard(name, className, admissionNo, sponsor, progress)
       <body>
         <div style="max-width: 500px; margin: 0 auto; border: 3px double #145032; border-radius: 20px; padding: 25px; background: #fafdfb;">
           <div style="text-align: center; border-bottom: 2px solid #145032; padding-bottom: 12px; margin-bottom: 15px;">
-            <h2 style="font-size: 20px; font-weight: bold; color: #0d3822; margin: 0;">হেদায়েত টেক জামিয়া মাদরাসা ও এতিমখানা</h2>
+            <h2 style="font-size: 20px; font-weight: bold; color: #0d3822; margin: 0;">মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা</h2>
             <p style="font-size: 11px; color: #666; margin: 4px 0 0 0;">এতিম ও মুফত ছাত্র স্পনসরশিপ অগ্রগতি কার্ড</p>
           </div>
           <p><strong>শিক্ষার্থীর নাম:</strong> ${name}</p>

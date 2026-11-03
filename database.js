@@ -358,13 +358,13 @@ function initDatabase() {
       INSERT INTO institution (name_bn, name_ar, name_en, code, muhtamim_name, phone, email, address, established, license_expiry)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
-      'উম্মে কুলসুম (রাঃ) মহিলা ও কওমি মাদরাসা',
-      'جامعة أم كلثوم الإسلامية',
-      'Umme Kulsum Islamic Madrasa',
-      'MDR-2026-01',
+      'মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা',
+      'جامعة مكة المكرمة للبنات ودار الأيتام',
+      'Makkatul Mukarramah Mohila Orphanage & Hifzkhana',
+      'MMM-2026-01',
       'মাওলানা মুফতি আব্দুল্লাহ কারিব',
       '+880 1884-636312',
-      'info@ummekulsum.edu.bd',
+      'info@makkatulmukarramah.edu.bd',
       'চান্দগাঁও, চট্টগ্রাম, বাংলাদেশ',
       '২০১৮',
       '২০২৭-১২-৩১'

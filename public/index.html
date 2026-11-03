@@ -895,42 +895,151 @@
   <!-- মোডালসমূহ (MODALS) -->
   <!-- ============================================================== -->
 
-  <!-- মোডাল: ফ্রি ডেমো বুক করুন -->
+  <!-- মোডাল: ফ্রি ডেমো বুক করুন (কঠোর ভ্যালিডেশন, কপি প্রোটেকশন ও সিকিউরিটি) -->
   <div id="bookDemoModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-4 border border-slate-100">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+    <div class="bg-white rounded-3xl w-full max-w-[430px] p-6 sm:p-7 shadow-2xl space-y-4 border border-slate-100 relative select-none">
+      
+      <!-- হেডার -->
+      <div class="flex items-start justify-between pb-2 border-b border-slate-100">
         <div>
-          <h3 class="font-black text-lg text-slate-900">ফ্রি ডেমো বুক করুন</h3>
-          <p class="text-xs text-slate-500">আপনার প্রতিষ্ঠানে বিনামূল্যে অনলাইন ডেমো দেখুন</p>
+          <h3 class="font-extrabold text-xl text-slate-900 tracking-tight">ফ্রি ডেমো বুক করুন</h3>
+          <p class="text-xs text-slate-500 mt-0.5">আপনার প্রতিষ্ঠানে বিনামূল্যে অনলাইন ডেমো দেখুন</p>
         </div>
-        <button onclick="closeModal('bookDemoModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times text-lg"></i></button>
+        <button onclick="closeModal('bookDemoModal')" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1 transition" title="বন্ধ করুন">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
-      <form onsubmit="handleBookDemo(event)" class="space-y-3.5 text-xs">
+
+      <!-- গ্লোবাল নট-অ্যালাও এলার্ট ব্যানার (ভুল হলে পপআপ হবে) -->
+      <div id="demoGlobalAlert" class="hidden p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-2">
+        <i class="fa-solid fa-ban text-red-600 text-sm"></i>
+        <span id="demoGlobalAlertText">NOT ALLOWED: চিহ্নিত ফিল্ডগুলো সঠিকভাবে পূরণ করুন!</span>
+      </div>
+
+      <!-- ফ্রি ডেমো বুকিং ফর্ম -->
+      <form id="demoBookingForm" onsubmit="handleBookDemo(event)" novalidate oncopy="handlePreventCopy(event)" oncut="handlePreventCopy(event)" oncontextmenu="return false;" class="space-y-4 text-xs font-semibold">
+        
+        <!-- অ্যান্টি-বট হানিপট (বটদের আটকানোর গোপন ফাঁদ) -->
+        <input type="text" name="website_hp" id="demoHoneypot" tabindex="-1" autocomplete="off" class="hidden opacity-0 pointer-events-none absolute -left-[9999px]">
+
+        <!-- ১. মাদরাসা বা স্কুলের নাম -->
         <div>
-          <label class="font-bold text-slate-700 block mb-1">মাদ্রাসা বা স্কুলের নাম *</label>
-          <input type="text" id="demoMadrasaName" required placeholder="যেমন: জামিয়া ইসলামিয়া..." class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
+          <label for="demoMadrasaName" class="font-bold text-slate-800 block mb-1 flex items-center justify-between">
+            <span>মাদ্রাসা বা স্কুলের নাম <span class="text-red-500">*</span></span>
+            <span id="status-demoMadrasaName" class="text-[10px] text-slate-400 font-normal">অবশ্যই পূরণ করতে হবে</span>
+          </label>
+          <div class="relative">
+            <input type="text" id="demoMadrasaName" name="madrasa_name" placeholder="যেমন: জামিয়া ইসলামিয়া..." 
+              autocomplete="off" spellcheck="false"
+              oninput="validateMadrasaName()" onblur="validateMadrasaName()"
+              class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-800 focus:ring-1 focus:ring-slate-800 transition">
+            <div id="icon-demoMadrasaName" class="absolute right-3 top-3 hidden text-sm"></div>
+          </div>
+          <!-- Not Allowed এরর মেসেজ -->
+          <div id="error-demoMadrasaName" class="hidden mt-1 text-[11px] font-bold text-red-600 flex items-center gap-1.5">
+            <i class="fa-solid fa-ban text-red-500"></i>
+            <span>NOT ALLOWED: মাদরাসা বা স্কুলের নাম দেওয়া আবশ্যক!</span>
+          </div>
         </div>
+
+        <!-- ২. আপনার নাম ও পদবী -->
         <div>
-          <label class="font-bold text-slate-700 block mb-1">আপনার নাম ও পদবী *</label>
-          <input type="text" id="demoPersonName" required placeholder="মুহতামিম / প্রধান শিক্ষক" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
+          <label for="demoPersonName" class="font-bold text-slate-800 block mb-1 flex items-center justify-between">
+            <span>আপনার নাম ও পদবী <span class="text-red-500">*</span></span>
+            <span id="status-demoPersonName" class="text-[10px] text-slate-400 font-normal">নাম ও পদবী আবশ্যক</span>
+          </label>
+          <div class="relative">
+            <input type="text" id="demoPersonName" name="person_name" placeholder="মুহতামিম / প্রধান শিক্ষক" 
+              autocomplete="off" spellcheck="false"
+              oninput="validatePersonName()" onblur="validatePersonName()"
+              class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-800 focus:ring-1 focus:ring-slate-800 transition">
+            <div id="icon-demoPersonName" class="absolute right-3 top-3 hidden text-sm"></div>
+          </div>
+          <!-- Not Allowed এরর মেসেজ -->
+          <div id="error-demoPersonName" class="hidden mt-1 text-[11px] font-bold text-red-600 flex items-center gap-1.5">
+            <i class="fa-solid fa-ban text-red-500"></i>
+            <span>NOT ALLOWED: আপনার নাম ও পদবী সঠিকভাবে লিখুন!</span>
+          </div>
         </div>
+
+        <!-- ৩. মোবাইল নম্বর (হোয়াটসঅ্যাপ) -->
         <div>
-          <label class="font-bold text-slate-700 block mb-1">মোবাইল নম্বর (হোয়াটসঅ্যাপ) *</label>
-          <input type="tel" id="demoPhone" required placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
+          <label for="demoPhone" class="font-bold text-slate-800 block mb-1 flex items-center justify-between">
+            <span>মোবাইল নম্বর (হোয়াটসঅ্যাপ) <span class="text-red-500">*</span></span>
+            <span id="phone-digit-counter" class="text-[10px] text-slate-500 font-mono">০/১১ ডিজিট</span>
+          </label>
+          <div class="relative">
+            <input type="tel" id="demoPhone" name="phone" placeholder="018XXXXXXXX" maxlength="11"
+              autocomplete="off" spellcheck="false"
+              oninput="handlePhoneInput(this)" onblur="validatePhoneNumber()"
+              class="w-full border-2 border-slate-900 rounded-xl px-3.5 py-2.5 text-sm font-mono text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-950 focus:ring-2 focus:ring-slate-950/20 transition">
+            <div id="icon-demoPhone" class="absolute right-3 top-3 hidden text-sm"></div>
+          </div>
+          <!-- Not Allowed এরর মেসেজ -->
+          <div id="error-demoPhone" class="hidden mt-1 text-[11px] font-bold text-red-600 flex items-center gap-1.5">
+            <i class="fa-solid fa-ban text-red-500"></i>
+            <span>NOT ALLOWED: মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হতে হবে (যেমন: 018XXXXXXXX)</span>
+          </div>
         </div>
+
+        <!-- ৪. প্রতিষ্ঠানের ধরণ -->
         <div>
-          <label class="font-bold text-slate-700 block mb-1">প্রতিষ্ঠানের ধরণ</label>
-          <select id="demoType" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm bg-white">
-            <option value="কওমি মাদ্রাসা">কওমি মাদ্রাসা</option>
-            <option value="আলিয়া মাদ্রাসা">আলিয়া মাদ্রাসা</option>
-            <option value="হিফজখানা">হিফজখানা ও নূরানি</option>
-            <option value="স্কুল ও কলেজ">স্কুল ও কলেজ</option>
-          </select>
+          <label for="demoType" class="font-bold text-slate-800 block mb-1 flex items-center justify-between">
+            <span>প্রতিষ্ঠানের ধরণ <span class="text-red-500">*</span></span>
+            <span id="status-demoType" class="text-[10px] text-slate-400 font-normal">সিলেক্ট করুন</span>
+          </label>
+          <div class="relative">
+            <select id="demoType" name="institution_type" onchange="validateInstitutionType()" 
+              class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-800 bg-white focus:outline-none focus:border-slate-800 focus:ring-1 focus:ring-slate-800 transition cursor-pointer appearance-none">
+              <option value="">-- প্রতিষ্ঠানের ধরণ নির্বাচন করুন --</option>
+              <option value="কওমি মাদ্রাসা">কওমি মাদ্রাসা</option>
+              <option value="আলিয়া মাদ্রাসা">আলিয়া মাদ্রাসা</option>
+              <option value="হিফজখানা ও নূরানি">হিফজখানা ও নূরানি</option>
+              <option value="স্কুল ও কলেজ">স্কুল ও কলেজ</option>
+            </select>
+            <div class="absolute right-3.5 top-3.5 pointer-events-none text-slate-400 text-xs">
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </div>
+          <!-- Not Allowed এরর মেসেজ -->
+          <div id="error-demoType" class="hidden mt-1 text-[11px] font-bold text-red-600 flex items-center gap-1.5">
+            <i class="fa-solid fa-ban text-red-500"></i>
+            <span>NOT ALLOWED: প্রতিষ্ঠানের ধরণ নির্বাচন করা আবশ্যক!</span>
+          </div>
         </div>
-        <button type="submit" class="w-full bg-gradient-to-r from-hedayet-900 to-hedayet-700 hover:from-hedayet-800 hover:to-hedayet-600 text-white font-bold py-3 rounded-xl shadow-lg transition text-sm">
-          ডেমো কনফার্ম করুন
+
+        <!-- সিকিউরিটি ইনফো ব্যাজ -->
+        <div class="pt-1 flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100">
+          <span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-emerald-600"></i> ২৫৬-বিট এন্ড-টু-এন্ড এনক্রিপ্টেড</span>
+          <span class="flex items-center gap-1"><i class="fa-solid fa-lock text-slate-400"></i> কপি-প্রটেক্টেড ফর্ম</span>
+        </div>
+
+        <!-- ৫. সাবমিট বাটন -->
+        <button type="submit" id="btnDemoSubmit" class="w-full bg-[#165333] hover:bg-[#114027] text-white font-bold py-3.5 rounded-xl shadow-lg transition duration-200 text-base flex items-center justify-center gap-2">
+          <i class="fa-solid fa-circle-check text-emerald-300"></i>
+          <span>ডেমো কনফার্ম করুন</span>
         </button>
       </form>
+
+      <!-- সাকসেস স্টেট (বুকিং কনফার্মেশনের পর দৃশ্যমান হবে) -->
+      <div id="demoSuccessState" class="hidden py-4 text-center space-y-3">
+        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mx-auto shadow-sm">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <h4 class="text-lg font-black text-slate-900">আলহামদুলিল্লাহ! ডেমো বুকিং সফল হয়েছে</h4>
+        <p class="text-xs text-slate-600 leading-relaxed max-w-xs mx-auto" id="demoSuccessMessage">
+          আপনার প্রতিষ্ঠানের তথ্য নিরাপদে গ্রহণ করা হয়েছে। হেদায়েত টেক প্রতিনিধি অতিসত্বর যোগাযোগ করবেন।
+        </p>
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-left font-medium space-y-1 text-slate-700">
+          <div><strong>প্রতিষ্ঠান:</strong> <span id="confirmedMadrasa" class="text-emerald-800"></span></div>
+          <div><strong>যোগাযোগ:</strong> <span id="confirmedPerson" class="text-slate-900"></span></div>
+          <div><strong>মোবাইল:</strong> <span id="confirmedPhone" class="font-mono font-bold text-slate-900"></span></div>
+        </div>
+        <button onclick="resetAndCloseDemoModal()" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm transition">
+          ঠিক আছে
+        </button>
+      </div>
+
     </div>
   </div>
 

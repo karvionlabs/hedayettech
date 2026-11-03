@@ -344,6 +344,123 @@ app.get('/api/settings', (req, res) => {
   }
 });
 
+// ==========================================
+// ১০. ফ্রি ডেমো বুকিং এপিআই (কঠোর ভ্যালিডেশন, অ্যান্টি-বট ও সিকিউরিটি)
+// ==========================================
+const demoIpRateLimiter = new Map(); // Simple in-memory rate limiter
+
+// ইনপুট স্যানিটাইজার (XSS / SQL Injection প্রিভেনশন)
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/[<>'"`;\\]/g, '') // remove HTML/SQL meta characters
+    .trim();
+}
+
+app.post('/api/leads/demo', (req, res) => {
+  try {
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+    const userAgent = req.headers['user-agent'] || 'unknown';
+
+    // ১. রেট লিমিট চেক (প্রতি ১০ মিনিটে সর্বোচ্চ ৫ বার)
+    const now = Date.now();
+    const rateData = demoIpRateLimiter.get(clientIp) || { count: 0, firstTime: now };
+    if (now - rateData.firstTime > 10 * 60 * 1000) {
+      rateData.count = 1;
+      rateData.firstTime = now;
+    } else {
+      rateData.count += 1;
+    }
+    demoIpRateLimiter.set(clientIp, rateData);
+
+    if (rateData.count > 5) {
+      return res.status(429).json({
+        success: false,
+        error: 'NOT ALLOWED: অতিরিক্ত রিকোয়েস্ট করা হয়েছে! ১০ মিনিট পর পুনরায় চেষ্টা করুন।'
+      });
+    }
+
+    const { madrasa_name, person_name, phone, institution_type, website_hp } = req.body;
+
+    // ২. অ্যান্টি-বট হানিপট চেক (বট ট্র্যাপ)
+    if (website_hp && website_hp.trim() !== '') {
+      return res.status(403).json({
+        success: false,
+        error: 'NOT ALLOWED: স্বয়ংক্রিয় বট বা স্ক্রিপ্ট ব্লক করা হয়েছে!'
+      });
+    }
+
+    // ৩. মাদরাসা বা স্কুলের নাম কঠোর চেক
+    const cleanMadrasa = sanitizeInput(madrasa_name);
+    if (!cleanMadrasa || cleanMadrasa.length < 3) {
+      return res.status(400).json({
+        success: false,
+        field: 'demoMadrasaName',
+        error: 'NOT ALLOWED: মাদরাসা বা স্কুলের নাম অন্তত ৩ অক্ষরের সঠিক নাম হতে হবে!'
+      });
+    }
+
+    // ৪. নাম ও পদবী কঠোর চেক
+    const cleanPerson = sanitizeInput(person_name);
+    if (!cleanPerson || cleanPerson.length < 3) {
+      return res.status(400).json({
+        success: false,
+        field: 'demoPersonName',
+        error: 'NOT ALLOWED: আপনার নাম ও পদবী সঠিকভাবে পূরণ করা আবশ্যক!'
+      });
+    }
+
+    // ৫. মোবাইল নম্বর কঠোর চেক (বাংলাদেশি ১১ সংখ্যার ফরম্যাট 01[3-9]XXXXXXXX)
+    const cleanPhone = (phone || '').replace(/\D/g, ''); // শুধু সংখ্যা ফিল্টার
+    const bdPhoneRegex = /^01[3-9]\d{8}$/;
+    if (!bdPhoneRegex.test(cleanPhone) || cleanPhone.length !== 11) {
+      return res.status(400).json({
+        success: false,
+        field: 'demoPhone',
+        error: 'NOT ALLOWED: মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হতে হবে (যেমন: 018XXXXXXXX)!'
+      });
+    }
+
+    // ৬. প্রতিষ্ঠানের ধরণ কঠোর চেক
+    const validTypes = ['কওমি মাদ্রাসা', 'আলিয়া মাদ্রাসা', 'হিফজখানা ও নূরানি', 'স্কুল ও কলেজ'];
+    if (!institution_type || !validTypes.includes(institution_type.trim())) {
+      return res.status(400).json({
+        success: false,
+        field: 'demoType',
+        error: 'NOT ALLOWED: তালিকা থেকে সঠিক প্রতিষ্ঠানের ধরণ নির্বাচন করুন!'
+      });
+    }
+
+    // ৭. ডাটাবেজে সংরক্ষণ (SQLite WAL)
+    const stmt = db.prepare(`
+      INSERT INTO demo_requests (madrasa_name, person_name, phone, institution_type, ip_address, user_agent, status)
+      VALUES (?, ?, ?, ?, ?, ?, 'PENDING')
+    `);
+    const info = stmt.run(cleanMadrasa, cleanPerson, cleanPhone, institution_type.trim(), clientIp, userAgent);
+
+    return res.json({
+      success: true,
+      message: 'জাযাকাল্লাহ খাইরান! আপনার ফ্রি ডেমো বুকিং সফলভাবে গ্রহণ করা হয়েছে।',
+      bookingId: info.lastInsertRowid
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: 'NOT ALLOWED: সার্ভার প্রক্রিয়াকরণে ত্রুটি। পুনরায় চেষ্টা করুন।'
+    });
+  }
+});
+
+// ডেমো লিডস তালিকা এপিআই (অ্যাডমিনদের জন্য)
+app.get('/api/leads/demo', (req, res) => {
+  try {
+    const leads = db.prepare('SELECT * FROM demo_requests ORDER BY id DESC').all();
+    res.json({ success: true, leads });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.get('/api/backup', (req, res) => {
   try {
     const tables = ['institution', 'classes', 'students', 'hifz_logs', 'transactions', 'boarding_bazaar', 'attendance', 'staff'];

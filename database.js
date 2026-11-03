@@ -137,6 +137,19 @@ function initDatabase() {
       salary REAL NOT NULL,
       joining_date TEXT
     );
+
+    -- ১০. ফ্রি ডেমো বুকিং ও লিডস (অ্যান্টি-স্প্যাম, রেট লিমিট ও সিকিউরড)
+    CREATE TABLE IF NOT EXISTS demo_requests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      madrasa_name TEXT NOT NULL,
+      person_name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      institution_type TEXT NOT NULL,
+      ip_address TEXT,
+      user_agent TEXT,
+      status TEXT DEFAULT 'PENDING',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
   `);
 
   // Seed sample data if empty

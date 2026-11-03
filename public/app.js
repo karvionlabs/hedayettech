@@ -635,15 +635,327 @@ async function checkOnlineResult() {
   }
 }
 
-function handleBookDemo(e) {
-  e.preventDefault();
-  const madrasa = document.getElementById('demoMadrasaName').value;
-  const person = document.getElementById('demoPersonName').value;
-  const phone = document.getElementById('demoPhone').value;
+// ==========================================
+// সিকিউরড ফ্রি ডেমো বুকিং ও লাইভ ভ্যালিডেশন ইঞ্জিন
+// ==========================================
 
-  alert(`জাযাকাল্লাহ খাইরান!\n\n${person} সাহেব, আপনার প্রতিষ্ঠান "${madrasa}"-এর জন্য ফ্রি ডেমো বুকিং গ্রহণ করা হয়েছে।\nআমাদের এক্সপার্ট প্রতিনিধি (${phone}) নম্বরে অতিসত্বর যোগাযোগ করবেন।`);
+// ১. কপি/কাট ও অ্যান্টি-স্ক্র্যাপিং প্রোটেকশন
+function handlePreventCopy(e) {
+  e.preventDefault();
+  const alertEl = document.getElementById('demoGlobalAlert');
+  const alertText = document.getElementById('demoGlobalAlertText');
+  if (alertEl && alertText) {
+    alertText.innerText = 'NOT ALLOWED: সিকিউরিটির স্বার্থে এই ফর্মের তথ্য কপি বা স্ক্র্যাপ করা নিষিদ্ধ!';
+    alertEl.classList.remove('hidden');
+    setTimeout(() => {
+      alertEl.classList.add('hidden');
+    }, 3000);
+  }
+  return false;
+}
+
+// ২. মাদরাসা বা স্কুলের নাম ভ্যালিডেশন
+function validateMadrasaName() {
+  const input = document.getElementById('demoMadrasaName');
+  const errorEl = document.getElementById('error-demoMadrasaName');
+  const iconEl = document.getElementById('icon-demoMadrasaName');
+  const statusEl = document.getElementById('status-demoMadrasaName');
+  if (!input) return false;
+
+  const val = input.value.trim().replace(/[<>'"`;\\]/g, '');
+  if (!val || val.length < 3) {
+    input.classList.remove('border-emerald-500', 'border-slate-300', 'bg-emerald-50/20');
+    input.classList.add('border-red-500', 'bg-red-50/30');
+    errorEl?.classList.remove('hidden');
+    if (iconEl) {
+      iconEl.className = 'absolute right-3 top-3 text-red-500';
+      iconEl.innerHTML = '<i class="fa-solid fa-ban"></i>';
+      iconEl.classList.remove('hidden');
+    }
+    if (statusEl) {
+      statusEl.innerText = 'অসম্পূর্ণ ✕';
+      statusEl.className = 'text-[10px] text-red-500 font-bold';
+    }
+    return false;
+  } else {
+    input.classList.remove('border-red-500', 'bg-red-50/30');
+    input.classList.add('border-emerald-500', 'bg-emerald-50/10');
+    errorEl?.classList.add('hidden');
+    if (iconEl) {
+      iconEl.className = 'absolute right-3 top-3 text-emerald-600';
+      iconEl.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+      iconEl.classList.remove('hidden');
+    }
+    if (statusEl) {
+      statusEl.innerText = 'সঠিক ✓';
+      statusEl.className = 'text-[10px] text-emerald-600 font-bold';
+    }
+    return true;
+  }
+}
+
+// ৩. নাম ও পদবী ভ্যালিডেশন
+function validatePersonName() {
+  const input = document.getElementById('demoPersonName');
+  const errorEl = document.getElementById('error-demoPersonName');
+  const iconEl = document.getElementById('icon-demoPersonName');
+  const statusEl = document.getElementById('status-demoPersonName');
+  if (!input) return false;
+
+  const val = input.value.trim().replace(/[<>'"`;\\]/g, '');
+  if (!val || val.length < 3) {
+    input.classList.remove('border-emerald-500', 'border-slate-300', 'bg-emerald-50/20');
+    input.classList.add('border-red-500', 'bg-red-50/30');
+    errorEl?.classList.remove('hidden');
+    if (iconEl) {
+      iconEl.className = 'absolute right-3 top-3 text-red-500';
+      iconEl.innerHTML = '<i class="fa-solid fa-ban"></i>';
+      iconEl.classList.remove('hidden');
+    }
+    if (statusEl) {
+      statusEl.innerText = 'অসম্পূর্ণ ✕';
+      statusEl.className = 'text-[10px] text-red-500 font-bold';
+    }
+    return false;
+  } else {
+    input.classList.remove('border-red-500', 'bg-red-50/30');
+    input.classList.add('border-emerald-500', 'bg-emerald-50/10');
+    errorEl?.classList.add('hidden');
+    if (iconEl) {
+      iconEl.className = 'absolute right-3 top-3 text-emerald-600';
+      iconEl.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+      iconEl.classList.remove('hidden');
+    }
+    if (statusEl) {
+      statusEl.innerText = 'সঠিক ✓';
+      statusEl.className = 'text-[10px] text-emerald-600 font-bold';
+    }
+    return true;
+  }
+}
+
+// ৪. মোবাইল নম্বর টাইপিং ও ফিল্টারিং
+function handlePhoneInput(input) {
+  // শুধু সংখ্যা রাখা
+  input.value = input.value.replace(/\D/g, '').slice(0, 11);
+  const counter = document.getElementById('phone-digit-counter');
+  if (counter) {
+    counter.innerText = `${input.value.length}/১১ ডিজিট`;
+    if (input.value.length === 11) {
+      counter.className = 'text-[10px] text-emerald-600 font-bold font-mono';
+    } else {
+      counter.className = 'text-[10px] text-slate-500 font-mono';
+    }
+  }
+  if (input.value.length === 11) {
+    validatePhoneNumber();
+  }
+}
+
+// ৫. মোবাইল নম্বর ভ্যালিডেশন (১১ সংখ্যার বাংলাদেশি ফরম্যাট)
+function validatePhoneNumber() {
+  const input = document.getElementById('demoPhone');
+  const errorEl = document.getElementById('error-demoPhone');
+  const iconEl = document.getElementById('icon-demoPhone');
+  if (!input) return false;
+
+  const phone = input.value.trim().replace(/\D/g, '');
+  const bdRegex = /^01[3-9]\d{8}$/;
+
+  if (!bdRegex.test(phone) || phone.length !== 11) {
+    input.classList.remove('border-emerald-500', 'border-slate-900', 'bg-emerald-50/20');
+    input.classList.add('border-red-500', 'bg-red-50/30');
+    errorEl?.classList.remove('hidden');
+    if (iconEl) {
+      iconEl.className = 'absolute right-3 top-3 text-red-500';
+      iconEl.innerHTML = '<i class="fa-solid fa-ban"></i>';
+      iconEl.classList.remove('hidden');
+    }
+    return false;
+  } else {
+    input.classList.remove('border-red-500', 'bg-red-50/30');
+    input.classList.add('border-emerald-500', 'bg-emerald-50/10');
+    errorEl?.classList.add('hidden');
+    if (iconEl) {
+      iconEl.className = 'absolute right-3 top-3 text-emerald-600';
+      iconEl.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+      iconEl.classList.remove('hidden');
+    }
+    return true;
+  }
+}
+
+// ৬. প্রতিষ্ঠানের ধরণ ভ্যালিডেশন
+function validateInstitutionType() {
+  const select = document.getElementById('demoType');
+  const errorEl = document.getElementById('error-demoType');
+  const statusEl = document.getElementById('status-demoType');
+  if (!select) return false;
+
+  if (!select.value || select.value === '') {
+    select.classList.remove('border-emerald-500', 'border-slate-300', 'bg-emerald-50/20');
+    select.classList.add('border-red-500', 'bg-red-50/30');
+    errorEl?.classList.remove('hidden');
+    if (statusEl) {
+      statusEl.innerText = 'নির্বাচন করুন ✕';
+      statusEl.className = 'text-[10px] text-red-500 font-bold';
+    }
+    return false;
+  } else {
+    select.classList.remove('border-red-500', 'bg-red-50/30');
+    select.classList.add('border-emerald-500', 'bg-emerald-50/10');
+    errorEl?.classList.add('hidden');
+    if (statusEl) {
+      statusEl.innerText = 'বাছাইকৃত ✓';
+      statusEl.className = 'text-[10px] text-emerald-600 font-bold';
+    }
+    return true;
+  }
+}
+
+// ৭. ডেমো সাবমিট হ্যান্ডলার (কঠোর ক্লায়েন্ট ও সার্ভার সিকিউরিটি চেক)
+async function handleBookDemo(e) {
+  e.preventDefault();
+
+  const honeypot = document.getElementById('demoHoneypot')?.value;
+  if (honeypot && honeypot.trim() !== '') {
+    console.warn('Bot submission blocked');
+    return false;
+  }
+
+  // সব ফিল্ডের ভ্যালিডেশন রান করা
+  const isMadrasaOk = validateMadrasaName();
+  const isPersonOk = validatePersonName();
+  const isPhoneOk = validatePhoneNumber();
+  const isTypeOk = validateInstitutionType();
+
+  const globalAlert = document.getElementById('demoGlobalAlert');
+  const globalAlertText = document.getElementById('demoGlobalAlertText');
+  const submitBtn = document.getElementById('btnDemoSubmit');
+
+  // যদি একটিও ফিল্ড ভুল থাকে => নট অ্যালাও!
+  if (!isMadrasaOk || !isPersonOk || !isPhoneOk || !isTypeOk) {
+    if (globalAlert && globalAlertText) {
+      globalAlertText.innerText = 'NOT ALLOWED: চিহ্নিত ফিল্ডগুলো সঠিকভাবে পূরণ না করলে ডেমো বুকিং কনফার্ম হবে না!';
+      globalAlert.classList.remove('hidden');
+    }
+
+    // বাটন ফিডব্যাক (রেড ও ভাইব্রেশন ইফেক্ট)
+    if (submitBtn) {
+      const originalText = submitBtn.innerHTML;
+      submitBtn.classList.add('bg-red-700', 'animate-pulse');
+      submitBtn.innerHTML = '<i class="fa-solid fa-ban text-white"></i><span>NOT ALLOWED - ভুলগুলো সংশোধন করুন</span>';
+      
+      setTimeout(() => {
+        submitBtn.classList.remove('bg-red-700', 'animate-pulse');
+        submitBtn.innerHTML = originalText;
+      }, 2500);
+    }
+
+    // প্রথম ইনভ্যালিড ফিল্ডে ফোকাস করা
+    if (!isMadrasaOk) document.getElementById('demoMadrasaName')?.focus();
+    else if (!isPersonOk) document.getElementById('demoPersonName')?.focus();
+    else if (!isPhoneOk) document.getElementById('demoPhone')?.focus();
+    else if (!isTypeOk) document.getElementById('demoType')?.focus();
+
+    return false;
+  }
+
+  // সমস্ত তথ্য সঠিক হলে ব্যাকএন্ডে সুরক্ষিত সাবমিশন
+  const madrasa = document.getElementById('demoMadrasaName').value.trim();
+  const person = document.getElementById('demoPersonName').value.trim();
+  const phone = document.getElementById('demoPhone').value.trim().replace(/\D/g, '');
+  const type = document.getElementById('demoType').value;
+
+  try {
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i><span>যাচাই করা হচ্ছে...</span>';
+    }
+
+    const res = await fetch('/api/leads/demo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        madrasa_name: madrasa,
+        person_name: person,
+        phone: phone,
+        institution_type: type,
+        website_hp: honeypot || ''
+      })
+    });
+
+    const result = await res.json();
+
+    if (!res.ok || !result.success) {
+      // সার্ভার সাইড এরর মেসেজ প্রদর্শন
+      if (globalAlert && globalAlertText) {
+        globalAlertText.innerText = result.error || 'NOT ALLOWED: সঠিক তথ্য প্রদান করুন!';
+        globalAlert.classList.remove('hidden');
+      }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-300"></i><span>ডেমো কনফার্ম করুন</span>';
+      }
+      return false;
+    }
+
+    // সফল হলে সাকসেস স্টেট দেখানো
+    document.getElementById('demoBookingForm')?.classList.add('hidden');
+    globalAlert?.classList.add('hidden');
+
+    const successState = document.getElementById('demoSuccessState');
+    if (successState) {
+      document.getElementById('confirmedMadrasa').innerText = madrasa;
+      document.getElementById('confirmedPerson').innerText = `${person} (${type})`;
+      document.getElementById('confirmedPhone').innerText = phone;
+      successState.classList.remove('hidden');
+    }
+  } catch (err) {
+    if (globalAlert && globalAlertText) {
+      globalAlertText.innerText = 'NOT ALLOWED: সার্ভারের সাথে সংযোগে ব্যর্থ হয়েছে!';
+      globalAlert.classList.remove('hidden');
+    }
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-300"></i><span>ডেমো কনফার্ম করুন</span>';
+    }
+  }
+}
+
+// ৮. ডেমো মোডাল রিসেট ও ক্লোজ
+function resetAndCloseDemoModal() {
+  const form = document.getElementById('demoBookingForm');
+  form?.reset();
+  form?.classList.remove('hidden');
+  
+  document.getElementById('demoSuccessState')?.classList.add('hidden');
+  document.getElementById('demoGlobalAlert')?.classList.add('hidden');
+
+  // স্টাইল ক্লিয়ার করা
+  ['demoMadrasaName', 'demoPersonName', 'demoPhone', 'demoType'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.className = el.id === 'demoPhone' 
+        ? 'w-full border-2 border-slate-900 rounded-xl px-3.5 py-2.5 text-sm font-mono text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-950 focus:ring-2 focus:ring-slate-950/20 transition'
+        : 'w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-800 focus:ring-1 focus:ring-slate-800 transition';
+    }
+    const err = document.getElementById(`error-${id}`);
+    err?.classList.add('hidden');
+    const icon = document.getElementById(`icon-${id}`);
+    icon?.classList.add('hidden');
+  });
+
+  const counter = document.getElementById('phone-digit-counter');
+  if (counter) counter.innerText = '০/১১ ডিজিট';
+
+  const btn = document.getElementById('btnDemoSubmit');
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-300"></i><span>ডেমো কনফার্ম করুন</span>';
+  }
+
   closeModal('bookDemoModal');
-  e.target.reset();
 }
 
 // ==========================================

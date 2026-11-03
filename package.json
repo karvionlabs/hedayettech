@@ -1,0 +1,14 @@
+{
+  "name": "madrasa-management-system",
+  "version": "1.0.0",
+  "description": "Comprehensive Bangladeshi Madrasa Management System (Qawmi, Alia, Hifz & Cadet)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "express": "^4.21.2"
+  }
+}

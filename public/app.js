@@ -85,14 +85,14 @@ function switchTab(tabId) {
 
   // সাইডবার অ্যাক্টিভ ক্লাস
   document.querySelectorAll('.nav-item').forEach(el => {
-    el.classList.remove('bg-madrasa-800', 'text-gold-400', 'font-bold');
-    el.classList.add('hover:bg-madrasa-900/80', 'text-emerald-100');
+    el.classList.remove('bg-gradient-to-r', 'from-emerald-800', 'to-emerald-700', 'bg-madrasa-800', 'text-gold-400', 'font-bold', 'border-l-4', 'border-gold-400', 'shadow-md');
+    el.classList.add('hover:bg-emerald-900/60', 'text-emerald-100');
   });
 
   const activeNav = document.getElementById(`nav-${tabId}`);
   if (activeNav) {
-    activeNav.classList.add('bg-madrasa-800', 'text-gold-400', 'font-bold');
-    activeNav.classList.remove('hover:bg-madrasa-900/80', 'text-emerald-100');
+    activeNav.classList.add('bg-gradient-to-r', 'from-emerald-800', 'to-emerald-700', 'text-gold-400', 'font-bold', 'border-l-4', 'border-gold-400', 'shadow-md');
+    activeNav.classList.remove('hover:bg-emerald-900/60', 'text-emerald-100');
   }
 
   // পেজ শিরোনাম আপডেট

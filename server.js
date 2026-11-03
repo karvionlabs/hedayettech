@@ -461,14 +461,258 @@ app.get('/api/leads/demo', (req, res) => {
   }
 });
 
+// ==========================================
+// ১১. অনলাইন শিক্ষার্থী ভর্তি আবেদন এপিআই
+// ==========================================
+app.post('/api/admissions/apply', (req, res) => {
+  try {
+    const { applicant_name, father_name, phone, desired_class_id, residential_type, address, previous_institute, birth_date } = req.body;
+    if (!applicant_name || !phone) {
+      return res.status(400).json({ success: false, error: 'শিক্ষার্থীর নাম ও ফোন নম্বর দেওয়া আবশ্যক!' });
+    }
+    const stmt = db.prepare(`
+      INSERT INTO online_admissions (applicant_name, father_name, phone, desired_class_id, residential_type, address, previous_institute, birth_date, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING')
+    `);
+    const info = stmt.run(applicant_name, father_name || '', phone, desired_class_id || 1, residential_type || 'আবাসিক', address || '', previous_institute || '', birth_date || '');
+    res.json({ success: true, message: 'অনলাইনে ভর্তির আবেদন সফলভাবে জমা হয়েছে।', id: info.lastInsertRowid });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/admissions', (req, res) => {
+  try {
+    const admissions = db.prepare(`
+      SELECT a.*, c.name_bn as class_name 
+      FROM online_admissions a 
+      LEFT JOIN classes c ON a.desired_class_id = c.id 
+      ORDER BY a.id DESC
+    `).all();
+    res.json({ success: true, admissions });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// এক ক্লিকে অনলাইন আবেদন অনুমোদন (Approve into Students)
+app.post('/api/admissions/:id/approve', (req, res) => {
+  try {
+    const adm = db.prepare('SELECT * FROM online_admissions WHERE id = ?').get(req.params.id);
+    if (!adm) return res.status(404).json({ success: false, error: 'আবেদন খুঁজে পাওয়া যায়নি!' });
+
+    // নতুন দাখেলা নম্বর ও রোল জেনারেট
+    const totalCount = db.prepare('SELECT count(*) as count FROM students').get().count + 1;
+    const admissionNo = `DAKH-${100 + totalCount}`;
+    const rollNo = totalCount;
+
+    db.prepare(`
+      INSERT INTO students (admission_no, roll_no, name_bn, class_id, residential, guardian_name, guardian_phone, address, monthly_fee, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 4000, 'ACTIVE')
+    `).run(admissionNo, rollNo, adm.applicant_name, adm.desired_class_id || 1, adm.residential_type === 'আবাসিক' ? 1 : 0, adm.father_name, adm.phone, adm.address);
+
+    db.prepare("UPDATE online_admissions SET status = 'APPROVED' WHERE id = ?").run(req.params.id);
+    res.json({ success: true, message: 'আবেদনটি সফলভাবে অনুমোদিত হয়েছে এবং শিক্ষার্থী তালিকায় যুক্ত হয়েছে!', admissionNo });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// ১২. আজীবন সদস্য ও দাতা তহবিল এপিআই
+// ==========================================
+app.get('/api/donors', (req, res) => {
+  try {
+    const donors = db.prepare(`
+      SELECT d.*, 
+        COALESCE(SUM(c.amount), 0) as total_contributed,
+        MAX(c.date) as last_contribution_date
+      FROM donors d
+      LEFT JOIN donor_contributions c ON d.id = c.donor_id
+      GROUP BY d.id
+      ORDER BY d.id DESC
+    `).all();
+    const contributions = db.prepare(`
+      SELECT c.*, d.name as donor_name, d.phone as donor_phone
+      FROM donor_contributions c
+      JOIN donors d ON c.donor_id = d.id
+      ORDER BY c.id DESC LIMIT 20
+    `).all();
+    const totalFund = db.prepare('SELECT COALESCE(SUM(amount), 0) as total FROM donor_contributions').get().total;
+    res.json({ success: true, donors, contributions, totalFund });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/donors', (req, res) => {
+  try {
+    const { name, phone, address, member_type, pledged_amount } = req.body;
+    const info = db.prepare(`
+      INSERT INTO donors (name, phone, address, member_type, pledged_amount)
+      VALUES (?, ?, ?, ?, ?)
+    `).run(name, phone, address || '', member_type || 'MONTHLY_DONOR', pledged_amount || 0);
+    res.json({ success: true, id: info.lastInsertRowid });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/donors/contribute', (req, res) => {
+  try {
+    const { donor_id, amount, payment_method, remarks, received_by } = req.body;
+    const count = db.prepare('SELECT count(*) as count FROM donor_contributions').get().count + 1;
+    const receiptNo = `DON-2026-${String(count).padStart(3, '0')}`;
+    const today = new Date().toISOString().slice(0, 10);
+
+    db.prepare(`
+      INSERT INTO donor_contributions (donor_id, date, amount, payment_method, receipt_no, remarks, received_by)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(donor_id, today, amount, payment_method || 'CASH', receiptNo, remarks || 'সাধারণ অনুদান', received_by || 'মুহতামিম সাহেব');
+
+    // ক্যাশবুকে স্বয়ংক্রিয় ক্রেডিট ভাউচার যোগ
+    const vCount = db.prepare('SELECT count(*) as count FROM transactions').get().count + 1;
+    const voucherNo = `V-${1000 + vCount}`;
+    db.prepare(`
+      INSERT INTO transactions (voucher_no, date, type, category, amount, payment_method, description, received_by)
+      VALUES (?, ?, 'INCOME', 'লিল্লাহ দান', ?, ?, ?, ?)
+    `).run(voucherNo, today, amount, payment_method || 'CASH', `দাতা অনুদান (রসিদ: ${receiptNo})`, received_by || 'মুহতামিম সাহেব');
+
+    res.json({ success: true, receiptNo, voucherNo });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// ১৩. ডিজিটাল নোটিশ বোর্ড এপিআই
+// ==========================================
+app.get('/api/notices', (req, res) => {
+  try {
+    const notices = db.prepare('SELECT * FROM notices WHERE is_active = 1 ORDER BY id DESC').all();
+    res.json({ success: true, notices });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/notices', (req, res) => {
+  try {
+    const { title, content, category } = req.body;
+    const today = new Date().toISOString().slice(0, 10);
+    const info = db.prepare(`
+      INSERT INTO notices (title, content, category, published_date, is_active)
+      VALUES (?, ?, ?, ?, 1)
+    `).run(title, content, category || 'সাধারণ', today);
+    res.json({ success: true, id: info.lastInsertRowid });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// ১৪. উস্তাদ ও কর্মচারীদের ছুটির আবেদন ও পেরোল
+// ==========================================
+app.get('/api/leaves', (req, res) => {
+  try {
+    const leaves = db.prepare(`
+      SELECT l.*, s.name as staff_name, s.designation 
+      FROM staff_leaves l 
+      JOIN staff s ON l.staff_id = s.id 
+      ORDER BY l.id DESC
+    `).all();
+    res.json({ success: true, leaves });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/leaves/:id/status', (req, res) => {
+  try {
+    const { status, approved_by } = req.body;
+    db.prepare('UPDATE staff_leaves SET status = ?, approved_by = ? WHERE id = ?').run(status, approved_by || 'মুহতামিম সাহেব', req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// ১৫. কিতাবখানা (লাইব্রেরি) এপিআই
+// ==========================================
+app.get('/api/library', (req, res) => {
+  try {
+    const books = db.prepare('SELECT * FROM library_books ORDER BY id ASC').all();
+    const issues = db.prepare(`
+      SELECT i.*, b.book_title, s.name_bn as student_name 
+      FROM book_issues i 
+      JOIN library_books b ON i.book_id = b.id 
+      LEFT JOIN students s ON i.student_id = s.id 
+      WHERE i.status = 'ISSUED'
+    `).all();
+    res.json({ success: true, books, issues });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/library/return/:id', (req, res) => {
+  try {
+    const issue = db.prepare('SELECT * FROM book_issues WHERE id = ?').get(req.params.id);
+    if (issue) {
+      db.prepare("UPDATE book_issues SET status = 'RETURNED', return_date = date('now') WHERE id = ?").run(req.params.id);
+      db.prepare('UPDATE library_books SET available_copies = available_copies + 1 WHERE id = ?').run(issue.book_id);
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// ১৬. ছাত্র স্বাস্থ্য ও সিক-বে এপিআই
+// ==========================================
+app.get('/api/health', (req, res) => {
+  try {
+    const records = db.prepare(`
+      SELECT h.*, s.name_bn as student_name, c.name_bn as class_name 
+      FROM health_records h 
+      JOIN students s ON h.student_id = s.id 
+      LEFT JOIN classes c ON s.class_id = c.id 
+      ORDER BY h.id DESC
+    `).all();
+    res.json({ success: true, records });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// ১৭. করজে হাসানা ও ঋণ খাতা এপিআই
+// ==========================================
+app.get('/api/loans', (req, res) => {
+  try {
+    const loans = db.prepare('SELECT * FROM loans ORDER BY id DESC').all();
+    const totalLoan = db.prepare('SELECT COALESCE(SUM(loan_amount - paid_amount), 0) as balance FROM loans WHERE status = "বকেয়া"').get().balance;
+    res.json({ success: true, loans, totalLoan });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.get('/api/backup', (req, res) => {
   try {
-    const tables = ['institution', 'classes', 'students', 'hifz_logs', 'transactions', 'boarding_bazaar', 'attendance', 'staff'];
+    const tables = [
+      'institution', 'classes', 'students', 'hifz_logs', 'transactions', 
+      'boarding_bazaar', 'attendance', 'staff', 'demo_requests',
+      'online_admissions', 'donors', 'donor_contributions', 'notices',
+      'staff_leaves', 'library_books', 'book_issues', 'health_records', 'loans'
+    ];
     const backup = {};
     for (const tbl of tables) {
       backup[tbl] = db.prepare(`SELECT * FROM ${tbl}`).all();
     }
-    res.setHeader('Content-Disposition', 'attachment; filename=madrasa_backup.json');
+    res.setHeader('Content-Disposition', 'attachment; filename=madrasa_full_backup.json');
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(backup, null, 2));
   } catch (err) {

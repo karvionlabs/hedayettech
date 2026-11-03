@@ -150,7 +150,133 @@ function initDatabase() {
       status TEXT DEFAULT 'PENDING',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+
+    -- ১১. অনলাইন শিক্ষার্থী ভর্তি আবেদন (পাবলিক ফরম ও অনুমোদন প্যানেল)
+    CREATE TABLE IF NOT EXISTS online_admissions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      applicant_name TEXT NOT NULL,
+      father_name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      desired_class_id INTEGER,
+      residential_type TEXT DEFAULT 'আবাসিক',
+      address TEXT,
+      previous_institute TEXT,
+      birth_date TEXT,
+      status TEXT DEFAULT 'PENDING', -- PENDING, APPROVED, REJECTED
+      applied_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (desired_class_id) REFERENCES classes(id)
+    );
+
+    -- ১২. আজীবন সদস্য ও নিয়মিত দাতা ফান্ড (কওমি ডোনেশন ও চাঁদা)
+    CREATE TABLE IF NOT EXISTS donors (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      address TEXT,
+      member_type TEXT DEFAULT 'MONTHLY_DONOR', -- LIFETIME (আজীবন), MONTHLY_DONOR (মাসিক দাতা), GENERAL (সাধারণ)
+      pledged_amount REAL DEFAULT 0,
+      status TEXT DEFAULT 'ACTIVE',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS donor_contributions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      donor_id INTEGER NOT NULL,
+      date TEXT NOT NULL,
+      amount REAL NOT NULL,
+      payment_method TEXT DEFAULT 'BKASH',
+      receipt_no TEXT UNIQUE,
+      remarks TEXT,
+      received_by TEXT,
+      FOREIGN KEY (donor_id) REFERENCES donors(id)
+    );
+
+    -- ১৩. ডিজিটাল নোটিশ বোর্ড
+    CREATE TABLE IF NOT EXISTS notices (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      content TEXT NOT NULL,
+      category TEXT DEFAULT 'সাধারণ', -- সাধারণ, ছুটি, পরীক্ষা, মাহফিল, জরুরি
+      published_date TEXT NOT NULL,
+      is_active INTEGER DEFAULT 1,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- ১৪. উস্তাদ ও কর্মচারীদের ছুটির আবেদন ও অনুমোদন
+    CREATE TABLE IF NOT EXISTS staff_leaves (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      staff_id INTEGER NOT NULL,
+      leave_type TEXT NOT NULL, -- অসুস্থতা, জরুরি প্রয়োজন, পারিবারিক
+      start_date TEXT NOT NULL,
+      end_date TEXT NOT NULL,
+      total_days INTEGER NOT NULL,
+      reason TEXT,
+      status TEXT DEFAULT 'PENDING', -- PENDING, APPROVED, REJECTED
+      approved_by TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (staff_id) REFERENCES staff(id)
+    );
+
+    -- ১৫. কিতাবখানা (মাদ্রাসার লাইব্রেরি ও কিতাব ইস্যু রেজিস্টার)
+    CREATE TABLE IF NOT EXISTS library_books (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      book_title TEXT NOT NULL,
+      author TEXT,
+      category TEXT NOT NULL, -- তাফসির, হাদিস, ফিকহ, আরবি ব্যাকরণ, সাধারণ
+      total_copies INTEGER DEFAULT 1,
+      available_copies INTEGER DEFAULT 1,
+      shelf_no TEXT,
+      barcode TEXT UNIQUE
+    );
+
+    CREATE TABLE IF NOT EXISTS book_issues (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      book_id INTEGER NOT NULL,
+      student_id INTEGER,
+      staff_id INTEGER,
+      issue_date TEXT NOT NULL,
+      due_date TEXT NOT NULL,
+      return_date TEXT,
+      status TEXT DEFAULT 'ISSUED', -- ISSUED, RETURNED
+      FOREIGN KEY (book_id) REFERENCES library_books(id),
+      FOREIGN KEY (student_id) REFERENCES students(id),
+      FOREIGN KEY (staff_id) REFERENCES staff(id)
+    );
+
+    -- ১৬. ছাত্র স্বাস্থ্য ও চিকিৎসা খাতা (সিক-বে ট্র্যাকার)
+    CREATE TABLE IF NOT EXISTS health_records (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id INTEGER NOT NULL,
+      date TEXT NOT NULL,
+      symptoms TEXT NOT NULL,
+      treatment TEXT,
+      medicine_cost REAL DEFAULT 0,
+      doctor_name TEXT,
+      status TEXT DEFAULT 'সুস্থ', -- চিকিৎসাধীন, সুস্থ
+      FOREIGN KEY (student_id) REFERENCES students(id)
+    );
+
+    -- ১৭. করজে হাসানা ও ঋণ খাতা (মাদ্রাসা ঋণ ট্র্যাকার)
+    CREATE TABLE IF NOT EXISTS loans (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      person_name TEXT NOT NULL,
+      phone TEXT,
+      loan_amount REAL NOT NULL,
+      loan_date TEXT NOT NULL,
+      due_date TEXT,
+      paid_amount REAL DEFAULT 0,
+      status TEXT DEFAULT 'বকেয়া', -- বকেয়া, পরিশোধিত
+      description TEXT
+    );
   `);
+
+  // সেফলি স্টুডেন্ট টেবিলে মুফত / স্পন্সর কলাম চেক ও এড
+  try {
+    db.prepare("ALTER TABLE students ADD COLUMN free_type TEXT DEFAULT 'GENERAL'").run();
+  } catch (e) {}
+  try {
+    db.prepare("ALTER TABLE students ADD COLUMN sponsor_name TEXT").run();
+  } catch (e) {}
 
   // Seed sample data if empty
   const instCount = db.prepare('SELECT count(*) as count FROM institution').get();
@@ -249,6 +375,64 @@ function initDatabase() {
     insertStaff.run('হাফেজ কারী আহমাদুল্লাহ', 'প্রধান হিফজ উস্তাদ', '01712345678', 22000, '2020-03-15');
     insertStaff.run('মাওলানা উমর ফারুক', 'নাজেমে তালিমাত (শিক্ষা সচিব)', '01923456789', 24000, '2019-06-01');
     insertStaff.run('মুহাম্মদ রফিকুল ইসলাম', 'হিসাবরক্ষক ও ক্যাশিয়ার', '01834567890', 18000, '2021-02-10');
+  }
+
+  // নতুন মডিউলসমূহের জন্য স্যাম্পল ডাটা সিড
+  const donorCount = db.prepare('SELECT count(*) as count FROM donors').get();
+  if (donorCount.count === 0) {
+    // ১. আজীবন সদস্য ও দাতা
+    const insDonor = db.prepare('INSERT INTO donors (name, phone, address, member_type, pledged_amount) VALUES (?, ?, ?, ?, ?)');
+    insDonor.run('হাজী শামসুল আলম', '01819123456', 'চান্দগাঁও, চট্টগ্রাম', 'LIFETIME', 100000);
+    insDonor.run('আলহাজ্ব মো: লোকমান সওদাগর', '01711234567', 'চকবাজার, চট্টগ্রাম', 'MONTHLY_DONOR', 5000);
+    insDonor.run('ইঞ্জি. মো: কামরুল ইসলাম', '01912345678', 'দুবাই প্রবাসী (সাতকানিয়া)', 'MONTHLY_DONOR', 10000);
+
+    const insContrib = db.prepare("INSERT INTO donor_contributions (donor_id, date, amount, payment_method, receipt_no, remarks, received_by) VALUES (?, date('now'), ?, ?, ?, ?, ?)");
+    insContrib.run(1, 25000, 'BANK', 'DON-2026-001', 'আজীবন সদস্যপদের প্রথম কিস্তির অনুদান', 'মুহতামিম সাহেব');
+    insContrib.run(2, 5000, 'BKASH', 'DON-2026-002', 'নভেম্বর মাসের নিয়মিত মাসিক চাঁদা', 'ক্যাশিয়ার রফিক');
+    insContrib.run(3, 10000, 'BANK', 'DON-2026-003', 'এতিমখানা লিল্লাহ বোর্ডিং ফান্ডে প্রবাসী অনুদান', 'মুহতামিম সাহেব');
+
+    // ২. অনলাইন ভর্তি আবেদন
+    const insAdm = db.prepare('INSERT INTO online_admissions (applicant_name, father_name, phone, desired_class_id, residential_type, address, previous_institute, birth_date, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    insAdm.run('মুহাম্মদ তাওহীদুর রহমান', 'মাওলানা সাইফুল্লাহ', '01855667788', 1, 'আবাসিক', 'পটিয়া, চট্টগ্রাম', 'নূরানি মক্তব চান্দগাঁও', '2014-05-12', 'PENDING');
+    insAdm.run('তাহমিদ আহমেদ সাকিব', 'হাফেজ দেলোয়ার হোসেন', '01733445566', 2, 'অনাবাসিক', 'বহদ্দারহাট, চট্টগ্রাম', 'মডেল স্কুল বহদ্দারহাট', '2016-08-20', 'PENDING');
+
+    // ৩. ডিজিটাল নোটিশ বোর্ড
+    const insNotice = db.prepare("INSERT INTO notices (title, content, category, published_date, is_active) VALUES (?, ?, ?, date('now'), 1)");
+    insNotice.run('আসন্ন দ্বিতীয় সাময়িক পরীক্ষার সময়সূচি ঘোষণা', 'সকল বিভাগের অবগতির জন্য জানানো যাচ্ছে যে, আগামী ১৫ ডিসেম্বর হতে দ্বিতীয় সাময়িক পরীক্ষা শুরু হবে। সকল শিক্ষার্থীকে নির্ধারিত সময়ের পূর্বে ফি পরিশোধ করে প্রবেশপত্র সংগ্রহের নির্দেশ দেওয়া হলো।', 'পরীক্ষা');
+    insNotice.run('পবিত্র মাহে রমজান ও ঈদুল ফিতরের দীর্ঘ ছুটি সংক্রান্ত নোটিশ', 'পবিত্র রমজানুল মুবারক উপলক্ষে আগামী ২০ রমজান হতে ঈদুল ফিতরের পর ৫ শাওয়াল পর্যন্ত মাদ্রাসার সকল শিক্ষা কার্যক্রম বন্ধ থাকিবে।', 'ছুটি');
+    insNotice.run('মাদ্রাসার বার্ষিক ওয়াজ মাহফিল ও দস্তারবন্দী সম্মেলন', 'আগামী ২৮ জানুয়ারি রোজ শুক্রবার মাদ্রাসার বার্ষিক ইসলামী মহাসম্মেলন ও কুরআন হিফজ সমাপ্তকারী ছাত্রদের দস্তারবন্দী অনুষ্ঠিত হইবে। সকল ধর্মপ্রাণ মুসলিম ভাইকে উপস্থিত থাকার জন্য দাওয়াত দেওয়া হলো।', 'মাহফিল');
+
+    // ৪. উস্তাদদের ছুটির আবেদন
+    const insLeave = db.prepare('INSERT INTO staff_leaves (staff_id, leave_type, start_date, end_date, total_days, reason, status, approved_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+    insLeave.run(2, 'জরুরি প্রয়োজন', '2026-11-10', '2026-11-12', 3, 'পারিবারিক জরুরি কাজের জন্য গ্রামের বাড়ি সাতকানিয়া গমন', 'APPROVED', 'মুহতামিম সাহেব');
+    insLeave.run(3, 'অসুস্থতা', '2026-11-05', '2026-11-06', 2, 'তীব্র মৌসুমি জ্বরের কারণে বিশ্রাম প্রয়োজন', 'PENDING', null);
+
+    // ৫. কিতাবখানা (লাইব্রেরি)
+    const insBook = db.prepare('INSERT INTO library_books (book_title, author, category, total_copies, available_copies, shelf_no, barcode) VALUES (?, ?, ?, ?, ?, ?, ?)');
+    insBook.run('সহিহ বুখারী শরিফ (পূর্ণাঙ্গ ৪ খণ্ড)', 'ইমাম বুখারী (রহ.)', 'হাদিস', 5, 4, 'SHELF-A1', 'BK-HAD-001');
+    insBook.run('তাফসিরে জালালাইন', 'জালালুদ্দিন সুয়ূতী (রহ.)', 'তাফসির', 8, 7, 'SHELF-B2', 'BK-TAF-002');
+    insBook.run('কানযুদ দাকায়িক', 'ইমাম নাসাফী (রহ.)', 'ফিকহ', 10, 9, 'SHELF-C1', 'BK-FIQ-003');
+    insBook.run('মিজানুস সরফ ও মুনশাইব', 'সিরাজুদ্দিন (রহ.)', 'আরবি ব্যাকরণ', 15, 14, 'SHELF-D3', 'BK-ARB-004');
+
+    const insIssue = db.prepare("INSERT INTO book_issues (book_id, student_id, staff_id, issue_date, due_date, status) VALUES (?, ?, ?, date('now'), date('now', '+15 days'), 'ISSUED')");
+    insIssue.run(1, 1, null);
+    insIssue.run(2, 4, null);
+
+    // ৬. ছাত্র স্বাস্থ্য ও সিক-বে খাতা
+    const insHealth = db.prepare("INSERT INTO health_records (student_id, date, symptoms, treatment, medicine_cost, doctor_name, status) VALUES (?, date('now'), ?, ?, ?, ?, ?)");
+    insHealth.run(2, 'তীব্র মৌসুমি সর্দি ও জ্বর (১০২° ফারেনহাইট)', 'প্যারাসিটামল ট্যাবলেট ও ওরাল স্যালাইন প্রদান করা হয়েছে', 150, 'ডা. মুবিন চৌধুরী', 'চিকিৎসাধীন');
+    insHealth.run(3, 'পেটের পীড়া ও গ্যাস্ট্রিক সমস্যা', 'অ্যান্টাসিড ও মেট্রোনিডাজল কোর্স সম্পন্ন', 220, 'ডা. লোকমান হাকিম', 'সুস্থ');
+
+    // ৭. করজে হাসানা ও ঋণ খাতা
+    const insLoan = db.prepare('INSERT INTO loans (person_name, phone, loan_amount, loan_date, due_date, paid_amount, status, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+    insLoan.run('আলহাজ্ব হাবিবুর রহমান সওদাগর', '01817654321', 50000, '2026-09-01', '2026-12-31', 20000, 'বকেয়া', 'মাদ্রাসার দক্ষিণ ভবনের ৩য় তলার ছাদ ঢালাইয়ের জন্য করজে হাসানা');
+    insLoan.run('মাওলানা মুফতি রফিক আহমদ', '01712987654', 25000, '2026-10-15', '2026-11-30', 25000, 'পরিশোধিত', 'হিফজখানার নতুন সিলিং ফ্যান ও লাইটিং ক্রয়ের সাময়িক ঋণ');
+
+    // ছাত্রদের মুফত / এতিম স্পন্সরশিপ স্ট্যাটাস আপডেট
+    try {
+      db.prepare("UPDATE students SET free_type = 'FULL_FREE', sponsor_name = 'হাজী শামসুল আলম' WHERE id IN (1, 3)").run();
+      db.prepare("UPDATE students SET free_type = 'HALF_FREE', sponsor_name = 'আলহাজ্ব মো: লোকমান সওদাগর' WHERE id = 4").run();
+    } catch (e) {}
   }
 }
 

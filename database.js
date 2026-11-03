@@ -268,6 +268,16 @@ function initDatabase() {
       status TEXT DEFAULT 'বকেয়া', -- বকেয়া, পরিশোধিত
       description TEXT
     );
+
+    -- ১৮. কন্টাক্ট ও ইনকোয়ারি বার্তা (গ্রাহক সহায়তা ও অনুসন্ধান)
+    CREATE TABLE IF NOT EXISTS contact_messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      institution TEXT,
+      message TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
   `);
 
   // সেফলি স্টুডেন্ট টেবিলে মুফত / স্পন্সর কলাম চেক ও এড

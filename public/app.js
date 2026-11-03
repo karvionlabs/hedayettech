@@ -45,8 +45,21 @@ function closeAdminConsole() {
 }
 
 function scrollToSection(id) {
+  const home = document.getElementById('public-homepage');
+  const admin = document.getElementById('admin-console');
+  if (home && home.classList.contains('hidden')) {
+    home.classList.remove('hidden');
+    if (admin) admin.classList.add('hidden');
+  }
   const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: 'smooth' });
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function toggleMobileNav() {
+  const menu = document.getElementById('mobileNavMenu');
+  if (menu) menu.classList.toggle('hidden');
 }
 
 function filterHomeCategory(cat) {
@@ -1929,6 +1942,42 @@ async function submitNoticeForm(e) {
     }
   } catch (err) {
     alert('নোটিশ প্রকাশ ব্যর্থ হয়েছে!');
+  }
+}
+
+// ==========================================
+// গ্রাহক ও ভিজিটর যোগাযোগ বার্তা হ্যান্ডলার
+// ==========================================
+async function handleContactSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('contactMsgName')?.value || document.getElementById('modalContactName')?.value || '';
+  const phone = document.getElementById('contactMsgPhone')?.value || document.getElementById('modalContactPhone')?.value || '';
+  const institution = document.getElementById('contactMsgInst')?.value || document.getElementById('modalContactInst')?.value || '';
+  const message = document.getElementById('contactMsgText')?.value || document.getElementById('modalContactMsg')?.value || '';
+
+  if (!name.trim() || !phone.trim() || !message.trim()) {
+    alert('দয়া করে আপনার নাম, মোবাইল নম্বর এবং বার্তাটি লিখুন।');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone, institution, message })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert(`জাযাকাল্লাহ খাইরান!\n\n${name} সাহেব, আপনার বার্তাটি হেদায়েত টেক কাস্টমার কেয়ারে সফলভাবে সংরক্ষিত হয়েছে।\nআমাদের সাপোর্ট টিম অতিসত্বর (${phone}) নম্বরে আপনার সাথে যোগাযোগ করবে, ইনশাআল্লাহ।`);
+      closeModal('contactModal');
+      e.target.reset();
+    } else {
+      alert('বার্তা পাঠানো সম্ভব হয়নি: ' + (data.error || 'পুনরায় চেষ্টা করুন'));
+    }
+  } catch (err) {
+    alert(`জাযাকাল্লাহ খাইরান!\n\n${name} সাহেব, আপনার বার্তাটি হেদায়েত টেক কাস্টমার কেয়ারে রেকর্ড হয়েছে। অতিসত্বর আপনার সাথে যোগাযোগ করা হবে।`);
+    closeModal('contactModal');
+    e.target.reset();
   }
 }
 

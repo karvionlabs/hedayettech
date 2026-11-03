@@ -700,6 +700,35 @@ app.get('/api/loans', (req, res) => {
   }
 });
 
+// ==========================================
+// ১৯. গ্রাহক বার্তা ও যোগাযোগ এপিআই (CONTACT)
+// ==========================================
+app.post('/api/contact', (req, res) => {
+  try {
+    const { name, phone, institution, message } = req.body;
+    if (!name || !phone || !message) {
+      return res.status(400).json({ success: false, error: 'নাম, মোবাইল নম্বর এবং বার্তা আবশ্যক' });
+    }
+    const stmt = db.prepare(`
+      INSERT INTO contact_messages (name, phone, institution, message)
+      VALUES (?, ?, ?, ?)
+    `);
+    const info = stmt.run(name, phone, institution || '', message);
+    res.json({ success: true, id: info.lastInsertRowid });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/contact', (req, res) => {
+  try {
+    const messages = db.prepare('SELECT * FROM contact_messages ORDER BY id DESC').all();
+    res.json({ success: true, messages });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.get('/api/backup', (req, res) => {
   try {
     const tables = [

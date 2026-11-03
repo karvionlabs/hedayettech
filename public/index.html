@@ -1018,6 +1018,12 @@
           <span>২. শিক্ষার্থী ও ভর্তি</span>
         </button>
 
+        <button onclick="switchTab('gatepass')" id="nav-gatepass" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition hover:bg-madrasa-900/80 text-emerald-100 hover:text-white">
+          <i class="fa-solid fa-id-badge w-5 text-center text-base text-emerald-300"></i>
+          <span>আবাসিক খুরুজ ও গেটপাস</span>
+          <span class="ml-auto bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold">সিকিউরিটি</span>
+        </button>
+
         <button onclick="switchTab('admissions')" id="nav-admissions" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition hover:bg-madrasa-900/80 text-emerald-100 hover:text-white">
           <i class="fa-solid fa-file-signature w-5 text-center text-base text-emerald-400"></i>
           <span>৩. অনলাইন ভর্তি আবেদন</span>
@@ -1055,6 +1061,12 @@
         <button onclick="switchTab('donors')" id="nav-donors" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition hover:bg-madrasa-900/80 text-emerald-100 hover:text-white">
           <i class="fa-solid fa-hand-holding-heart w-5 text-center text-base text-gold-400"></i>
           <span>৯. আজীবন সদস্য ও দাতা ফান্ড</span>
+        </button>
+
+        <button onclick="switchTab('qurbani')" id="nav-qurbani" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition hover:bg-madrasa-900/80 text-emerald-100 hover:text-white">
+          <i class="fa-solid fa-layer-group w-5 text-center text-base text-gold-400"></i>
+          <span>কোরবানির চামড়া ক্যাম্পেইন</span>
+          <span class="ml-auto bg-amber-500/20 text-amber-300 text-[10px] px-2 py-0.5 rounded-full font-bold">এক্সক্লুসিভ</span>
         </button>
 
         <button onclick="switchTab('loans')" id="nav-loans" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition hover:bg-madrasa-900/80 text-emerald-100 hover:text-white">
@@ -1128,6 +1140,9 @@
         </div>
 
         <div class="flex items-center gap-3">
+          <button onclick="openMuhtamimClosing()" class="bg-gradient-to-r from-amber-500 to-gold-500 hover:from-amber-600 hover:to-gold-600 text-slate-950 font-black px-3.5 py-2 rounded-lg text-xs flex items-center gap-1.5 shadow-md transition" title="মুহতামিম ১-ক্লিক সান্ধ্যকালীন ক্লোজিং স্লিপ">
+            <i class="fa-solid fa-moon"></i> <span>মুহতামিম ক্লোজিং</span>
+          </button>
           <button onclick="openModal('addStudentModal')" class="bg-madrasa-900 hover:bg-madrasa-800 text-white text-xs font-bold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition shadow-sm">
             <i class="fa-solid fa-user-plus text-gold-400"></i> নতুন ভর্তি
           </button>
@@ -1148,6 +1163,30 @@
 
         <!-- ট্যাব ১: ড্যাশবোর্ড -->
         <section id="tab-dashboard" class="tab-pane space-y-6">
+          <!-- এক্সক্লুসিভ মুহতামিম কুইক সামারি ব্যানার -->
+          <div class="bg-gradient-to-r from-emerald-900 via-hedayet-900 to-emerald-950 rounded-2xl p-4 sm:p-5 text-white flex flex-wrap items-center justify-between gap-4 border border-gold-500/40 shadow-md">
+            <div class="flex items-center gap-3.5">
+              <div class="w-12 h-12 rounded-xl bg-gold-500/20 text-gold-400 flex items-center justify-center text-2xl border border-gold-500/40">
+                <i class="fa-solid fa-moon"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm sm:text-base text-white flex items-center gap-2">
+                  মুহতামিম ১-ক্লিক সান্ধ্যকালীন ক্লোজিং ড্যাশবোর্ড
+                  <span class="bg-gold-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full">স্মার্ট অডিট</span>
+                </h4>
+                <p class="text-xs text-emerald-200/80 mt-0.5">আজকের ক্যাশ জমা-খরচ, বোর্ডিং বাজার, অনুপস্থিতি এবং ক্যাশ-ইন-হ্যান্ড ব্যালেন্স এক ক্লিকে দেখুন</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <button onclick="openMuhtamimClosing()" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs transition shadow-md flex items-center gap-1.5">
+                <i class="fa-solid fa-receipt"></i> আজকের ক্লোজিং স্লিপ
+              </button>
+              <button onclick="openWhatsAppMessenger('absence')" class="bg-[#25D366] hover:bg-[#20b858] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs transition shadow-md flex items-center gap-1.5">
+                <i class="fa-brands fa-whatsapp text-sm"></i> হোয়াটসঅ্যাপ হাব
+              </button>
+            </div>
+          </div>
+
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between">
               <div>
@@ -1653,6 +1692,9 @@
               <p class="text-xs text-slate-500 mt-0.5">মাদ্রাসার নিয়মিত পৃষ্ঠপোষক ও অনুদানদাতাদের ডাটাবেজ</p>
             </div>
             <div class="flex items-center gap-2">
+              <button onclick="openSponsorCardsModal()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-id-card text-gold-300"></i> এতিম স্পনসর প্রগ্রেস কার্ড
+              </button>
               <button onclick="openModal('recordDonationModal')" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm">
                 <i class="fa-solid fa-receipt text-gold-400"></i> অনুদান গ্রহণ ও রসিদ তৈরি
               </button>
@@ -1835,6 +1877,155 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="notices-admin-grid"></div>
+        </section>
+
+        <!-- ট্যাব: আবাসিক ছাত্র খুরুজ ও সিকিউরিটি গেটপাস -->
+        <section id="tab-gatepass" class="tab-pane hidden space-y-5">
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-madrasa-900 flex items-center gap-2">
+                <i class="fa-solid fa-id-badge text-emerald-700"></i> আবাসিক ছাত্র খুরুজ ও সিকিউরিটি গেটপাস
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">অনুমোদিত ছুটি ট্র্যাকিং, কিউআর গেটপাস স্লিপ ও গার্ড সিকিউরিটি চেক</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="openModal('newGatePassModal')" class="bg-madrasa-900 hover:bg-madrasa-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-plus text-gold-400"></i> নতুন খুরুজ / গেটপাস ইস্যু
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span class="text-xs text-slate-500 font-bold block">অনুমোদিত গেটপাস</span>
+              <span class="text-xl font-black text-amber-600" id="gp-approved-count">০</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">মাদ্রাসায় প্রস্থানের অপেক্ষায়</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span class="text-xs text-slate-500 font-bold block">বর্তমানে ক্যাম্পাসের বাইরে (খুরুজ)</span>
+              <span class="text-xl font-black text-blue-600" id="gp-departed-count">০</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">গেটে প্রস্থান রেকর্ডকৃত</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span class="text-xs text-slate-500 font-bold block">নিরাপদে ফিরে এসেছে</span>
+              <span class="text-xl font-black text-emerald-700" id="gp-returned-count">০</span>
+              <span class="text-[10px] text-emerald-600 block mt-0.5">ছুটি সম্পন্ন</span>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
+                    <th class="p-3.5">পাস নং</th>
+                    <th class="p-3.5">শিক্ষার্থীর নাম ও জামাত</th>
+                    <th class="p-3.5">ছুটির কারণ</th>
+                    <th class="p-3.5">রওনা সময়</th>
+                    <th class="p-3.5">ফেরার সম্ভাব্য সময়</th>
+                    <th class="p-3.5">অনুমোদনকারী</th>
+                    <th class="p-3.5">স্ট্যাটাস</th>
+                    <th class="p-3.5 text-center">অ্যাকশন</th>
+                  </tr>
+                </thead>
+                <tbody id="gatepass-table-body" class="divide-y divide-slate-100"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ট্যাব: কোরবানির চামড়া ও কালেকশন ক্যাম্পেইন -->
+        <section id="tab-qurbani" class="tab-pane hidden space-y-5">
+          <div class="bg-gradient-to-r from-emerald-950 via-hedayet-900 to-emerald-900 text-white rounded-2xl p-5 border border-gold-500/40 shadow-md flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="bg-gold-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">বার্ষিক বিশেষ ক্যাম্পেইন</span>
+                <span class="text-xs text-gold-300 font-bold" id="qurbani-campaign-title">ঈদুল আজহা ২০২৬ / ১৪৪৭ হিজরি</span>
+              </div>
+              <h3 class="text-xl font-extrabold text-white mt-1 flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-gold-400"></i> কোরবানির চামড়া সংগ্রহ ও বিক্রয় লেজার
+              </h3>
+              <p class="text-xs text-emerald-200/80 mt-0.5">দলভিত্তিক কালেকশন, লবণ ও গাড়িভাড়া খরচ এবং আড়তদার বিক্রয় হিসাব</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="openModal('qurbaniEntryModal')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-black text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-md transition">
+                <i class="fa-solid fa-plus"></i> দলভিত্তিক চামড়া এন্ট্রি
+              </button>
+              <button onclick="openModal('qurbaniExpenseModal')" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 shadow-sm transition border border-emerald-600">
+                <i class="fa-solid fa-receipt"></i> ক্যাম্পেইন খরচ
+              </button>
+              <button onclick="openModal('qurbaniSaleModal')" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 shadow-sm transition border border-emerald-500">
+                <i class="fa-solid fa-hand-holding-dollar text-gold-300"></i> আড়তদার বিক্রয় মেমো
+              </button>
+            </div>
+          </div>
+
+          <!-- ৪টি মূল মেট্রিক কার্ডস -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span class="text-xs text-slate-500 font-bold block">মোট সংগৃহীত চামড়া</span>
+              <span class="text-xl font-black text-emerald-800" id="qurbani-total-skins">০ পিস</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5" id="qurbani-skin-breakdown">গরু: ০ | খাসি: ০</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span class="text-xs text-slate-500 font-bold block">মোট ক্যাম্পেইন খরচ</span>
+              <span class="text-xl font-black text-rose-600" id="qurbani-total-expenses">৳ ০</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">লবণ, পিকআপ ও লেবার</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span class="text-xs text-slate-500 font-bold block">মোট বিক্রয় মূল্য</span>
+              <span class="text-xl font-black text-slate-900" id="qurbani-total-sales">৳ ০</span>
+              <span class="text-[10px] text-emerald-600 block mt-0.5" id="qurbani-sales-paid">আদায়: ৳ ০</span>
+            </div>
+            <div class="bg-gradient-to-br from-emerald-900 to-hedayet-900 text-white p-4 rounded-2xl shadow-sm border border-emerald-700">
+              <span class="text-xs text-emerald-200 font-bold block">লিল্লাহ ফান্ডে নিট লাভ</span>
+              <span class="text-xl font-black text-amber-400" id="qurbani-net-profit">৳ ০</span>
+              <span class="text-[10px] text-emerald-200/80 block mt-0.5">স্বয়ংক্রিয় ক্যাশবুকে জমা</span>
+            </div>
+          </div>
+
+          <!-- ৩টি টেবিল গ্রিড: দলভিত্তিক সংগ্রহ ও বিক্রয় চালান -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
+              <h4 class="font-bold text-sm text-slate-900 flex items-center justify-between">
+                <span><i class="fa-solid fa-people-group text-emerald-700 mr-1.5"></i> দলভিত্তিক চামড়া সংগ্রহ</span>
+                <span class="text-xs text-slate-400 font-normal">এলাকা ও উস্তাদওয়ারি</span>
+              </h4>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+                      <th class="p-2.5">টিম ও এলাকা</th>
+                      <th class="p-2.5">দায়িত্বপ্রাপ্ত</th>
+                      <th class="p-2.5 text-center">গরু</th>
+                      <th class="p-2.5 text-center">খাসি</th>
+                    </tr>
+                  </thead>
+                  <tbody id="qurbani-entries-tbody" class="divide-y divide-slate-100"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
+              <h4 class="font-bold text-sm text-slate-900 flex items-center justify-between">
+                <span><i class="fa-solid fa-file-invoice-dollar text-gold-600 mr-1.5"></i> ট্যানারি ও আড়তদার বিক্রয় চালান</span>
+                <span class="text-xs text-slate-400 font-normal">ক্যাশবুকে স্বয়ংক্রিয় ক্রেডিট</span>
+              </h4>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+                      <th class="p-2.5">ক্রেতা / ট্যানারি</th>
+                      <th class="p-2.5">বিক্রয় চামড়া</th>
+                      <th class="p-2.5">মোট মূল্য</th>
+                      <th class="p-2.5">প্রাপ্ত টাকা</th>
+                    </tr>
+                  </thead>
+                  <tbody id="qurbani-sales-tbody" class="divide-y divide-slate-100"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </section>
 
       </div>
@@ -2695,6 +2886,388 @@
           ছুটির আবেদন জমা দিন
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- নতুন এক্সক্লুসিভ ৫টি মাস্টার মোডাল -->
+  <!-- ============================================================== -->
+
+  <!-- ১. মোডাল: মুহতামিম ১-ক্লিক সান্ধ্যকালীন ক্লোজিং স্লিপ -->
+  <div id="muhtamimClosingModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-xl p-6 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto custom-scrollbar border border-gold-500/30">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gold-500/20 text-gold-600 flex items-center justify-center text-lg font-bold">
+            <i class="fa-solid fa-moon"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-base text-slate-900">মুহতামিম ১-মিনিট সান্ধ্যকালীন ক্লোজিং স্লিপ</h3>
+            <p class="text-[11px] text-slate-500" id="closingModalSubtitle">আজকের সামগ্রিক ক্যাশ, বোর্ডিং ও উপস্থিতি অডিট</p>
+          </div>
+        </div>
+        <button onclick="closeModal('muhtamimClosingModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times text-lg"></i></button>
+      </div>
+
+      <!-- প্রিন্টেবল স্লিপ কন্টেইনার -->
+      <div id="closingSlipPrintArea" class="bg-slate-50 p-5 rounded-2xl border border-slate-200 text-xs space-y-3 font-mono">
+        <div class="text-center pb-2 border-b border-slate-300">
+          <h4 class="font-black text-sm text-slate-900" id="closingInstName">উম্মে কুলসুম (রাঃ) মহিলা ও কওমি মাদরাসা</h4>
+          <p class="text-[10px] text-slate-500 font-sans">দৈনিক সান্ধ্যকালীন ক্যাশ ও অডিট ক্লোজিং স্লিপ</p>
+          <p class="text-[11px] text-emerald-800 font-bold mt-0.5" id="closingDateStr">তারিখ: ২০২৬-১১-০৩</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+            <span class="text-[10px] text-slate-400 block font-sans">আজকের মোট জমা (Income)</span>
+            <span class="font-bold text-emerald-700 text-sm" id="closingIncome">৳ ০</span>
+          </div>
+          <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+            <span class="text-[10px] text-slate-400 block font-sans">আজকের মোট খরচ (Expense)</span>
+            <span class="font-bold text-rose-600 text-sm" id="closingExpense">৳ ০</span>
+          </div>
+          <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+            <span class="text-[10px] text-slate-400 block font-sans">বোর্ডিং কাঁচা বাজার খরচ</span>
+            <span class="font-bold text-amber-700 text-sm" id="closingBazaar">৳ ০</span>
+          </div>
+          <div class="bg-gradient-to-r from-emerald-900 to-hedayet-900 text-white p-2.5 rounded-xl">
+            <span class="text-[10px] text-emerald-300 block font-sans">ক্যাশ ইন হ্যান্ড (Cash in Hand)</span>
+            <span class="font-black text-gold-400 text-sm" id="closingCashInHand">৳ ০</span>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-200 font-sans space-y-1.5 text-[11px]">
+          <div class="flex justify-between">
+            <span class="text-slate-600">ছাত্র উপস্থিতি:</span>
+            <span class="font-bold text-slate-800" id="closingStudentAtt">উপস্থিত: ০ | অনুপস্থিত: ০ | ছুটি: ০</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-600">আবাসিক খুরুজ / গেটপাসে বাইরে:</span>
+            <span class="font-bold text-blue-600" id="closingActiveGatepass">০ জন</span>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-200 font-sans">
+          <span class="font-bold text-slate-700 block mb-1">আজকের প্রধান ক্যাশ এন্ট্রি:</span>
+          <div id="closingTxList" class="space-y-1 text-[11px] max-h-32 overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <!-- অ্যাকশন বাটনসমূহ -->
+      <div class="flex items-center justify-between pt-1 gap-2">
+        <button onclick="printClosingSlip()" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-print"></i> স্লিপ প্রিন্ট করুন
+        </button>
+        <button onclick="shareClosingWhatsApp()" class="flex-1 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
+          <i class="fa-brands fa-whatsapp text-sm"></i> শুরা কমিটিতে পাঠান
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ২. মোডাল: নতুন খুরুজ ও গেটপাস ইস্যু -->
+  <div id="newGatePassModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-base text-madrasa-900 flex items-center gap-2">
+          <i class="fa-solid fa-id-badge text-emerald-700"></i> নতুন খুরুজ / গেটপাস ইস্যু
+        </h3>
+        <button onclick="closeModal('newGatePassModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times text-lg"></i></button>
+      </div>
+      <form onsubmit="submitGatepassForm(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">শিক্ষার্থীর নাম নির্বাচন করুন *</label>
+          <select id="gpStudentSelect" required class="w-full border border-slate-300 rounded-xl px-3 py-2 bg-white"></select>
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">ছুটি / খুরুজের কারণ *</label>
+          <input type="text" id="gpReason" required placeholder="যেমন: পারিবারিক অনুষ্ঠান / ডাক্তারের নিকট গমন" class="w-full border border-slate-300 rounded-xl px-3 py-2">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">প্রস্থানের তারিখ ও সময় *</label>
+            <input type="datetime-local" id="gpDeparture" required class="w-full border border-slate-300 rounded-xl px-3 py-2">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">প্রত্যাশিত ফেরার সময় *</label>
+            <input type="datetime-local" id="gpReturn" required class="w-full border border-slate-300 rounded-xl px-3 py-2">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">অভিভাবকের মোবাইল</label>
+            <input type="tel" id="gpGuardianPhone" placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3 py-2 font-mono">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">অনুমোদনকারী উস্তাদ</label>
+            <input type="text" id="gpApprover" value="নাজেমে তালিমাত মাওলানা উমর ফারুক" class="w-full border border-slate-300 rounded-xl px-3 py-2">
+          </div>
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">বিশেষ নোট / সম্মতি</label>
+          <input type="text" id="gpNotes" placeholder="অভিভাবকের মৌখিক সম্মতি নিশ্চিত করা হয়েছে" class="w-full border border-slate-300 rounded-xl px-3 py-2">
+        </div>
+        <button type="submit" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition text-sm">
+          গেটপাস কনফার্ম ও প্রিন্ট
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ৩. মোডাল: প্রিন্টেবল গেটপাস ভিউ ও সিকিউরিটি স্লিপ -->
+  <div id="viewGatePassModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl space-y-4 border border-emerald-600/30">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h4 class="font-black text-sm text-slate-900">সিকিউরিটি গেটপাস কার্ড</h4>
+        <button onclick="closeModal('viewGatePassModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times text-lg"></i></button>
+      </div>
+
+      <div id="gatePassPrintCard" class="bg-emerald-50/50 p-4 rounded-2xl border-2 border-emerald-800/40 text-center space-y-2 text-xs">
+        <div class="border-b border-emerald-200 pb-2">
+          <h3 class="font-black text-sm text-emerald-950">হেদায়েত টেক জামিয়া মাদরাসা</h3>
+          <p class="text-[10px] text-emerald-800 font-bold uppercase tracking-wider">আবাসিক খুরুজ / সিকিউরিটি গেটপাস</p>
+          <div class="mt-1 font-mono font-bold text-xs bg-emerald-900 text-gold-400 px-3 py-1 rounded-full inline-block" id="viewGpPassNo">GP-2026-001</div>
+        </div>
+
+        <div class="space-y-1.5 text-left py-1 text-[11px]">
+          <div class="flex justify-between">
+            <span class="text-slate-500">শিক্ষার্থী:</span>
+            <span class="font-bold text-slate-900" id="viewGpStudentName">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">জামাত ও রোল:</span>
+            <span class="font-bold text-slate-900" id="viewGpClassRoll">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">ছুটির কারণ:</span>
+            <span class="font-bold text-slate-900" id="viewGpReason">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">রওনা:</span>
+            <span class="font-mono font-bold text-emerald-800" id="viewGpDeparture">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">ফেরার সময়:</span>
+            <span class="font-mono font-bold text-rose-700" id="viewGpReturn">-</span>
+          </div>
+        </div>
+
+        <!-- সিকিউরিটি কিউআর কোড প্লেসহোল্ডার -->
+        <div class="pt-2 border-t border-emerald-200 flex items-center justify-center gap-3">
+          <div class="w-16 h-16 bg-white p-1 rounded-lg border border-slate-300 flex items-center justify-center">
+            <i class="fa-solid fa-qrcode text-4xl text-slate-800"></i>
+          </div>
+          <div class="text-[10px] text-left text-slate-600">
+            <p><strong>গেটে স্ক্যান করুন</strong></p>
+            <p>দারোয়ান কর্তৃক ভেরিফাইড</p>
+            <span class="text-emerald-700 font-bold" id="viewGpApprover">স্বাক্ষর: নাজেমে তালিমাত</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="window.print()" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition">
+          <i class="fa-solid fa-print"></i> গেটপাস প্রিন্ট
+        </button>
+        <button onclick="sendGatepassWhatsApp()" class="flex-1 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold py-2.5 rounded-xl text-xs transition">
+          <i class="fa-brands fa-whatsapp"></i> অভিভাবককে বার্তা
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ৪. মোডাল: দলভিত্তিক কোরবানির চামড়া এন্ট্রি -->
+  <div id="qurbaniEntryModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-base text-madrasa-900 flex items-center gap-2">
+          <i class="fa-solid fa-cow text-emerald-700"></i> দলভিত্তিক চামড়া কালেকশন এন্ট্রি
+        </h3>
+        <button onclick="closeModal('qurbaniEntryModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times text-lg"></i></button>
+      </div>
+      <form onsubmit="submitQurbaniEntry(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">দলের নাম (Team Name) *</label>
+          <input type="text" id="qeTeamName" required placeholder="যেমন: টিম ৪ - পাঁচলাইশ এলাকা" class="w-full border border-slate-300 rounded-xl px-3 py-2">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">দায়িত্বপ্রাপ্ত উস্তাদ *</label>
+            <input type="text" id="qeLeaderName" required placeholder="মাওলানা কাসেম" class="w-full border border-slate-300 rounded-xl px-3 py-2">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">এলাকা / মহল্লা</label>
+            <input type="text" id="qeAreaName" placeholder="ওয়ার্ড নং ১৬" class="w-full border border-slate-300 rounded-xl px-3 py-2">
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">গরু (পিস) *</label>
+            <input type="number" id="qeCow" required min="0" value="0" class="w-full border border-slate-300 rounded-xl px-2 py-1.5 font-bold text-center">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">খাসি (পিস) *</label>
+            <input type="number" id="qeGoat" required min="0" value="0" class="w-full border border-slate-300 rounded-xl px-2 py-1.5 font-bold text-center">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">ভেড়া (পিস)</label>
+            <input type="number" id="qeSheep" min="0" value="0" class="w-full border border-slate-300 rounded-xl px-2 py-1.5 font-bold text-center">
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition text-sm">
+          কালেকশন ডাটা সেভ করুন
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ৫. মোডাল: কোরবানির ক্যাম্পেইন খরচ এন্ট্রি -->
+  <div id="qurbaniExpenseModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-base text-madrasa-900">ক্যাম্পেইন খরচ ভাউচার (লবণ/গাড়ি/মজুরি)</h3>
+        <button onclick="closeModal('qurbaniExpenseModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times text-lg"></i></button>
+      </div>
+      <form onsubmit="submitQurbaniExpense(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">খরচের খাত *</label>
+          <select id="qexpType" required class="w-full border border-slate-300 rounded-xl px-3 py-2 bg-white">
+            <option value="লবণ ক্রয়">লবণ ক্রয় (দানাদার লবণ)</option>
+            <option value="গাড়ি ভাড়া / পরিবহন">গাড়ি ভাড়া / পিকআপ পরিবহন</option>
+            <option value="কুলি ও লেবার মজুরি">কুলি ও লোড-আনলোড মজুরি</option>
+            <option value="অন্যান্য খরচ">অন্যান্য আনুষঙ্গিক খরচ</option>
+          </select>
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">টাকার পরিমাণ (৳) *</label>
+          <input type="number" id="qexpAmount" required min="1" placeholder="৫০০০" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold">
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">বিবরণ / মেমো নং</label>
+          <input type="text" id="qexpNotes" placeholder="যেমন: ৪০ বস্তা লবণ ক্রয় বাবদ" class="w-full border border-slate-300 rounded-xl px-3 py-2">
+        </div>
+        <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl transition text-sm">
+          খরচ সংরক্ষণ করুন
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ৬. মোডাল: আড়তদার ও ট্যানারি চামড়া বিক্রয় মেমো -->
+  <div id="qurbaniSaleModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-base text-madrasa-900">ট্যানারি ও আড়তদার চামড়া বিক্রয় মেমো</h3>
+        <button onclick="closeModal('qurbaniSaleModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times text-lg"></i></button>
+      </div>
+      <form onsubmit="submitQurbaniSale(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">ক্রেতা / ট্যানারির নাম *</label>
+          <input type="text" id="qsBuyerName" required placeholder="মেসার্স চৌধুরী লেদার অ্যান্ড ট্যানারি" class="w-full border border-slate-300 rounded-xl px-3 py-2">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">মোবাইল নম্বর</label>
+            <input type="tel" id="qsPhone" placeholder="017XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3 py-2 font-mono">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">পেমেন্ট মাধ্যম</label>
+            <select id="qsMethod" class="w-full border border-slate-300 rounded-xl px-3 py-2 bg-white">
+              <option value="CASH">ক্যাশ / নগদ</option>
+              <option value="BANK">ব্যাংক ট্রান্সফার</option>
+              <option value="BKASH">বিকাশ</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">বিক্রিত গরু (পিস)</label>
+            <input type="number" id="qsCow" min="0" value="0" class="w-full border border-slate-300 rounded-xl px-3 py-2 font-bold">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">বিক্রিত খাসি (পিস)</label>
+            <input type="number" id="qsGoat" min="0" value="0" class="w-full border border-slate-300 rounded-xl px-3 py-2 font-bold">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">মোট বিক্রয়মূল্য (৳) *</label>
+            <input type="number" id="qsTotal" required min="1" placeholder="১,৫০,০০০" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">প্রাপ্ত নগদ টাকা (৳) *</label>
+            <input type="number" id="qsPaid" required min="0" placeholder="১,০০,০০০" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-emerald-700">
+          </div>
+        </div>
+        <p class="text-[11px] text-emerald-800 bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+          <i class="fa-solid fa-circle-check"></i> প্রাপ্ত টাকাটি স্বয়ংক্রিয়ভাবে ক্যাশবুকে <b>"লিল্লাহ দান (চামড়া বিক্রয়)"</b> খাতে ক্রেডিট হবে।
+        </p>
+        <button type="submit" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition text-sm">
+          বিক্রয় মেমো সম্পন্ন করুন
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ৭. মোডাল: এতিম ও যাকাত স্পনসর প্রগ্রেস কার্ডসমূহ -->
+  <div id="sponsorCardModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-3xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="font-black text-lg text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-id-card text-gold-500"></i> এতিম ও যাকাত স্পনসরশিপ প্রগ্রেস কার্ড
+          </h3>
+          <p class="text-xs text-slate-500">দেশি ও প্রবাসী দাতাদের জন্য ১-ক্লিক আকর্ষণীয় অগ্রগতি রিপোর্ট</p>
+        </div>
+        <button onclick="closeModal('sponsorCardModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times text-lg"></i></button>
+      </div>
+
+      <div id="sponsorCardsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </div>
+  </div>
+
+  <!-- ৮. মোডাল: জিরো-কস্ট ফ্রি হোয়াটসঅ্যাপ মেসেঞ্জার হাব -->
+  <div id="whatsappMessengerModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-lg p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-[#25D366]/20 text-[#25D366] flex items-center justify-center text-xl font-bold">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-slate-900">ফ্রি হোয়াটসঅ্যাপ নোটিফিকেশন হাব</h3>
+            <p class="text-[11px] text-slate-500">জিরো-এসএমএস কস্ট, সরাসরি অভিভাবকের হোয়াটসঅ্যাপে বার্তা</p>
+          </div>
+        </div>
+        <button onclick="closeModal('whatsappMessengerModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times text-lg"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">মেসেজ টেমপ্লেট নির্বাচন করুন</label>
+          <select id="waTemplateSelect" onchange="changeWhatsAppTemplate()" class="w-full border border-slate-300 rounded-xl px-3 py-2 bg-white font-semibold">
+            <option value="absence">১. অনুপস্থিতি নোটিশ (Absence Alert)</option>
+            <option value="fee">২. মাসিক বেতন তাগাদা (Tuition Reminder)</option>
+            <option value="hifz">৩. হিফজ সবক অগ্রগতি (Hifz Sabaq Report)</option>
+            <option value="khuruj">৪. খুরুজ / গেটপাস কনফার্মেশন (Gate Pass Departure)</option>
+            <option value="general">৫. সাধারণ মাদ্রাসা নোটিশ (General Notice)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">অভিভাবকের হোয়াটসঅ্যাপ নম্বর *</label>
+          <input type="tel" id="waGuardianPhone" required value="01884636312" placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3 py-2 font-mono text-sm">
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">বার্তা প্রিভিউ (সম্পাদনাযোগ্য) *</label>
+          <textarea id="waMessageText" rows="5" class="w-full border border-slate-300 rounded-xl p-3 text-xs leading-relaxed bg-slate-50"></textarea>
+        </div>
+
+        <button onclick="dispatchWhatsAppMessage()" class="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-black py-3 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-md">
+          <i class="fa-brands fa-whatsapp text-lg"></i> সরাসরি হোয়াটসঅ্যাপে সেন্ড করুন
+        </button>
+      </div>
     </div>
   </div>
 

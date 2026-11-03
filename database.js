@@ -278,6 +278,69 @@ function initDatabase() {
       message TEXT NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+
+    -- ১৯. কোরবানির চামড়া ও কালেকশন ক্যাম্পেইন (QURBANI CAMPAIGN)
+    CREATE TABLE IF NOT EXISTS qurbani_campaigns (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      year_title TEXT NOT NULL, -- যেমন: 'ঈদুল আজহা ২০২৬ / ১৪৪৭ হি.'
+      start_date TEXT NOT NULL,
+      status TEXT DEFAULT 'ACTIVE', -- ACTIVE, CLOSED
+      notes TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS qurbani_entries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      campaign_id INTEGER NOT NULL,
+      team_name TEXT NOT NULL, -- যেমন: 'দল ১ - চকবাজার এলাকা'
+      leader_name TEXT NOT NULL, -- দায়িত্বপ্রাপ্ত উস্তাদের নাম
+      cow_count INTEGER DEFAULT 0,
+      goat_count INTEGER DEFAULT 0,
+      sheep_count INTEGER DEFAULT 0,
+      area_name TEXT,
+      entry_date TEXT NOT NULL,
+      FOREIGN KEY (campaign_id) REFERENCES qurbani_campaigns(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS qurbani_expenses (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      campaign_id INTEGER NOT NULL,
+      expense_type TEXT NOT NULL, -- 'লবণ ক্রয়', 'গাড়ি ভাড়া / পরিবহন', 'কুলি ও লেবার মজুরি', 'অন্যান্য'
+      amount REAL NOT NULL,
+      date TEXT NOT NULL,
+      notes TEXT,
+      FOREIGN KEY (campaign_id) REFERENCES qurbani_campaigns(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS qurbani_sales (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      campaign_id INTEGER NOT NULL,
+      buyer_name TEXT NOT NULL, -- আড়তদার / ট্যানারি প্রতিনিধির নাম
+      phone TEXT,
+      total_cow_sold INTEGER DEFAULT 0,
+      total_goat_sold INTEGER DEFAULT 0,
+      total_amount REAL NOT NULL,
+      paid_amount REAL NOT NULL,
+      sale_date TEXT NOT NULL,
+      payment_method TEXT DEFAULT 'CASH',
+      FOREIGN KEY (campaign_id) REFERENCES qurbani_campaigns(id)
+    );
+
+    -- ২০. আবাসিক ছাত্র খুরুজ ও সিকিউরিটি গেটপাস (STUDENT KHURUJ & GATEPASS)
+    CREATE TABLE IF NOT EXISTS student_gatepasses (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id INTEGER NOT NULL,
+      pass_no TEXT UNIQUE,
+      leave_reason TEXT NOT NULL, -- 'পারিবারিক অনুষ্ঠান', 'চিকিৎসা', 'ছুটি'
+      departure_time TEXT NOT NULL,
+      expected_return TEXT NOT NULL,
+      actual_return TEXT,
+      approved_by TEXT NOT NULL,
+      guardian_phone TEXT,
+      status TEXT DEFAULT 'APPROVED', -- 'APPROVED', 'DEPARTED', 'RETURNED'
+      notes TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (student_id) REFERENCES students(id)
+    );
   `);
 
   // সেফলি স্টুডেন্ট টেবিলে মুফত / স্পন্সর কলাম চেক ও এড
@@ -440,9 +503,54 @@ function initDatabase() {
 
     // ছাত্রদের মুফত / এতিম স্পন্সরশিপ স্ট্যাটাস আপডেট
     try {
-      db.prepare("UPDATE students SET free_type = 'FULL_FREE', sponsor_name = 'হাজী শামসুল আলম' WHERE id IN (1, 3)").run();
-      db.prepare("UPDATE students SET free_type = 'HALF_FREE', sponsor_name = 'আলহাজ্ব মো: লোকমান সওদাগর' WHERE id = 4").run();
     } catch (e) {}
+  }
+
+  // ৮. কোরবানির চামড়া ক্যাম্পেইন স্যাম্পল ডেটা (যদি ফাঁকা থাকে)
+  try {
+    const qCount = db.prepare('SELECT count(*) as count FROM qurbani_campaigns').get().count;
+    if (qCount === 0) {
+      const camp = db.prepare(`
+        INSERT INTO qurbani_campaigns (year_title, start_date, status, notes)
+        VALUES ('ঈদুল আজহা ২০২৬ / ১৪৪৭ হিজরি', date('now'), 'ACTIVE', 'সারাদেশে চামড়া কালেকশন ক্যাম্পেইন ও লিল্লাহ তহবিল সংগ্রহ')
+      `).run();
+      const campId = camp.lastInsertRowid;
+
+      const insQEntry = db.prepare(`
+        INSERT INTO qurbani_entries (campaign_id, team_name, leader_name, cow_count, goat_count, sheep_count, area_name, entry_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?, date('now'))
+      `);
+      insQEntry.run(campId, 'টিম ১ - চকবাজার ও বাদুরতলা', 'মাওলানা কাসেম', 85, 120, 15, 'চকবাজার ওয়ার্ড নং ১৬');
+      insQEntry.run(campId, 'টিম ২ - চান্দগাঁও ও বহদ্দারহাট', 'হাফেজ আহমাদুল্লাহ', 110, 95, 8, 'বহদ্দারহাট আবাসিক এলাকা');
+      insQEntry.run(campId, 'টিম ৩ - পাঁচলাইশ ও প্রবর্তক', 'মাওলানা উমর ফারুক', 65, 80, 5, 'প্রবর্তক মোড় ও হিলভিউ');
+
+      const insQExp = db.prepare(`
+        INSERT INTO qurbani_expenses (campaign_id, expense_type, amount, date, notes)
+        VALUES (?, ?, ?, date('now'), ?)
+      `);
+      insQExp.run(campId, 'লবণ ক্রয়', 14500, '৫০ বস্তা আয়োডিনযুক্ত দানাদার লবণ');
+      insQExp.run(campId, 'গাড়ি ভাড়া / পরিবহন', 12000, '৩টি পিকআপ ভ্যান সারাদিনের ভাড়া ও তেল খরচ');
+      insQExp.run(campId, 'কুলি ও লেবার মজুরি', 8500, 'চামড়া লোড-আনলোড ও লবণ মাখানোর মজুরি');
+
+      const insQSale = db.prepare(`
+        INSERT INTO qurbani_sales (campaign_id, buyer_name, phone, total_cow_sold, total_goat_sold, total_amount, paid_amount, sale_date, payment_method)
+        VALUES (?, ?, ?, ?, ?, ?, ?, date('now'), ?)
+      `);
+      insQSale.run(campId, 'মেসার্স চৌধুরী লেদার অ্যান্ড ট্যানারি (হাজী রফিক)', '01711223344', 260, 295, 345000, 300000, 'BANK');
+    }
+
+    // ৯. আবাসিক ছাত্র খুরুজ ও সিকিউরিটি গেটপাস
+    const gpCount = db.prepare('SELECT count(*) as count FROM student_gatepasses').get().count;
+    if (gpCount === 0) {
+      const insGP = db.prepare(`
+        INSERT INTO student_gatepasses (student_id, pass_no, leave_reason, departure_time, expected_return, approved_by, guardian_phone, status, notes)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      insGP.run(1, 'GP-2026-001', 'পারিবারিক অনুষ্ঠান ও বড় বোনের বিবাহ', '2026-11-04 09:00', '2026-11-07 17:00', 'নাজেমে তালিমাত মাওলানা উমর ফারুক', '01819123456', 'APPROVED', 'অভিভাবক ফোনে সম্মতি নিশ্চিত করেছেন');
+      insGP.run(2, 'GP-2026-002', 'জরুরি চিকিৎসা ও ডেন্টাল চেকআপ', '2026-11-03 10:30', '2026-11-03 18:00', 'মুহতামিম সাহেব', '01711234567', 'DEPARTED', 'বিকেলে মাদ্রাসায় রিপোর্ট করবে');
+    }
+  } catch (e) {
+    console.error('Error seeding qurbani/gatepass:', e.message);
   }
 }
 

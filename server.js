@@ -729,13 +729,298 @@ app.get('/api/contact', (req, res) => {
   }
 });
 
+// ==========================================
+// ২০. মুহতামিম ১-মিনিট দৈনিক সান্ধ্যকালীন ক্লোজিং API
+// ==========================================
+app.get('/api/muhtamim/daily-closing', (req, res) => {
+  try {
+    const today = req.query.date || new Date().toISOString().slice(0, 10);
+    
+    const todayIncome = db.prepare(`
+      SELECT COALESCE(SUM(amount), 0) as total 
+      FROM transactions 
+      WHERE type = 'INCOME' AND date = ?
+    `).get(today).total;
+
+    const todayExpense = db.prepare(`
+      SELECT COALESCE(SUM(amount), 0) as total 
+      FROM transactions 
+      WHERE type = 'EXPENSE' AND date = ?
+    `).get(today).total;
+
+    const todayBazaar = db.prepare(`
+      SELECT COALESCE(SUM(total_cost), 0) as total 
+      FROM boarding_bazaar 
+      WHERE date = ?
+    `).get(today).total;
+
+    const totalAllIncome = db.prepare(`SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE type = 'INCOME'`).get().total;
+    const totalAllExpense = db.prepare(`SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE type = 'EXPENSE'`).get().total;
+    const cashInHand = totalAllIncome - totalAllExpense;
+
+    const totalStudents = db.prepare('SELECT count(*) as count FROM students').get().count;
+    const presentStudents = db.prepare("SELECT count(*) as count FROM attendance WHERE date = ? AND status = 'PRESENT'").get(today).count;
+    const absentStudents = db.prepare("SELECT count(*) as count FROM attendance WHERE date = ? AND status = 'ABSENT'").get(today).count;
+    const leaveStudents = db.prepare("SELECT count(*) as count FROM attendance WHERE date = ? AND status = 'LEAVE'").get(today).count;
+
+    const residentialCount = db.prepare('SELECT count(*) as count FROM students WHERE residential = 1').get().count;
+    const activeGatepasses = db.prepare(`
+      SELECT count(*) as count 
+      FROM student_gatepasses 
+      WHERE status IN ('APPROVED', 'DEPARTED')
+    `).get().count;
+
+    const transactions = db.prepare(`
+      SELECT voucher_no, category, amount, type, payment_method, description, received_by 
+      FROM transactions 
+      WHERE date = ? 
+      ORDER BY id DESC
+    `).all(today);
+
+    const bazaarItems = db.prepare(`
+      SELECT item_name, quantity_kg, unit_price, total_cost, purchaser_name 
+      FROM boarding_bazaar 
+      WHERE date = ?
+    `).all(today);
+
+    const inst = db.prepare('SELECT name_bn, muhtamim_name, phone FROM institution LIMIT 1').get();
+
+    res.json({
+      success: true,
+      date: today,
+      institution: inst,
+      summary: {
+        todayIncome,
+        todayExpense,
+        todayBazaar,
+        cashInHand,
+        netToday: todayIncome - todayExpense,
+        totalStudents,
+        presentStudents,
+        absentStudents,
+        leaveStudents,
+        residentialCount,
+        activeGatepasses
+      },
+      transactions,
+      bazaarItems
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// ২১. কোরবানির চামড়া ও কালেকশন ক্যাম্পেইন APIs
+// ==========================================
+app.get('/api/qurbani/campaigns', (req, res) => {
+  try {
+    const campaigns = db.prepare('SELECT * FROM qurbani_campaigns ORDER BY id DESC').all();
+    
+    const enriched = campaigns.map(camp => {
+      const entries = db.prepare(`
+        SELECT COALESCE(SUM(cow_count), 0) as totalCows,
+               COALESCE(SUM(goat_count), 0) as totalGoats,
+               COALESCE(SUM(sheep_count), 0) as totalSheep
+        FROM qurbani_entries WHERE campaign_id = ?
+      `).get(camp.id);
+
+      const expenses = db.prepare(`
+        SELECT COALESCE(SUM(amount), 0) as totalExpenses
+        FROM qurbani_expenses WHERE campaign_id = ?
+      `).get(camp.id);
+
+      const sales = db.prepare(`
+        SELECT COALESCE(SUM(total_amount), 0) as totalSales,
+               COALESCE(SUM(paid_amount), 0) as totalPaid
+        FROM qurbani_sales WHERE campaign_id = ?
+      `).get(camp.id);
+
+      return {
+        ...camp,
+        ...entries,
+        totalExpenses: expenses.totalExpenses,
+        totalSales: sales.totalSales,
+        totalPaid: sales.totalPaid,
+        netProfit: sales.totalPaid - expenses.totalExpenses
+      };
+    });
+
+    res.json({ success: true, campaigns: enriched });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/qurbani/campaigns/:id', (req, res) => {
+  try {
+    const campId = req.params.id;
+    const campaign = db.prepare('SELECT * FROM qurbani_campaigns WHERE id = ?').get(campId);
+    if (!campaign) return res.status(404).json({ success: false, error: 'ক্যাম্পেইন পাওয়া যায়নি' });
+
+    const entries = db.prepare('SELECT * FROM qurbani_entries WHERE campaign_id = ? ORDER BY id DESC').all(campId);
+    const expenses = db.prepare('SELECT * FROM qurbani_expenses WHERE campaign_id = ? ORDER BY id DESC').all(campId);
+    const sales = db.prepare('SELECT * FROM qurbani_sales WHERE campaign_id = ? ORDER BY id DESC').all(campId);
+
+    res.json({ success: true, campaign, entries, expenses, sales });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/qurbani/entries', (req, res) => {
+  try {
+    const { campaign_id, team_name, leader_name, cow_count, goat_count, sheep_count, area_name } = req.body;
+    const today = new Date().toISOString().slice(0, 10);
+    const stmt = db.prepare(`
+      INSERT INTO qurbani_entries (campaign_id, team_name, leader_name, cow_count, goat_count, sheep_count, area_name, entry_date)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    const info = stmt.run(campaign_id, team_name, leader_name, cow_count || 0, goat_count || 0, sheep_count || 0, area_name || '', today);
+    res.json({ success: true, id: info.lastInsertRowid });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/qurbani/expenses', (req, res) => {
+  try {
+    const { campaign_id, expense_type, amount, notes } = req.body;
+    const today = new Date().toISOString().slice(0, 10);
+    const stmt = db.prepare(`
+      INSERT INTO qurbani_expenses (campaign_id, expense_type, amount, date, notes)
+      VALUES (?, ?, ?, ?, ?)
+    `);
+    const info = stmt.run(campaign_id, expense_type, amount, today, notes || '');
+    res.json({ success: true, id: info.lastInsertRowid });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/qurbani/sales', (req, res) => {
+  try {
+    const { campaign_id, buyer_name, phone, total_cow_sold, total_goat_sold, total_amount, paid_amount, payment_method } = req.body;
+    const today = new Date().toISOString().slice(0, 10);
+    const stmt = db.prepare(`
+      INSERT INTO qurbani_sales (campaign_id, buyer_name, phone, total_cow_sold, total_goat_sold, total_amount, paid_amount, sale_date, payment_method)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    const info = stmt.run(campaign_id, buyer_name, phone || '', total_cow_sold || 0, total_goat_sold || 0, total_amount, paid_amount, today, payment_method || 'CASH');
+
+    // স্বয়ংক্রিয়ভাবে ক্যাশবুকে লিল্লাহ দান ফান্ডে জমা ভাউচার তৈরি
+    const vCount = db.prepare('SELECT count(*) as count FROM transactions').get().count + 1;
+    const voucherNo = `V-${1000 + vCount}`;
+    db.prepare(`
+      INSERT INTO transactions (voucher_no, date, type, category, amount, payment_method, description, received_by)
+      VALUES (?, ?, 'INCOME', 'লিল্লাহ দান', ?, ?, ?, 'মুহতামিম সাহেব')
+    `).run(voucherNo, today, paid_amount, payment_method || 'CASH', `কোরবানির চামড়া বিক্রয় বাবদ আয় (${buyer_name})`);
+
+    res.json({ success: true, id: info.lastInsertRowid, voucherNo });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// ২২. আবাসিক ছাত্র খুরুজ ও সিকিউরিটি গেটপাস APIs
+// ==========================================
+app.get('/api/gatepasses', (req, res) => {
+  try {
+    const passes = db.prepare(`
+      SELECT gp.*, s.name_bn as student_name, s.roll_no, s.admission_no, c.name_bn as class_name
+      FROM student_gatepasses gp
+      JOIN students s ON gp.student_id = s.id
+      JOIN classes c ON s.class_id = c.id
+      ORDER BY gp.id DESC
+    `).all();
+    res.json({ success: true, passes });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/gatepasses', (req, res) => {
+  try {
+    const { student_id, leave_reason, departure_time, expected_return, approved_by, guardian_phone, notes } = req.body;
+    const count = db.prepare('SELECT count(*) as count FROM student_gatepasses').get().count + 1;
+    const passNo = `GP-2026-${String(count).padStart(3, '0')}`;
+
+    const stmt = db.prepare(`
+      INSERT INTO student_gatepasses (student_id, pass_no, leave_reason, departure_time, expected_return, approved_by, guardian_phone, status, notes)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'APPROVED', ?)
+    `);
+    const info = stmt.run(student_id, passNo, leave_reason, departure_time, expected_return, approved_by || 'নাজেমে তালিমাত', guardian_phone || '', notes || '');
+    res.json({ success: true, id: info.lastInsertRowid, passNo });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.put('/api/gatepasses/:id/status', (req, res) => {
+  try {
+    const { status, actual_return } = req.body;
+    const id = req.params.id;
+    if (status === 'RETURNED') {
+      const returnTime = actual_return || new Date().toISOString().slice(0, 16).replace('T', ' ');
+      db.prepare(`UPDATE student_gatepasses SET status = ?, actual_return = ? WHERE id = ?`).run(status, returnTime, id);
+    } else {
+      db.prepare(`UPDATE student_gatepasses SET status = ? WHERE id = ?`).run(status, id);
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// ২৩. এতিম ও যাকাত স্পনসরশিপ প্রগ্রেস কার্ড API
+// ==========================================
+app.get('/api/sponsorship/students', (req, res) => {
+  try {
+    const students = db.prepare(`
+      SELECT s.*, c.name_bn as class_name
+      FROM students s
+      JOIN classes c ON s.class_id = c.id
+      WHERE s.free_type IN ('FULL_FREE', 'HALF_FREE') OR s.sponsor_name IS NOT NULL
+      ORDER BY s.id ASC
+    `).all();
+
+    const enriched = students.map(st => {
+      const lastHifz = db.prepare(`
+        SELECT * FROM hifz_logs WHERE student_id = ? ORDER BY date DESC LIMIT 1
+      `).get(st.id);
+
+      const lastHealth = db.prepare(`
+        SELECT * FROM health_records WHERE student_id = ? ORDER BY date DESC LIMIT 1
+      `).get(st.id);
+
+      const totalAtt = db.prepare('SELECT count(*) as count FROM attendance WHERE student_id = ?').get(st.id).count;
+      const presentAtt = db.prepare("SELECT count(*) as count FROM attendance WHERE student_id = ? AND status = 'PRESENT'").get(st.id).count;
+      const attendancePercent = totalAtt > 0 ? Math.round((presentAtt / totalAtt) * 100) : 95;
+
+      return {
+        ...st,
+        lastHifz,
+        lastHealth,
+        attendancePercent
+      };
+    });
+
+    res.json({ success: true, students: enriched });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.get('/api/backup', (req, res) => {
   try {
     const tables = [
       'institution', 'classes', 'students', 'hifz_logs', 'transactions', 
       'boarding_bazaar', 'attendance', 'staff', 'demo_requests',
       'online_admissions', 'donors', 'donor_contributions', 'notices',
-      'staff_leaves', 'library_books', 'book_issues', 'health_records', 'loans'
+      'staff_leaves', 'library_books', 'book_issues', 'health_records', 'loans',
+      'contact_messages', 'qurbani_campaigns', 'qurbani_entries', 'qurbani_expenses', 'qurbani_sales', 'student_gatepasses'
     ];
     const backup = {};
     for (const tbl of tables) {

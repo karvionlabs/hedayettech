@@ -2529,7 +2529,7 @@ function dispatchWhatsAppMessage() {
 }
 
 // ==========================================================================
-// ২৫. সিনেমাটিক মোশন স্প্ল্যাশ স্ক্রিন হ্যান্ডলার (৩-সেকেন্ড টাইমলাইন ও সেশন কন্ট্রোল)
+// ২৫. সিনেমাটিক মোশন স্প্ল্যাশ স্ক্রিন হ্যান্ডলার (সুস্পষ্ট টাইমলাইন ও পারফেক্ট পেসিং)
 // ==========================================================================
 let splashDismissTimeout = null;
 let splashIntervals = [];
@@ -2538,9 +2538,6 @@ function dismissSplashScreen() {
   const splash = document.getElementById('hedayet-splash-screen');
   if (splash && !splash.classList.contains('splash-hidden')) {
     splash.classList.add('splash-hidden');
-    try {
-      sessionStorage.setItem('hedayet_splash_seen', 'true');
-    } catch (e) {}
     
     // টাইমআউট ও ইন্টারভ্যাল ক্লিয়ার
     if (splashDismissTimeout) clearTimeout(splashDismissTimeout);
@@ -2557,9 +2554,6 @@ function dismissSplashScreen() {
 function replaySplashScreen() {
   const splash = document.getElementById('hedayet-splash-screen');
   if (splash) {
-    try {
-      sessionStorage.removeItem('hedayet_splash_seen');
-    } catch (e) {}
     splash.style.display = 'flex';
     // ফোর্স রিফ্লো
     void splash.offsetWidth;
@@ -2575,14 +2569,14 @@ function initSplashSequence() {
 
   if (percentEl) percentEl.textContent = '০%';
 
-  // ৩ সেকেন্ডের স্টোরিবোর্ড অনুযায়ী ডাইনামিক প্রোগ্রেস পার্সেন্টেজ আপডেট
+  // ৩ থেকে ৪ সেকেন্ডের সুস্পষ্ট ও মনোরম সিনেমাটিক পেসিং
   const steps = [
-    { time: 150, val: 0 },
-    { time: 650, val: 28 },
-    { time: 1100, val: 54 },
-    { time: 1650, val: 78 },
-    { time: 2200, val: 92 },
-    { time: 2750, val: 100 }
+    { time: 200, val: 0 },
+    { time: 800, val: 20 },
+    { time: 1500, val: 45 },
+    { time: 2200, val: 70 },
+    { time: 2800, val: 90 },
+    { time: 3200, val: 100 }
   ];
 
   splashIntervals.forEach(t => clearTimeout(t));
@@ -2595,30 +2589,16 @@ function initSplashSequence() {
     splashIntervals.push(tid);
   });
 
-  // ঠিক ৩.০ সেকেন্ডে ১০০% স্পর্শ করে স্মুথ সিনেমাটিক এক্সিট
+  // ১০০% হওয়ার পর কিছুক্ষণ সম্পূর্ণ লোগো ও টাইটেল দেখার সুযোগ দিয়ে ৩.৮ সেকেন্ডে স্মুথ এক্সিট
   if (splashDismissTimeout) clearTimeout(splashDismissTimeout);
   splashDismissTimeout = setTimeout(() => {
     dismissSplashScreen();
-  }, 3000);
+  }, 3800);
 }
 
-// পেজ লোড হলে সেশন কন্ট্রোল চেক, খরচ ক্যালকুলেটর ও নোটিশ চালু করা
+// পেজ লোড হলে সবসময় সিনেমাটিক মোশন সক্রিয় রাখা (কোনো দ্রুত ডিসমিস ছাড়া)
 document.addEventListener('DOMContentLoaded', () => {
-  let alreadySeen = false;
-  try {
-    alreadySeen = sessionStorage.getItem('hedayet_splash_seen') === 'true';
-  } catch (e) {}
-
-  if (alreadySeen) {
-    // একই ব্রাউজিং সেশনে পরবর্তীতে দ্রুত হোম পেজ লোড নিশ্চিত করতে তাৎক্ষণিক ট্রানজিশন
-    setTimeout(() => {
-      dismissSplashScreen();
-    }, 120);
-  } else {
-    // নতুন ভিজিটর বা সেশনের প্রথম লোডে পূর্ণাঙ্গ ৩ সেকেন্ডের সিনেমাটিক মোশন সক্রিয়
-    initSplashSequence();
-  }
-
+  initSplashSequence();
   updateCostCalculator();
   loadNotices();
 });

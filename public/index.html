@@ -73,90 +73,181 @@
       border-radius: 4px;
     }
 
-    /* হিদায়াত টেক সিনেমাটিক স্প্ল্যাশ প্রি-লোডার অ্যানিমেশন */
+    /* ============================================================== */
+    /* হেদায়েত টেক সিনেমাটিক ৩-সেকেন্ড মোশন প্রি-লোডার (STORYBOARD CSS) */
+    /* ============================================================== */
     #hedayet-splash-screen {
       position: fixed;
       inset: 0;
       z-index: 99999;
-      background: radial-gradient(circle at center, #0a331d 0%, #051a0e 60%, #020b06 100%);
+      background: radial-gradient(circle at center, #0a331d 0%, #051a0e 65%, #020b06 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s ease;
       overflow: hidden;
+      perspective: 1000px;
     }
 
     #hedayet-splash-screen.splash-hidden {
       opacity: 0;
-      transform: scale(1.06);
+      transform: scale(1.12) translateY(-25px);
+      filter: blur(8px);
       pointer-events: none;
     }
 
-    /* টেক ব্যাকগ্রাউন্ড গ্রিড প্যাটার্ন */
+    /* টেক ব্যাকগ্রাউন্ড গ্রিড প্যাটার্ন ও পালস */
     .splash-grid-bg {
       position: absolute;
       inset: 0;
       background-image: 
-        linear-gradient(rgba(16, 185, 129, 0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(16, 185, 129, 0.06) 1px, transparent 1px);
-      background-size: 36px 36px;
-      animation: circuitGridMove 20s linear infinite;
+        linear-gradient(rgba(16, 185, 129, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.08) 1px, transparent 1px);
+      background-size: 38px 38px;
+      animation: circuitGridPulse 3s ease-in-out infinite alternate, circuitGridMove 30s linear infinite;
       pointer-events: none;
+    }
+
+    @keyframes circuitGridPulse {
+      0% { opacity: 0.35; filter: drop-shadow(0 0 1px rgba(16, 185, 129, 0.2)); }
+      50% { opacity: 0.85; filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.5)); }
+      100% { opacity: 0.45; filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.3)); }
     }
 
     @keyframes circuitGridMove {
       0% { background-position: 0 0; }
-      100% { background-position: 36px 36px; }
+      100% { background-position: 38px 38px; }
     }
 
-    /* ১. এইচটি টেক আইকন স্পিন ও স্কেল অ্যানিমেশন */
+    /* ব্যাকগ্রাউন্ড ফ্লোটিং এনার্জি পার্টিক্যালস */
+    .splash-particles-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .splash-particle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(52, 211, 153, 0.9) 0%, rgba(245, 158, 11, 0.3) 60%, transparent 100%);
+      filter: blur(1px);
+      opacity: 0;
+      animation: particleDrift 3.5s cubic-bezier(0.2, 0.8, 0.3, 1) infinite;
+    }
+
+    .splash-particle.p-1 { width: 6px; height: 6px; left: 22%; bottom: 15%; animation-delay: 0.1s; }
+    .splash-particle.p-2 { width: 8px; height: 8px; left: 38%; bottom: 20%; animation-delay: 0.4s; }
+    .splash-particle.p-3 { width: 5px; height: 5px; left: 55%; bottom: 18%; animation-delay: 0.2s; }
+    .splash-particle.p-4 { width: 9px; height: 9px; left: 72%; bottom: 25%; animation-delay: 0.7s; }
+    .splash-particle.p-5 { width: 4px; height: 4px; left: 28%; bottom: 30%; animation-delay: 1.1s; }
+    .splash-particle.p-6 { width: 7px; height: 7px; left: 65%; bottom: 22%; animation-delay: 0.9s; }
+    .splash-particle.p-7 { width: 5px; height: 5px; left: 48%; bottom: 12%; animation-delay: 1.3s; }
+    .splash-particle.p-8 { width: 6px; height: 6px; left: 80%; bottom: 16%; animation-delay: 0.5s; }
+
+    @keyframes particleDrift {
+      0% { transform: translateY(0) scale(0.6); opacity: 0; }
+      20% { opacity: 0.85; }
+      80% { opacity: 0.5; }
+      100% { transform: translateY(-240px) scale(1.3); opacity: 0; }
+    }
+
+    /* ১. ০.০ – ১.০ সেকেন্ড: স্প্রিং গ্র্যাভিটি ড্রপ ও সার্কিট লাইট-আপ */
     .splash-icon-motion {
-      animation: splashIconEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-                 techPulseGlow 2.5s ease-in-out 0.75s infinite alternate;
+      position: relative;
+      transform-origin: center bottom;
+      animation: springGravityDrop 0.95s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
-    @keyframes splashIconEntrance {
+    @keyframes springGravityDrop {
       0% {
         opacity: 0;
-        transform: scale(0.15) rotate(-180deg);
-        filter: blur(10px) brightness(2);
+        transform: translateY(-90px) scale(0.65) rotate(-6deg);
+        filter: blur(8px) brightness(1.8);
       }
-      65% {
+      45% {
         opacity: 1;
-        transform: scale(1.15) rotate(6deg);
         filter: blur(0px) brightness(1.2);
       }
-      85% {
-        transform: scale(0.95) rotate(-2deg);
+      72% {
+        transform: translateY(10px) scale(1.07, 0.93) rotate(1.5deg);
+      }
+      88% {
+        transform: translateY(-5px) scale(0.98, 1.02) rotate(-0.5deg);
       }
       100% {
         opacity: 1;
-        transform: scale(1) rotate(0deg);
+        transform: translateY(0) scale(1, 1) rotate(0deg);
         filter: blur(0px) brightness(1);
       }
     }
 
-    @keyframes techPulseGlow {
-      0% {
-        filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4)) drop-shadow(0 0 35px rgba(16, 185, 129, 0.3));
-      }
-      100% {
-        filter: drop-shadow(0 0 35px rgba(212, 175, 55, 0.9)) drop-shadow(0 0 60px rgba(16, 185, 129, 0.7));
-      }
+    /* সার্কিট লাইন নিচ থেকে উপরে স্ক্যান/ড্র ইফেক্ট */
+    .circuit-scan-line {
+      position: absolute;
+      inset: 0;
+      border-radius: 1.25rem;
+      pointer-events: none;
+      overflow: hidden;
     }
 
-    /* ২. হেদায়েত টেক টাইটেল স্লাইড আপ ও রিভিল */
+    .circuit-scan-line::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 35%;
+      bottom: -40%;
+      background: linear-gradient(180deg, transparent 0%, rgba(52, 211, 153, 0.65) 60%, rgba(245, 158, 11, 0.4) 100%);
+      filter: blur(6px);
+      animation: circuitScanUp 0.95s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s forwards;
+    }
+
+    @keyframes circuitScanUp {
+      0% { transform: translateY(0); opacity: 0; }
+      30% { opacity: 1; }
+      100% { transform: translateY(-380%); opacity: 0; }
+    }
+
+    /* লোগোর পেছনের অ্যাম্প্লিফায়ার রেডিয়াল গ্লো ব্লুম */
+    .splash-glow-bloom {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, rgba(217, 119, 6, 0.18) 45%, transparent 70%);
+      pointer-events: none;
+      filter: blur(28px);
+      opacity: 0;
+      transform: scale(0.3);
+      animation: glowBloomExpand 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.55s forwards,
+                 techPulseGlow 2.5s ease-in-out 1.65s infinite alternate;
+    }
+
+    @keyframes glowBloomExpand {
+      0% { opacity: 0; transform: scale(0.3); }
+      50% { opacity: 0.95; transform: scale(1.12); }
+      100% { opacity: 0.75; transform: scale(1); }
+    }
+
+    @keyframes techPulseGlow {
+      0% { opacity: 0.6; transform: scale(1); }
+      100% { opacity: 0.9; transform: scale(1.08); }
+    }
+
+    /* ২. ১.০ – ২.০ সেকেন্ড: টেক্সট রিভিল ও Tech গোল্ডেন শিমার */
     .splash-title-motion {
       opacity: 0;
-      animation: splashTitleReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+      animation: splashTitleReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.95s forwards;
     }
 
     @keyframes splashTitleReveal {
       0% {
         opacity: 0;
-        transform: translateY(35px) scale(0.9);
-        filter: blur(8px);
+        transform: translateY(28px) scale(0.92);
+        filter: blur(6px);
       }
       100% {
         opacity: 1;
@@ -165,33 +256,64 @@
       }
     }
 
-    /* ৩. সাব-টাইটেল এক্সপ্যানশন মোশন */
-    .splash-subtitle-motion {
-      opacity: 0;
-      animation: splashSubtitleExpand 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards;
+    /* Tech শব্দের ওপর গোল্ডেন লাইট সুইপ / শিমার ইফেক্ট */
+    .tech-shimmer-wrapper {
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
     }
 
-    @keyframes splashSubtitleExpand {
+    .tech-shimmer-sweep {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.95) 50%, transparent 80%);
+      transform: translateX(-140%);
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      animation: techShimmerAction 1.2s cubic-bezier(0.4, 0, 0.2, 1) 1.25s infinite;
+    }
+
+    @keyframes techShimmerAction {
+      0% { transform: translateX(-140%); }
+      55% { transform: translateX(140%); }
+      100% { transform: translateX(140%); }
+    }
+
+    /* সাব-টাইটেল জুম-ইন ও স্পষ্টীকরণ */
+    .splash-subtitle-motion {
+      opacity: 0;
+      animation: subtitleZoomReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) 1.25s forwards;
+    }
+
+    @keyframes subtitleZoomReveal {
       0% {
         opacity: 0;
-        transform: translateY(18px);
-        letter-spacing: 0px;
+        transform: scale(0.88) translateY(12px);
+        letter-spacing: 0.5px;
+        filter: blur(4px);
       }
       100% {
         opacity: 1;
-        transform: translateY(0);
-        letter-spacing: 1.5px;
+        transform: scale(1) translateY(0);
+        letter-spacing: 2px;
+        filter: blur(0px);
       }
     }
 
-    /* ৪. প্রোগ্রেস বার সুইপ */
+    /* ৩. ২.০ – ৩.০ সেকেন্ড: প্রোগ্রেস বার সুইপ */
     .splash-bar-progress {
       width: 0%;
-      animation: splashBarFill 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s forwards;
+      animation: splashBarFill 2.65s cubic-bezier(0.2, 0.8, 0.15, 1) 0.15s forwards;
     }
 
     @keyframes splashBarFill {
       0% { width: 0%; }
+      35% { width: 35%; }
+      70% { width: 80%; }
       100% { width: 100%; }
     }
   </style>
@@ -205,51 +327,68 @@
     <!-- ব্যাকগ্রাউন্ড টেক গ্রিড -->
     <div class="splash-grid-bg"></div>
 
-    <!-- গ্লোয়িং অ্যাম্প্লিফায়ার সার্কেল -->
-    <div class="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
-    <div class="absolute w-48 h-48 rounded-full bg-gold-500/15 blur-2xl pointer-events-none"></div>
+    <!-- ব্যাকগ্রাউন্ড ফ্লোটিং এনার্জি পার্টিক্যালস -->
+    <div class="splash-particles-container">
+      <div class="splash-particle p-1"></div>
+      <div class="splash-particle p-2"></div>
+      <div class="splash-particle p-3"></div>
+      <div class="splash-particle p-4"></div>
+      <div class="splash-particle p-5"></div>
+      <div class="splash-particle p-6"></div>
+      <div class="splash-particle p-7"></div>
+      <div class="splash-particle p-8"></div>
+    </div>
+
+    <!-- লোগোর পেছনের অ্যাম্প্লিফায়ার রেডিয়াল গ্লো ব্লুম -->
+    <div class="splash-glow-bloom pointer-events-none"></div>
 
     <!-- স্কিপ বাটন -->
-    <button onclick="event.stopPropagation(); dismissSplashScreen();" class="absolute top-6 right-6 text-xs text-emerald-300/80 hover:text-white bg-white/5 hover:bg-white/10 px-3.5 py-1.5 rounded-full border border-emerald-500/30 transition backdrop-blur-sm z-20 flex items-center gap-1.5 cursor-pointer shadow-sm">
+    <button onclick="event.stopPropagation(); dismissSplashScreen();" class="absolute top-6 right-6 text-xs text-emerald-300/90 hover:text-white bg-white/10 hover:bg-white/20 px-3.5 py-1.5 rounded-full border border-emerald-500/40 transition backdrop-blur-md z-30 flex items-center gap-1.5 cursor-pointer shadow-lg group">
       <span>স্কিপ করুন</span>
-      <i class="fa-solid fa-angles-right text-[10px]"></i>
+      <i class="fa-solid fa-angles-right text-[10px] group-hover:translate-x-0.5 transition-transform"></i>
     </button>
 
     <!-- সেন্ট্রাল কন্টেন্ট কন্টেইনার -->
     <div class="relative z-10 flex flex-col items-center justify-center text-center px-4 max-w-xl mx-auto" onclick="event.stopPropagation()">
       
-      <!-- এইচটি সার্কিট লোগো আইকন (ঘুরে ঘুরে স্কেল ইন হবে) -->
-      <div class="mb-5 relative">
-        <div class="splash-icon-motion cursor-pointer" onclick="dismissSplashScreen()">
-          <img src="/assets/hedayet_icon.png" alt="Hedayet Tech Symbol" class="w-28 h-28 sm:w-36 sm:h-36 object-contain">
+      <!-- এইচটি সার্কিট লোগো আইকন (স্প্রিং গ্র্যাভিটি ড্রপ ও বাউন্স ফিজিক্স) -->
+      <div class="mb-5 relative flex items-center justify-center">
+        <div class="splash-icon-motion cursor-pointer relative" onclick="dismissSplashScreen()">
+          <!-- সার্কিট স্ক্যান লাইন ইফেক্ট -->
+          <div class="circuit-scan-line"></div>
+          <img src="/assets/hedayet_icon.png" alt="Hedayet Tech Symbol" class="w-28 h-28 sm:w-36 sm:h-36 object-contain relative z-10">
         </div>
       </div>
 
-      <!-- হেদায়েত টেক বোল্ড টাইটেল (স্লাইড আপ ও গ্লো হবে) -->
+      <!-- হেদায়েত টেক বোল্ড টাইটেল (স্লাইড আপ ও গোল্ডেন শিমার) -->
       <div class="splash-title-motion">
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-100 to-gold-400 tracking-tight flex items-center justify-center gap-2 drop-shadow-lg">
-          Hedayet Tech
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight flex items-center justify-center gap-2 drop-shadow-xl select-none">
+          <span class="text-white drop-shadow">Hedayet</span>
+          <span class="tech-shimmer-wrapper">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-gold-400 to-amber-500 font-black">Tech</span>
+            <span class="tech-shimmer-sweep"></span>
+          </span>
         </h1>
       </div>
 
-      <!-- অ্যাপ্লিকেশন ম্যানেজমেন্ট সফটওয়্যার সাব-টাইটেল -->
+      <!-- অ্যাপ্লিকেশন ম্যানেজমেন্ট সফটওয়্যার সাব-টাইটেল (জুম-ইন স্পষ্টীকরণ) -->
       <div class="splash-subtitle-motion mt-2">
-        <p class="text-xs sm:text-sm md:text-base font-bold text-emerald-300/90 tracking-widest uppercase">
+        <p class="text-xs sm:text-sm md:text-base font-bold text-emerald-300 tracking-widest uppercase drop-shadow font-arabic">
           অ্যাপ্লিকেশন ম্যানেজমেন্ট সফটওয়্যার
         </p>
       </div>
 
-      <!-- লোডিং প্রোগ্রেস বার ও স্টেটাস -->
-      <div class="mt-8 w-60 sm:w-72 space-y-2 opacity-90">
-        <div class="h-1.5 w-full bg-emerald-950/80 rounded-full overflow-hidden p-0.5 border border-emerald-500/30 shadow-inner">
+      <!-- লোডিং প্রোগ্রেস বার ও স্টেটাস কাউন্টার -->
+      <div class="mt-8 w-60 sm:w-72 space-y-2 opacity-95">
+        <div class="h-1.5 w-full bg-emerald-950/90 rounded-full overflow-hidden p-0.5 border border-emerald-500/40 shadow-inner">
           <div class="splash-bar-progress h-full bg-gradient-to-r from-emerald-500 via-gold-400 to-emerald-300 rounded-full shadow-lg"></div>
         </div>
-        <div class="flex items-center justify-between text-[11px] text-emerald-400/80 font-mono">
+        <div class="flex items-center justify-between text-[11px] text-emerald-400/90 font-mono">
           <span class="flex items-center gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-gold-400 animate-ping"></span>
             <span>সিস্টেম লোড হচ্ছে...</span>
           </span>
-          <span class="text-gold-300 font-bold">১০০%</span>
+          <span class="text-gold-300 font-bold font-mono" id="splashPercentText">০%</span>
         </div>
       </div>
 

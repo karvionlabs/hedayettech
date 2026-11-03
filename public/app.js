@@ -2528,24 +2528,96 @@ function dispatchWhatsAppMessage() {
   closeModal('whatsappMessengerModal');
 }
 
-// ==========================================
-// ২৫. সিনেমাটিক মোশন স্প্ল্যাশ স্ক্রিন হ্যান্ডলার
-// ==========================================
+// ==========================================================================
+// ২৫. সিনেমাটিক মোশন স্প্ল্যাশ স্ক্রিন হ্যান্ডলার (৩-সেকেন্ড টাইমলাইন ও সেশন কন্ট্রোল)
+// ==========================================================================
+let splashDismissTimeout = null;
+let splashIntervals = [];
+
 function dismissSplashScreen() {
   const splash = document.getElementById('hedayet-splash-screen');
   if (splash && !splash.classList.contains('splash-hidden')) {
     splash.classList.add('splash-hidden');
+    try {
+      sessionStorage.setItem('hedayet_splash_seen', 'true');
+    } catch (e) {}
+    
+    // টাইমআউট ও ইন্টারভ্যাল ক্লিয়ার
+    if (splashDismissTimeout) clearTimeout(splashDismissTimeout);
+    splashIntervals.forEach(t => clearTimeout(t));
+    splashIntervals = [];
+
     setTimeout(() => {
       splash.style.display = 'none';
-    }, 550);
+    }, 650);
   }
 }
 
-// পেজ লোড হলে খরচ ক্যালকুলেটর, নোটিশ ও স্প্ল্যাশ চালু করা
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
+// যেকোনো সময় আবার সিনেমাটিক ৩-সেকেন্ড মোশন প্রি-লোডার দেখতে চাইলে (Replay Helper)
+function replaySplashScreen() {
+  const splash = document.getElementById('hedayet-splash-screen');
+  if (splash) {
+    try {
+      sessionStorage.removeItem('hedayet_splash_seen');
+    } catch (e) {}
+    splash.style.display = 'flex';
+    // ফোর্স রিফ্লো
+    void splash.offsetWidth;
+    splash.classList.remove('splash-hidden');
+    initSplashSequence();
+  }
+}
+
+function initSplashSequence() {
+  const percentEl = document.getElementById('splashPercentText');
+  const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+  const toBnNumber = (n) => String(n).split('').map(d => bnDigits[d] || d).join('');
+
+  if (percentEl) percentEl.textContent = '০%';
+
+  // ৩ সেকেন্ডের স্টোরিবোর্ড অনুযায়ী ডাইনামিক প্রোগ্রেস পার্সেন্টেজ আপডেট
+  const steps = [
+    { time: 150, val: 0 },
+    { time: 650, val: 28 },
+    { time: 1100, val: 54 },
+    { time: 1650, val: 78 },
+    { time: 2200, val: 92 },
+    { time: 2750, val: 100 }
+  ];
+
+  splashIntervals.forEach(t => clearTimeout(t));
+  splashIntervals = [];
+
+  steps.forEach(s => {
+    const tid = setTimeout(() => {
+      if (percentEl) percentEl.textContent = `${toBnNumber(s.val)}%`;
+    }, s.time);
+    splashIntervals.push(tid);
+  });
+
+  // ঠিক ৩.০ সেকেন্ডে ১০০% স্পর্শ করে স্মুথ সিনেমাটিক এক্সিট
+  if (splashDismissTimeout) clearTimeout(splashDismissTimeout);
+  splashDismissTimeout = setTimeout(() => {
     dismissSplashScreen();
-  }, 1900);
+  }, 3000);
+}
+
+// পেজ লোড হলে সেশন কন্ট্রোল চেক, খরচ ক্যালকুলেটর ও নোটিশ চালু করা
+document.addEventListener('DOMContentLoaded', () => {
+  let alreadySeen = false;
+  try {
+    alreadySeen = sessionStorage.getItem('hedayet_splash_seen') === 'true';
+  } catch (e) {}
+
+  if (alreadySeen) {
+    // একই ব্রাউজিং সেশনে পরবর্তীতে দ্রুত হোম পেজ লোড নিশ্চিত করতে তাৎক্ষণিক ট্রানজিশন
+    setTimeout(() => {
+      dismissSplashScreen();
+    }, 120);
+  } else {
+    // নতুন ভিজিটর বা সেশনের প্রথম লোডে পূর্ণাঙ্গ ৩ সেকেন্ডের সিনেমাটিক মোশন সক্রিয়
+    initSplashSequence();
+  }
 
   updateCostCalculator();
   loadNotices();

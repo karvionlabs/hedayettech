@@ -2528,8 +2528,25 @@ function dispatchWhatsAppMessage() {
   closeModal('whatsappMessengerModal');
 }
 
-// পেজ লোড হলে খরচ ক্যালকুলেটর ও নোটিশ চালু করা
+// ==========================================
+// ২৫. সিনেমাটিক মোশন স্প্ল্যাশ স্ক্রিন হ্যান্ডলার
+// ==========================================
+function dismissSplashScreen() {
+  const splash = document.getElementById('hedayet-splash-screen');
+  if (splash && !splash.classList.contains('splash-hidden')) {
+    splash.classList.add('splash-hidden');
+    setTimeout(() => {
+      splash.style.display = 'none';
+    }, 550);
+  }
+}
+
+// পেজ লোড হলে খরচ ক্যালকুলেটর, নোটিশ ও স্প্ল্যাশ চালু করা
 document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    dismissSplashScreen();
+  }, 1900);
+
   updateCostCalculator();
   loadNotices();
 });

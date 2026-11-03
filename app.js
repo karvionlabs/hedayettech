@@ -112,6 +112,8 @@ function switchTab(tabId) {
     leaves: '১৩. উস্তাদ ও কর্মচারীদের ছুটির ব্যবস্থাপনা',
     attendance: '১৪. ডিজিটাল উপস্থিতি ও অটো এসএমএস',
     health: '১৫. ছাত্র স্বাস্থ্য ও সিক-বে খাতা',
+    gatepass: 'আবাসিক ছাত্র খুরুজ ও সিকিউরিটি গেটপাস',
+    qurbani: 'কোরবানির চামড়া ও কালেকশন ক্যাম্পেইন',
     notices: '১৬. ডিজিটাল নোটিশ বোর্ড ও ঘোষণা',
     settings: '১৭. সিস্টেম সেটিংস ও লাইসেন্স'
   };
@@ -121,6 +123,8 @@ function switchTab(tabId) {
   // ডাটা লোড
   if (tabId === 'dashboard') loadDashboard();
   if (tabId === 'students') loadStudents();
+  if (tabId === 'gatepass') loadGatepasses();
+  if (tabId === 'qurbani') loadQurbani();
   if (tabId === 'admissions') loadAdmissions();
   if (tabId === 'hifz') loadHifz();
   if (tabId === 'academics') loadClasses();
@@ -1979,6 +1983,549 @@ async function handleContactSubmit(e) {
     closeModal('contactModal');
     e.target.reset();
   }
+}
+
+// ==========================================
+// ২০. মুহতামিম ১-মিনিট দৈনিক ক্লোজিং স্লিপ
+// ==========================================
+let currentClosingData = null;
+
+async function openMuhtamimClosing() {
+  try {
+    const res = await fetch('/api/muhtamim/daily-closing');
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+
+    currentClosingData = data;
+    const s = data.summary;
+
+    document.getElementById('closingInstName').innerText = data.institution?.name_bn || 'হেদায়েত টেক জামিয়া মাদরাসা';
+    document.getElementById('closingDateStr').innerText = `তারিখ: ${data.date} (দৈনিক অডিট রেকর্ড)`;
+    document.getElementById('closingIncome').innerText = `৳ ${(s.todayIncome || 0).toLocaleString()}`;
+    document.getElementById('closingExpense').innerText = `৳ ${(s.todayExpense || 0).toLocaleString()}`;
+    document.getElementById('closingBazaar').innerText = `৳ ${(s.todayBazaar || 0).toLocaleString()}`;
+    document.getElementById('closingCashInHand').innerText = `৳ ${(s.cashInHand || 0).toLocaleString()}`;
+    document.getElementById('closingStudentAtt').innerText = `উপস্থিত: ${s.presentStudents} | অনুপস্থিত: ${s.absentStudents} | ছুটি: ${s.leaveStudents}`;
+    document.getElementById('closingActiveGatepass').innerText = `${s.activeGatepasses} জন খুরুজে বাইরে`;
+
+    const txList = document.getElementById('closingTxList');
+    if (txList) {
+      if (data.transactions && data.transactions.length > 0) {
+        txList.innerHTML = data.transactions.map(t => `
+          <div class="flex items-center justify-between p-1.5 rounded-lg bg-white border border-slate-200">
+            <span><b>[${t.voucher_no}]</b> ${t.category} (${t.type === 'INCOME' ? 'আদায়' : 'খরচ'})</span>
+            <span class="font-bold ${t.type === 'INCOME' ? 'text-emerald-700' : 'text-rose-600'}">৳ ${t.amount.toLocaleString()}</span>
+          </div>
+        `).join('');
+      } else {
+        txList.innerHTML = '<p class="text-slate-400 italic">আজ এখনো কোনো ক্যাশ ভাউচার তৈরি হয়নি।</p>';
+      }
+    }
+
+    openModal('muhtamimClosingModal');
+  } catch (err) {
+    alert('ক্লোজিং ডাটা লোড করতে সমস্যা হয়েছে: ' + err.message);
+  }
+}
+
+function printClosingSlip() {
+  const content = document.getElementById('closingSlipPrintArea')?.innerHTML;
+  if (!content) return;
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html>
+      <head>
+        <title>মুহতামিম দৈনিক ক্লোজিং স্লিপ</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>body { font-family: 'Hind Siliguri', sans-serif; padding: 20px; }</style>
+      </head>
+      <body>
+        <div style="max-width: 480px; margin: 0 auto;">${content}</div>
+        <script>window.onload = function() { window.print(); window.close(); }</script>
+      </body>
+    </html>
+  `);
+  win.document.close();
+}
+
+function shareClosingWhatsApp() {
+  if (!currentClosingData) return;
+  const d = currentClosingData;
+  const s = d.summary;
+  const text = `*🕌 ${d.institution?.name_bn || 'হেদায়েত টেক জামিয়া মাদরাসা'}*\n` +
+    `*📋 দৈনিক সান্ধ্যকালীন ক্যাশ ও অডিট ক্লোজিং রিপোর্ট*\n` +
+    `তারিখ: ${d.date}\n` +
+    `----------------------------------------\n` +
+    `💰 *আজকের মোট জমা (Income):* ৳ ${(s.todayIncome || 0).toLocaleString()}\n` +
+    `📉 *আজকের মোট খরচ (Expense):* ৳ ${(s.todayExpense || 0).toLocaleString()}\n` +
+    `🛒 *বোর্ডিং কাঁচা বাজার খরচ:* ৳ ${(s.todayBazaar || 0).toLocaleString()}\n` +
+    `💼 *ক্যাশ ইন হ্যান্ড (Cash in Hand):* ৳ ${(s.cashInHand || 0).toLocaleString()}\n` +
+    `----------------------------------------\n` +
+    `👥 *ছাত্র উপস্থিতি:* উপস্থিত: ${s.presentStudents} | অনুপস্থিত: ${s.absentStudents} | ছুটি: ${s.leaveStudents}\n` +
+    `🚪 *খুরুজ / গেটপাস:* ${s.activeGatepasses} জন বর্তমানে বাইরে\n` +
+    `----------------------------------------\n` +
+    `_হেদায়েত টেক মাদ্রাসা ইআরপি স্বয়ংক্রিয় অডিট ইঞ্জিন_`;
+
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+// ==========================================
+// ২১. আবাসিক ছাত্র খুরুজ ও সিকিউরিটি গেটপাস
+// ==========================================
+let allGatepasses = [];
+let currentViewingGp = null;
+
+async function loadGatepasses() {
+  try {
+    const res = await fetch('/api/gatepasses');
+    const data = await res.json();
+    if (!data.success) return;
+
+    allGatepasses = data.passes || [];
+    renderGatepassTable(allGatepasses);
+
+    // কাউন্ট আপডেট
+    const appCount = allGatepasses.filter(p => p.status === 'APPROVED').length;
+    const depCount = allGatepasses.filter(p => p.status === 'DEPARTED').length;
+    const retCount = allGatepasses.filter(p => p.status === 'RETURNED').length;
+
+    const elApp = document.getElementById('gp-approved-count');
+    const elDep = document.getElementById('gp-departed-count');
+    const elRet = document.getElementById('gp-returned-count');
+    if (elApp) elApp.innerText = appCount;
+    if (elDep) elDep.innerText = depCount;
+    if (elRet) elRet.innerText = retCount;
+
+    // ছাত্র সিলেকশন ড্রপডাউন লোড
+    const stRes = await fetch('/api/students');
+    const stData = await stRes.json();
+    const select = document.getElementById('gpStudentSelect');
+    if (select && stData.students) {
+      select.innerHTML = '<option value="">শিক্ষার্থী বাছাই করুন...</option>' +
+        stData.students.map(s => `<option value="${s.id}" data-phone="${s.guardian_phone || ''}">${s.name_bn} (রোল: ${s.roll_no} | ${s.class_name})</option>`).join('');
+      select.onchange = function() {
+        const opt = select.options[select.selectedIndex];
+        const phone = opt.getAttribute('data-phone');
+        const phoneInput = document.getElementById('gpGuardianPhone');
+        if (phoneInput && phone) phoneInput.value = phone;
+      };
+    }
+  } catch (err) {
+    console.error('Error loading gatepasses:', err);
+  }
+}
+
+function renderGatepassTable(passes) {
+  const tbody = document.getElementById('gatepass-table-body');
+  if (!tbody) return;
+
+  if (passes.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="text-center p-4 text-slate-400">কোনো খুরুজ বা গেটপাস পাওয়া যায়নি।</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = passes.map(p => {
+    let statusBadge = '';
+    if (p.status === 'APPROVED') {
+      statusBadge = '<span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded-full text-[10px]">অনুমোদিত</span>';
+    } else if (p.status === 'DEPARTED') {
+      statusBadge = '<span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-1 rounded-full text-[10px]">বাইরে (খুরুজ)</span>';
+    } else {
+      statusBadge = '<span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full text-[10px]">ফিরে এসেছে</span>';
+    }
+
+    return `
+      <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+        <td class="p-3 font-mono font-bold text-emerald-800">${p.pass_no}</td>
+        <td class="p-3 font-bold text-slate-900">${p.student_name} <span class="text-slate-400 text-[10px] font-normal block">${p.class_name} (রোল: ${p.roll_no})</span></td>
+        <td class="p-3 text-slate-700">${p.leave_reason}</td>
+        <td class="p-3 text-[11px] font-mono text-slate-600">${p.departure_time}</td>
+        <td class="p-3 text-[11px] font-mono text-slate-600">${p.expected_return}</td>
+        <td class="p-3 text-[11px] text-slate-500">${p.approved_by}</td>
+        <td class="p-3">${statusBadge}</td>
+        <td class="p-3 text-center space-x-1.5 whitespace-nowrap">
+          ${p.status === 'APPROVED' ? `<button onclick="updateGatepassStatus(${p.id}, 'DEPARTED')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded text-[10px]" title="গেটে বের হওয়া রেকর্ড করুন">বের হয়েছে</button>` : ''}
+          ${p.status === 'DEPARTED' ? `<button onclick="updateGatepassStatus(${p.id}, 'RETURNED')" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-2 py-1 rounded text-[10px]" title="মাদ্রাসায় প্রত্যাবর্তন রেকর্ড করুন">ফিরে এসেছে</button>` : ''}
+          <button onclick="viewGatepassSlip(${p.id})" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-2 py-1 rounded text-[10px]"><i class="fa-solid fa-print"></i> স্লিপ</button>
+          <button onclick="openWhatsAppMessenger('khuruj', '${p.guardian_phone || '01884636312'}', '${p.student_name}')" class="bg-[#25D366] hover:bg-[#20ba59] text-white font-bold px-2 py-1 rounded text-[10px]"><i class="fa-brands fa-whatsapp"></i></button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+async function submitGatepassForm(e) {
+  e.preventDefault();
+  const student_id = document.getElementById('gpStudentSelect').value;
+  const leave_reason = document.getElementById('gpReason').value;
+  const departure_time = document.getElementById('gpDeparture').value.replace('T', ' ');
+  const expected_return = document.getElementById('gpReturn').value.replace('T', ' ');
+  const guardian_phone = document.getElementById('gpGuardianPhone').value;
+  const approved_by = document.getElementById('gpApprover').value;
+  const notes = document.getElementById('gpNotes').value;
+
+  try {
+    const res = await fetch('/api/gatepasses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ student_id, leave_reason, departure_time, expected_return, guardian_phone, approved_by, notes })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert(`আলহামদুলিল্লাহ! নতুন খুরুজ ও সিকিউরিটি গেটপাস (${data.passNo}) সফলভাবে ইস্যু করা হয়েছে।`);
+      closeModal('newGatePassModal');
+      e.target.reset();
+      loadGatepasses();
+    } else {
+      alert('গেটপাস ইস্যু ব্যর্থ: ' + data.error);
+    }
+  } catch (err) {
+    alert('গেটপাস ইস্যু ব্যর্থ হয়েছে: ' + err.message);
+  }
+}
+
+async function updateGatepassStatus(id, status) {
+  try {
+    const res = await fetch(`/api/gatepasses/${id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    });
+    const data = await res.json();
+    if (data.success) {
+      loadGatepasses();
+    }
+  } catch (err) {
+    alert('স্ট্যাটাস আপডেট ব্যর্থ: ' + err.message);
+  }
+}
+
+function viewGatepassSlip(id) {
+  const p = allGatepasses.find(item => item.id === id);
+  if (!p) return;
+  currentViewingGp = p;
+
+  document.getElementById('viewGpPassNo').innerText = p.pass_no;
+  document.getElementById('viewGpStudentName').innerText = p.student_name;
+  document.getElementById('viewGpClassRoll').innerText = `${p.class_name} (দাখেলা: ${p.admission_no} | রোল: ${p.roll_no})`;
+  document.getElementById('viewGpReason').innerText = p.leave_reason;
+  document.getElementById('viewGpDeparture').innerText = p.departure_time;
+  document.getElementById('viewGpReturn').innerText = p.expected_return;
+  document.getElementById('viewGpApprover').innerText = `অনুমোদন: ${p.approved_by}`;
+
+  openModal('viewGatePassModal');
+}
+
+function sendGatepassWhatsApp() {
+  if (!currentViewingGp) return;
+  const p = currentViewingGp;
+  const phone = p.guardian_phone || '01884636312';
+  const text = `আসসালামু আলাইকুম। মারকাযুল কুরআন মাদরাসার পক্ষ থেকে জানানো যাচ্ছে যে, আপনার সন্তান *${p.student_name}* (${p.class_name}) [${p.leave_reason}] বাবদ অদ্য ${p.departure_time} মাদরাসা থেকে অনুমোদিত ছুটিতে বের হয়েছে। প্রত্যাশিত ফেরার সময়: ${p.expected_return}। (গেটপাস নং: ${p.pass_no})`;
+  window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+// ==========================================
+// ২২. কোরবানির চামড়া ও কালেকশন ক্যাম্পেইন
+// ==========================================
+let currentQurbaniCampaign = null;
+
+async function loadQurbani() {
+  try {
+    const res = await fetch('/api/qurbani/campaigns');
+    const data = await res.json();
+    if (!data.success || data.campaigns.length === 0) return;
+
+    currentQurbaniCampaign = data.campaigns[0];
+    const c = currentQurbaniCampaign;
+
+    document.getElementById('qurbani-campaign-title').innerText = c.year_title;
+    document.getElementById('qurbani-total-skins').innerText = `${((c.totalCows || 0) + (c.totalGoats || 0) + (c.totalSheep || 0))} পিস`;
+    document.getElementById('qurbani-skin-breakdown').innerText = `গরু: ${c.totalCows || 0} | খাসি: ${c.totalGoats || 0} | ভেড়া: ${c.totalSheep || 0}`;
+    document.getElementById('qurbani-total-expenses').innerText = `৳ ${(c.totalExpenses || 0).toLocaleString()}`;
+    document.getElementById('qurbani-total-sales').innerText = `৳ ${(c.totalSales || 0).toLocaleString()}`;
+    document.getElementById('qurbani-sales-paid').innerText = `নগদ আদায়: ৳ ${(c.totalPaid || 0).toLocaleString()}`;
+    document.getElementById('qurbani-net-profit').innerText = `৳ ${(c.netProfit || 0).toLocaleString()}`;
+
+    // ক্যাম্পেইন বিস্তারিত লোড
+    const detailRes = await fetch(`/api/qurbani/campaigns/${c.id}`);
+    const detailData = await detailRes.json();
+    if (detailData.success) {
+      renderQurbaniEntries(detailData.entries);
+      renderQurbaniSales(detailData.sales);
+    }
+  } catch (err) {
+    console.error('Error loading qurbani:', err);
+  }
+}
+
+function renderQurbaniEntries(entries) {
+  const tbody = document.getElementById('qurbani-entries-tbody');
+  if (!tbody) return;
+  if (!entries || entries.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="p-3 text-center text-slate-400">কোনো এন্ট্রি নেই</td></tr>';
+    return;
+  }
+  tbody.innerHTML = entries.map(e => `
+    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+      <td class="p-2.5 font-bold text-slate-800">${e.team_name} <span class="block text-[10px] text-slate-400 font-normal">${e.area_name || ''}</span></td>
+      <td class="p-2.5 text-slate-600">${e.leader_name}</td>
+      <td class="p-2.5 text-center font-bold text-emerald-800">${e.cow_count}</td>
+      <td class="p-2.5 text-center font-bold text-amber-700">${e.goat_count}</td>
+    </tr>
+  `).join('');
+}
+
+function renderQurbaniSales(sales) {
+  const tbody = document.getElementById('qurbani-sales-tbody');
+  if (!tbody) return;
+  if (!sales || sales.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="p-3 text-center text-slate-400">কোনো বিক্রয় মেমো নেই</td></tr>';
+    return;
+  }
+  tbody.innerHTML = sales.map(s => `
+    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+      <td class="p-2.5 font-bold text-slate-800">${s.buyer_name} <span class="block text-[10px] text-slate-400 font-normal">${s.phone || ''} (${s.payment_method})</span></td>
+      <td class="p-2.5 font-bold text-slate-700">গরু: ${s.total_cow_sold} | খাসি: ${s.total_goat_sold}</td>
+      <td class="p-2.5 font-bold text-slate-900">৳ ${s.total_amount.toLocaleString()}</td>
+      <td class="p-2.5 font-bold text-emerald-700">৳ ${s.paid_amount.toLocaleString()}</td>
+    </tr>
+  `).join('');
+}
+
+async function submitQurbaniEntry(e) {
+  e.preventDefault();
+  if (!currentQurbaniCampaign) return;
+  const team_name = document.getElementById('qeTeamName').value;
+  const leader_name = document.getElementById('qeLeaderName').value;
+  const area_name = document.getElementById('qeAreaName').value;
+  const cow_count = parseInt(document.getElementById('qeCow').value) || 0;
+  const goat_count = parseInt(document.getElementById('qeGoat').value) || 0;
+  const sheep_count = parseInt(document.getElementById('qeSheep').value) || 0;
+
+  try {
+    const res = await fetch('/api/qurbani/entries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ campaign_id: currentQurbaniCampaign.id, team_name, leader_name, area_name, cow_count, goat_count, sheep_count })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('আলহামদুলিল্লাহ! দলভিত্তিক কালেকশন সফলভাবে সেভ হয়েছে।');
+      closeModal('qurbaniEntryModal');
+      e.target.reset();
+      loadQurbani();
+    }
+  } catch (err) {
+    alert('সংরক্ষণ ব্যর্থ: ' + err.message);
+  }
+}
+
+async function submitQurbaniExpense(e) {
+  e.preventDefault();
+  if (!currentQurbaniCampaign) return;
+  const expense_type = document.getElementById('qexpType').value;
+  const amount = parseFloat(document.getElementById('qexpAmount').value) || 0;
+  const notes = document.getElementById('qexpNotes').value;
+
+  try {
+    const res = await fetch('/api/qurbani/expenses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ campaign_id: currentQurbaniCampaign.id, expense_type, amount, notes })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('ক্যাম্পেইন খরচ সফলভাবে সংরক্ষিত হয়েছে।');
+      closeModal('qurbaniExpenseModal');
+      e.target.reset();
+      loadQurbani();
+    }
+  } catch (err) {
+    alert('খরচ সংরক্ষণ ব্যর্থ: ' + err.message);
+  }
+}
+
+async function submitQurbaniSale(e) {
+  e.preventDefault();
+  if (!currentQurbaniCampaign) return;
+  const buyer_name = document.getElementById('qsBuyerName').value;
+  const phone = document.getElementById('qsPhone').value;
+  const payment_method = document.getElementById('qsMethod').value;
+  const total_cow_sold = parseInt(document.getElementById('qsCow').value) || 0;
+  const total_goat_sold = parseInt(document.getElementById('qsGoat').value) || 0;
+  const total_amount = parseFloat(document.getElementById('qsTotal').value) || 0;
+  const paid_amount = parseFloat(document.getElementById('qsPaid').value) || 0;
+
+  try {
+    const res = await fetch('/api/qurbani/sales', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ campaign_id: currentQurbaniCampaign.id, buyer_name, phone, payment_method, total_cow_sold, total_goat_sold, total_amount, paid_amount })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert(`আলহামদুলিল্লাহ! আড়তদার বিক্রয় মেমো সফল হয়েছে এবং ক্যাশবুকে লিল্লাহ ফান্ডে ভাউচার নং (${data.voucherNo}) স্বয়ংক্রিয় ক্রেডিট হয়েছে।`);
+      closeModal('qurbaniSaleModal');
+      e.target.reset();
+      loadQurbani();
+      if (typeof loadDashboard === 'function') loadDashboard();
+    }
+  } catch (err) {
+    alert('বিক্রয় মেমো ব্যর্থ: ' + err.message);
+  }
+}
+
+// ==========================================
+// ২৩. এতিম ও যাকাত স্পনসরশিপ প্রগ্রেস কার্ড
+// ==========================================
+async function openSponsorCardsModal() {
+  try {
+    const res = await fetch('/api/sponsorship/students');
+    const data = await res.json();
+    if (!data.success) return;
+
+    const container = document.getElementById('sponsorCardsContainer');
+    if (!container) return;
+
+    if (data.students.length === 0) {
+      container.innerHTML = '<p class="col-span-2 text-center text-slate-400 py-6">বর্তমানে কোনো স্পনসরকৃত বা মুফত শিক্ষার্থী তালিকাভুক্ত নেই।</p>';
+    } else {
+      container.innerHTML = data.students.map(s => {
+        const hifzInfo = s.lastHifz ? `সবক: পারা ${s.lastHifz.sabaq_para || 1} (পৃষ্ঠা: ${s.lastHifz.sabaq_page || 0})` : 'কিতাব বিভাগে অধ্যয়নরত';
+        const healthStatus = s.lastHealth ? s.lastHealth.status : 'আলহামদুলিল্লাহ সুস্থ';
+
+        return `
+          <div class="bg-gradient-to-br from-emerald-50 to-white p-5 rounded-2xl border-2 border-emerald-700/30 shadow-sm space-y-3 relative overflow-hidden">
+            <div class="flex items-start justify-between border-b border-emerald-100 pb-2.5">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-800 to-hedayet-900 text-gold-400 flex items-center justify-center text-xl font-bold border border-gold-500/40">
+                  <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                  <h4 class="font-extrabold text-sm text-slate-900">${s.name_bn}</h4>
+                  <p class="text-[11px] text-slate-500">${s.class_name} • দাখেলা: <span class="font-mono font-bold">${s.admission_no}</span></p>
+                </div>
+              </div>
+              <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2.5 py-1 rounded-full border border-amber-300">
+                ${s.free_type === 'FULL_FREE' ? 'পূর্ণাঙ্গ মুফত (এতিম)' : 'অর্ধেক মুফত'}
+              </span>
+            </div>
+
+            <div class="space-y-1.5 text-xs text-slate-700">
+              <div class="flex justify-between bg-white p-2 rounded-xl border border-slate-100">
+                <span class="text-slate-500 font-medium">শ্রদ্ধেয় দাতা / স্পনসর:</span>
+                <span class="font-bold text-emerald-800">${s.sponsor_name || 'সাধারণ লিল্লাহ ফান্ড'}</span>
+              </div>
+              <div class="flex justify-between p-1 text-[11px]">
+                <span class="text-slate-500">উপস্থিতি শতকরা:</span>
+                <span class="font-bold text-emerald-700">${s.attendancePercent}% (নিয়মিত)</span>
+              </div>
+              <div class="flex justify-between p-1 text-[11px]">
+                <span class="text-slate-500">পড়ালেখার অগ্রগতি:</span>
+                <span class="font-bold text-slate-900">${hifzInfo}</span>
+              </div>
+              <div class="flex justify-between p-1 text-[11px]">
+                <span class="text-slate-500">শারীরিক স্বাস্থ্য:</span>
+                <span class="font-bold text-slate-800">${healthStatus}</span>
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-emerald-900 text-white rounded-xl text-[11px] italic font-bangla border border-gold-500/30 text-center">
+              "হে আল্লাহ! আমার সম্মানিত স্পনসরকারী মুহতারামের ধন-সম্পদে বরকত দিন ও নেক হায়াত দান করুন। আমিন।"
+            </div>
+
+            <div class="pt-1 flex items-center justify-between">
+              <span class="text-[10px] text-slate-400">প্রতিষ্ঠান প্রধানের সত্যায়িত</span>
+              <button onclick="printSingleSponsorCard('${s.name_bn}', '${s.class_name}', '${s.admission_no}', '${s.sponsor_name || 'সাধারণ দাতা ফান্ড'}', '${hifzInfo}')" class="bg-emerald-800 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1 shadow-sm">
+                <i class="fa-solid fa-print"></i> কার্ড প্রিন্ট
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    openModal('sponsorCardModal');
+  } catch (err) {
+    console.error('Error opening sponsor cards:', err);
+  }
+}
+
+function printSingleSponsorCard(name, className, admissionNo, sponsor, progress) {
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html>
+      <head>
+        <title>এতিম ছাত্র স্পনসরশিপ প্রগ্রেস রিপোর্ট</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>body { font-family: 'Hind Siliguri', sans-serif; padding: 40px; }</style>
+      </head>
+      <body>
+        <div style="max-width: 500px; margin: 0 auto; border: 3px double #145032; border-radius: 20px; padding: 25px; background: #fafdfb;">
+          <div style="text-align: center; border-bottom: 2px solid #145032; padding-bottom: 12px; margin-bottom: 15px;">
+            <h2 style="font-size: 20px; font-weight: bold; color: #0d3822; margin: 0;">হেদায়েত টেক জামিয়া মাদরাসা ও এতিমখানা</h2>
+            <p style="font-size: 11px; color: #666; margin: 4px 0 0 0;">এতিম ও মুফত ছাত্র স্পনসরশিপ অগ্রগতি কার্ড</p>
+          </div>
+          <p><strong>শিক্ষার্থীর নাম:</strong> ${name}</p>
+          <p><strong>জামাত:</strong> ${className} (দাখেলা নং: ${admissionNo})</p>
+          <p><strong>সম্মানিত স্পনসর:</strong> ${sponsor}</p>
+          <p><strong>হিফজ ও পড়ালেখার অগ্রগতি:</strong> ${progress}</p>
+          <div style="margin: 20px 0; background: #e6f4ea; border: 1px dashed #145032; padding: 12px; border-radius: 10px; font-style: italic; text-align: center; font-size: 12px;">
+            "হে আল্লাহ! আমার শ্রদ্ধেয় স্পনসরকারী দাতা মহোদয়কে দুনিয়া ও আখিরাতে উত্তম জাযা এবং বরকত দান করুন। আমিন।"
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 30px; font-size: 11px;">
+            <span>তারিখ: ${new Date().toLocaleDateString('bn-BD')}</span>
+            <span>মুহতামিম / শিক্ষা সচিবের স্বাক্ষর</span>
+          </div>
+        </div>
+        <script>window.onload = function() { window.print(); window.close(); }</script>
+      </body>
+    </html>
+  `);
+  win.document.close();
+}
+
+// ==========================================
+// ২৪. জিরো-কস্ট ফ্রি হোয়াটসঅ্যাপ মেসেঞ্জার হাব
+// ==========================================
+function openWhatsAppMessenger(type = 'absence', phone = '01884636312', studentName = 'মুহাম্মদ আব্দুল্লাহ') {
+  const select = document.getElementById('waTemplateSelect');
+  if (select) select.value = type;
+
+  const phoneInput = document.getElementById('waGuardianPhone');
+  if (phoneInput && phone) phoneInput.value = phone;
+
+  changeWhatsAppTemplate(studentName);
+  openModal('whatsappMessengerModal');
+}
+
+function changeWhatsAppTemplate(studentName = 'মুহাম্মদ আব্দুল্লাহ') {
+  const type = document.getElementById('waTemplateSelect')?.value || 'absence';
+  const textarea = document.getElementById('waMessageText');
+  if (!textarea) return;
+
+  const templates = {
+    absence: `আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহ। মারকাযুল কুরআন মাদরাসার পক্ষ থেকে জানানো যাচ্ছে যে, আপনার সন্তান *${studentName}* অদ্য মাদরাসায় উপস্থিত হয়নি। কোনো জরুরি ওযর বা অসুস্থতা থাকলে অনুগ্রহ করে মাদরাসা অফিসে অবগত করুন। জাযাকাল্লাহ খাইরান।`,
+    fee: `আসসালামু আলাইকুম। মুহতারাম অভিভাবক, আপনার সন্তান *${studentName}*-এর চলতি মাসের বেতন ও মেস ফি বাবদ বকেয়া রয়েছে। নির্ধারিত সময়ের মধ্যে মাদরাসা অফিসে বা বিকাশ নম্বরে পরিশোধের অনুরোধ করা যাচ্ছে।`,
+    hifz: `মাশাল্লাহ! মারকাযুল কুরআন মাদরাসার হিফজ বিভাগ থেকে জানাচ্ছি যে, আপনার সন্তান *${studentName}* অদ্য অত্যন্ত সুন্দরভাবে সবক ও আমোখতা তিলাওয়াত সম্পন্ন করেছে। তার ধারাবাহিক অগ্রগতির জন্য বিশেষ দোয়া প্রার্থী।`,
+    khuruj: `আসসালামু আলাইকুম। আপনার সন্তান *${studentName}* মাদরাসা থেকে অনুমোদিত ছুটিতে বাড়ির উদ্দেশ্যে রওনা হয়েছে। অনুগ্রহ করে সন্তান বাড়ি পৌঁছালে মাদরাসা কর্তৃপক্ষকে ফোনে নিশ্চিত করবেন।`,
+    general: `আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহ। মারকাযুল কুরআন মাদরাসার সকল সম্মানিত অভিভাবকবৃন্দের সদয় অবগতির জন্য জানানো যাচ্ছে যে, আগামী বৃহস্পতিবার মাদরাসায় বিশেষ অভিভাবক সমাবেশ ও দোয়া মাহফিল অনুষ্ঠিত হবে। আপনার উপস্থিতি একান্ত কাম্য।`
+  };
+
+  textarea.value = templates[type] || templates.absence;
+}
+
+function dispatchWhatsAppMessage() {
+  const phone = document.getElementById('waGuardianPhone')?.value.replace(/[^0-9]/g, '') || '';
+  const text = document.getElementById('waMessageText')?.value || '';
+
+  if (!phone || !text.trim()) {
+    alert('দয়া করে অভিভাবকের মোবাইল নম্বর এবং বার্তাটি দিন।');
+    return;
+  }
+
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+  closeModal('whatsappMessengerModal');
 }
 
 // পেজ লোড হলে খরচ ক্যালকুলেটর ও নোটিশ চালু করা

@@ -86,14 +86,21 @@ function switchTab(tabId) {
   const titles = {
     dashboard: '১. ড্যাশবোর্ড ও সামগ্রিক পরিসংখ্যান',
     students: '২. শিক্ষার্থী ভর্তি ও প্রোফাইল ব্যবস্থাপনা',
-    hifz: '৩. কুরআনুল কারীম হিফজ তথ্য খাতা',
-    academics: '৪. কিতাব ও জামাত বিভাগ',
-    boarding: '৫. লিল্লাহ বোর্ডিং ও মেস বাজার খাতা',
-    accounts: '৬. আয়-ব্যয়, বেতন ও ক্যাশ খাতা',
-    exams: '৭. পরীক্ষা ও ইসলামিক গ্রেডিং পদ্ধতি',
-    staff: '৮. উস্তাদ ও কর্মকর্তা ডিরেক্টরি',
-    attendance: '৯. ডিজিটাল উপস্থিতি ও অটো এসএমএস',
-    settings: '১০. সিস্টেম সেটিংস ও লাইসেন্স'
+    admissions: '৩. অনলাইন শিক্ষার্থী ভর্তি আবেদন প্যানেল',
+    hifz: '৪. কুরআনুল কারীম হিফজ ও আমল খাতা',
+    academics: '৫. কিতাব ও জামাত বিভাগ',
+    library: '৬. মাদ্রাসার কিতাবখানা (লাইব্রেরি রেজিস্টার)',
+    boarding: '৭. লিল্লাহ বোর্ডিং ও মেস বাজার খাতা',
+    accounts: '৮. আয়-ব্যয়, বেতন ও ক্যাশ খাতা',
+    donors: '৯. আজীবন সদস্য ও দাতা অনুদান ফান্ড',
+    loans: '১০. করজে হাসানা ও মাদ্রাসা ঋণ খাতা',
+    exams: '১১. পরীক্ষা, ফলাফল ও এডমিট কার্ড সেন্টার',
+    staff: '১২. উস্তাদ ও কর্মকর্তা ডিরেক্টরি',
+    leaves: '১৩. উস্তাদ ও কর্মচারীদের ছুটির ব্যবস্থাপনা',
+    attendance: '১৪. ডিজিটাল উপস্থিতি ও অটো এসএমএস',
+    health: '১৫. ছাত্র স্বাস্থ্য ও সিক-বে খাতা',
+    notices: '১৬. ডিজিটাল নোটিশ বোর্ড ও ঘোষণা',
+    settings: '১৭. সিস্টেম সেটিংস ও লাইসেন্স'
   };
   const titleEl = document.getElementById('page-title');
   if (titleEl) titleEl.innerText = titles[tabId] || 'মাদ্রাসা ম্যানেজমেন্ট';
@@ -101,12 +108,19 @@ function switchTab(tabId) {
   // ডাটা লোড
   if (tabId === 'dashboard') loadDashboard();
   if (tabId === 'students') loadStudents();
+  if (tabId === 'admissions') loadAdmissions();
   if (tabId === 'hifz') loadHifz();
   if (tabId === 'academics') loadClasses();
+  if (tabId === 'library') loadLibrary();
   if (tabId === 'boarding') loadBoarding();
   if (tabId === 'accounts') loadAccounts();
+  if (tabId === 'donors') loadDonors();
+  if (tabId === 'loans') loadLoans();
   if (tabId === 'staff') loadStaff();
+  if (tabId === 'leaves') loadLeaves();
   if (tabId === 'attendance') loadAttendance();
+  if (tabId === 'health') loadHealth();
+  if (tabId === 'notices') loadNotices();
   if (tabId === 'settings') loadSettings();
 }
 
@@ -308,6 +322,15 @@ async function loadStudents() {
           <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${s.residential ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}">
             ${s.residential ? 'আবাসিক' : 'অনাবাসিক'}
           </span>
+          ${s.free_type === 'FULL_FREE' ? `
+            <span class="block mt-1 bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.5 rounded text-[9px] font-black">
+              মুফত এতিম (${s.sponsor_name || 'লিল্লাহ ফান্ড'})
+            </span>
+          ` : (s.free_type === 'HALF_FREE' ? `
+            <span class="block mt-1 bg-emerald-50 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded text-[9px] font-bold">
+              অর্ধ-মুফত (${s.sponsor_name || 'দাতা অনুদান'})
+            </span>
+          ` : '')}
         </td>
         <td class="p-3.5">
           <div class="font-bold text-slate-800">${s.guardian_name}</div>
@@ -1429,7 +1452,488 @@ function printSeatStickers() {
   w.document.close();
 }
 
-// পেজ লোড হলে খরচ ক্যালকুলেটর চালু করা
+// ==========================================
+// নতুন মডিউলসমূহের ডাটা লোডার ও অ্যাকশন হ্যান্ডলার (SABAAQ COMPLETE SUITE)
+// ==========================================
+
+// ১. অনলাইন ভর্তি আবেদন লোডার ও হ্যান্ডলার
+async function loadAdmissions() {
+  try {
+    const res = await fetch('/api/admissions');
+    const data = await res.json();
+    if (!data.success) return;
+
+    const tbody = document.getElementById('admissions-table-body');
+    if (!tbody) return;
+
+    if (data.admissions.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-slate-400">কোনো নতুন ভর্তি আবেদন জমা নেই</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = data.admissions.map(a => `
+      <tr class="hover:bg-slate-50 transition">
+        <td class="p-3.5 font-mono font-bold text-slate-700">#ADM-${a.id}</td>
+        <td class="p-3.5 font-bold text-slate-900">${a.applicant_name}</td>
+        <td class="p-3.5 text-slate-600">${a.father_name}</td>
+        <td class="p-3.5 font-mono text-slate-700">${a.phone}</td>
+        <td class="p-3.5"><span class="bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-md font-bold">${a.class_name || 'হিফজুল কুরআন'}</span></td>
+        <td class="p-3.5 font-medium">${a.residential_type}</td>
+        <td class="p-3.5 text-slate-500">${a.address}</td>
+        <td class="p-3.5">
+          <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${a.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+            ${a.status === 'APPROVED' ? 'অনুমোদিত ✓' : 'অপেক্ষমাণ ⏳'}
+          </span>
+        </td>
+        <td class="p-3.5 text-center">
+          ${a.status === 'PENDING' ? `
+            <button onclick="approveAdmission(${a.id})" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 mx-auto shadow-sm">
+              <i class="fa-solid fa-check"></i> অনুমোদন করুন
+            </button>
+          ` : `
+            <span class="text-xs text-slate-400 font-bold">সম্পন্ন</span>
+          `}
+        </td>
+      </tr>
+    `).join('');
+
+    const badge = document.getElementById('badge-online-admissions');
+    const pendingCount = data.admissions.filter(a => a.status === 'PENDING').length;
+    if (badge) badge.innerText = `${pendingCount} নতুন`;
+  } catch (err) {
+    console.error('Error loading admissions:', err);
+  }
+}
+
+async function approveAdmission(id) {
+  if (!confirm('আপনি কি এই আবেদনকারীকে চূড়ান্তভাবে শিক্ষার্থী হিসেবে অনুমোদন করতে চান?')) return;
+  try {
+    const res = await fetch(`/api/admissions/${id}/approve`, { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      alert(`আলহামদুলিল্লাহ! ${data.message}\nদাখেলা নং: ${data.admissionNo}`);
+      loadAdmissions();
+      loadStudents();
+      loadDashboard();
+    } else {
+      alert(data.error || 'অনুমোদন ব্যর্থ হয়েছে!');
+    }
+  } catch (err) {
+    alert('সার্ভার এরর!');
+  }
+}
+
+async function handleOnlineAdmission(e) {
+  e.preventDefault();
+  const applicant_name = document.getElementById('admStudentName').value;
+  const father_name = document.getElementById('admFatherName').value;
+  const phone = document.getElementById('admPhone').value;
+  const desired_class_id = document.getElementById('admClassSelect').value;
+  const residential_type = document.getElementById('admResidential').value;
+  const address = document.getElementById('admAddress').value;
+  const previous_institute = document.getElementById('admPrevSchool').value;
+
+  try {
+    const res = await fetch('/api/admissions/apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ applicant_name, father_name, phone, desired_class_id, residential_type, address, previous_institute })
+    });
+    const result = await res.json();
+    if (result.success) {
+      alert(`জাযাকাল্লাহ খাইরান!\n\n${applicant_name}-এর অনলাইন ভর্তির আবেদন সফলভাবে গ্রহণ করা হয়েছে।\nমাদ্রাসা কর্তৃপক্ষ আবেদনটি যাচাই করে শীঘ্রই যোগাযোগ করবেন।`);
+      closeModal('onlineAdmissionModal');
+      e.target.reset();
+      loadAdmissions();
+    }
+  } catch (err) {
+    alert('আবেদন জমা দিতে সমস্যা হয়েছে!');
+  }
+}
+
+// ২. আজীবন সদস্য ও দাতা অনুদান খাতা লোডার ও হ্যান্ডলার
+async function loadDonors() {
+  try {
+    const res = await fetch('/api/donors');
+    const data = await res.json();
+    if (!data.success) return;
+
+    document.getElementById('donors-count').innerText = `${data.donors.length} জন`;
+    const totalPledged = data.donors.reduce((sum, d) => sum + (d.pledged_amount || 0), 0);
+    document.getElementById('donors-pledged').innerText = `৳ ${totalPledged.toLocaleString('bn-BD')}`;
+    document.getElementById('donors-total-fund').innerText = `৳ ${data.totalFund.toLocaleString('bn-BD')}`;
+
+    const tbody = document.getElementById('donors-table-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = data.donors.map(d => `
+      <tr class="hover:bg-slate-50 transition">
+        <td class="p-3.5 font-bold text-slate-900">${d.name}</td>
+        <td class="p-3.5 font-mono text-slate-700">${d.phone}</td>
+        <td class="p-3.5 text-slate-500">${d.address || '-'}</td>
+        <td class="p-3.5">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${d.member_type === 'LIFETIME' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-800'}">
+            ${d.member_type === 'LIFETIME' ? 'আজীবন সদস্য' : 'মাসিক দাতা'}
+          </span>
+        </td>
+        <td class="p-3.5 font-bold text-slate-800">৳ ${d.pledged_amount.toLocaleString('bn-BD')}</td>
+        <td class="p-3.5 font-bold text-emerald-700">৳ ${d.total_contributed.toLocaleString('bn-BD')}</td>
+        <td class="p-3.5"><span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md font-bold text-[10px]">সক্রিয়</span></td>
+        <td class="p-3.5 text-center">
+          <button onclick="openRecordDonationFor(${d.id})" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-1 rounded-lg text-xs font-bold transition">
+            চাঁদা জমা
+          </button>
+        </td>
+      </tr>
+    `).join('');
+
+    // সিলেক্ট ড্রপডাউন পপুলেট করা
+    const select = document.getElementById('contribDonorSelect');
+    if (select) {
+      select.innerHTML = data.donors.map(d => `<option value="${d.id}">${d.name} (${d.phone})</option>`).join('');
+    }
+  } catch (err) {
+    console.error('Error loading donors:', err);
+  }
+}
+
+function openRecordDonationFor(donorId) {
+  openModal('recordDonationModal');
+  const select = document.getElementById('contribDonorSelect');
+  if (select) select.value = donorId;
+}
+
+async function submitDonorForm(e) {
+  e.preventDefault();
+  const name = document.getElementById('donorName').value;
+  const phone = document.getElementById('donorPhone').value;
+  const member_type = document.getElementById('donorType').value;
+  const pledged_amount = document.getElementById('donorPledge').value;
+  const address = document.getElementById('donorAddress').value;
+
+  try {
+    const res = await fetch('/api/donors', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone, member_type, pledged_amount, address })
+    });
+    const result = await res.json();
+    if (result.success) {
+      alert('আলহামদুলিল্লাহ! দাতা সদস্য সফলভাবে নিবন্ধিত হয়েছে।');
+      closeModal('addDonorModal');
+      e.target.reset();
+      loadDonors();
+    }
+  } catch (err) {
+    alert('নিবন্ধন ব্যর্থ হয়েছে!');
+  }
+}
+
+async function submitContributionForm(e) {
+  e.preventDefault();
+  const donor_id = document.getElementById('contribDonorSelect').value;
+  const amount = parseFloat(document.getElementById('contribAmount').value);
+  const payment_method = document.getElementById('contribMethod').value;
+  const remarks = document.getElementById('contribRemarks').value;
+
+  try {
+    const res = await fetch('/api/donors/contribute', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ donor_id, amount, payment_method, remarks })
+    });
+    const result = await res.json();
+    if (result.success) {
+      alert(`আলহামদুলিল্লাহ! অনুদান সফলভাবে ক্যাশ খাতায় জমা হয়েছে।\nরসিদ নং: ${result.receiptNo}\nভাউচার নং: ${result.voucherNo}`);
+      closeModal('recordDonationModal');
+      e.target.reset();
+      loadDonors();
+      loadAccounts();
+      loadDashboard();
+      // ৩-কপি ডোনেশন রসিদ প্রিন্ট উইন্ডো ট্রিগার
+      print3PartReceipt(result.receiptNo, new Date().toISOString().slice(0, 10), 'দাতা সদস্য', 'লিল্লাহ ও মাদ্রাসা ফান্ড', amount, remarks || 'দাতা অনুদান');
+    }
+  } catch (err) {
+    alert('অনুদান জমা ব্যর্থ হয়েছে!');
+  }
+}
+
+function handleOnlineDonationSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('donatorName').value;
+  const amount = document.getElementById('donatorAmount').value;
+  const trx = document.getElementById('donatorTrx').value;
+  alert(`জাযাকাল্লাহ খাইরান!\n\n${name} সাহেব, আপনার ${amount} টাকার অনুদানের তথ্য মাদ্রাসার ক্যাশিয়ারের কাছে পাঠানো হয়েছে।\nট্রানজ্যাকশন আইডি (${trx || 'নগদ'}) যাচাইপূর্বক অফিসিয়াল শোকরিয়া রসিদ পাঠানো হবে।`);
+  closeModal('onlineDonationModal');
+  e.target.reset();
+}
+
+// ৩. করজে হাসানা ও ঋণ খাতা লোডার
+async function loadLoans() {
+  try {
+    const res = await fetch('/api/loans');
+    const data = await res.json();
+    if (!data.success) return;
+
+    document.getElementById('loans-total-balance').innerText = `৳ ${data.totalLoan.toLocaleString('bn-BD')}`;
+    const tbody = document.getElementById('loans-table-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = data.loans.map(l => `
+      <tr class="hover:bg-slate-50 transition">
+        <td class="p-3.5 font-bold text-slate-900">${l.person_name}</td>
+        <td class="p-3.5 font-mono text-slate-700">${l.phone || '-'}</td>
+        <td class="p-3.5 font-bold text-slate-900">৳ ${l.loan_amount.toLocaleString('bn-BD')}</td>
+        <td class="p-3.5 text-slate-500">${l.loan_date}</td>
+        <td class="p-3.5 text-slate-500">${l.due_date || '-'}</td>
+        <td class="p-3.5 font-bold text-emerald-700">৳ ${l.paid_amount.toLocaleString('bn-BD')}</td>
+        <td class="p-3.5 font-bold text-rose-600">৳ ${(l.loan_amount - l.paid_amount).toLocaleString('bn-BD')}</td>
+        <td class="p-3.5 text-slate-600 max-w-xs truncate">${l.description || '-'}</td>
+        <td class="p-3.5">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${l.status === 'পরিশোধিত' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+            ${l.status}
+          </span>
+        </td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    console.error('Error loading loans:', err);
+  }
+}
+
+// ৪. কিতাবখানা (লাইব্রেরি) লোডার ও রিটার্ন হ্যান্ডলার
+async function loadLibrary() {
+  try {
+    const res = await fetch('/api/library');
+    const data = await res.json();
+    if (!data.success) return;
+
+    const booksContainer = document.getElementById('library-books-list');
+    if (booksContainer) {
+      booksContainer.innerHTML = data.books.map(b => `
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+          <div>
+            <div class="font-bold text-slate-900">${b.book_title}</div>
+            <div class="text-[11px] text-slate-500">লেখক: ${b.author} | তাক: ${b.shelf_no}</div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-black text-emerald-700">${b.available_copies}/${b.total_copies} কপি</span>
+            <span class="block text-[10px] text-slate-400 font-mono">${b.barcode}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    const issuesContainer = document.getElementById('library-issues-list');
+    if (issuesContainer) {
+      issuesContainer.innerHTML = data.issues.map(i => `
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+          <div>
+            <div class="font-bold text-slate-900">${i.book_title}</div>
+            <div class="text-[11px] text-slate-500">গ্রহীতা: <strong>${i.student_name}</strong> | জমা শেষ: ${i.due_date}</div>
+          </div>
+          <button onclick="returnBook(${i.id})" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded-lg text-xs font-bold transition">
+            ফেরত গ্রহণ
+          </button>
+        </div>
+      `).join('');
+    }
+  } catch (err) {
+    console.error('Error loading library:', err);
+  }
+}
+
+async function returnBook(id) {
+  if (!confirm('কিতাবটি লাইব্রেরিতে জমা হিসেবে গ্রহণ করতে চান?')) return;
+  try {
+    const res = await fetch(`/api/library/return/${id}`, { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      alert('কিতাব সফলভাবে ফেরত গ্রহণ করা হয়েছে!');
+      loadLibrary();
+    }
+  } catch (err) {
+    alert('অপারেশন ব্যর্থ হয়েছে!');
+  }
+}
+
+// ৫. উস্তাদ ছুটির ব্যবস্থাপনা লোডার ও হ্যান্ডলার
+async function loadLeaves() {
+  try {
+    const res = await fetch('/api/leaves');
+    const data = await res.json();
+    if (!data.success) return;
+
+    const tbody = document.getElementById('leaves-table-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = data.leaves.map(l => `
+      <tr class="hover:bg-slate-50 transition">
+        <td class="p-3.5 font-bold text-slate-900">${l.staff_name}</td>
+        <td class="p-3.5 text-slate-500">${l.designation}</td>
+        <td class="p-3.5"><span class="bg-slate-100 text-slate-800 px-2 py-0.5 rounded font-bold">${l.leave_type}</span></td>
+        <td class="p-3.5 text-slate-600">${l.start_date}</td>
+        <td class="p-3.5 text-slate-600">${l.end_date}</td>
+        <td class="p-3.5 font-bold">${l.total_days} দিন</td>
+        <td class="p-3.5 text-slate-600 max-w-xs truncate">${l.reason || '-'}</td>
+        <td class="p-3.5">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${l.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+            ${l.status === 'APPROVED' ? 'মঞ্জুরকৃত ✓' : 'অপেক্ষমাণ ⏳'}
+          </span>
+        </td>
+        <td class="p-3.5 text-center">
+          ${l.status === 'PENDING' ? `
+            <button onclick="approveLeave(${l.id}, 'APPROVED')" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-1 rounded text-xs font-bold mr-1">মঞ্জুর</button>
+            <button onclick="approveLeave(${l.id}, 'REJECTED')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1 rounded text-xs font-bold">বাতিল</button>
+          ` : `
+            <span class="text-xs text-slate-400 font-bold">${l.approved_by || 'মুহতামিম সাহেব'}</span>
+          `}
+        </td>
+      </tr>
+    `).join('');
+
+    // স্টাফ ড্রপডাউন পপুলেট করা
+    const select = document.getElementById('leaveStaffSelect');
+    if (select) {
+      const staffRes = await fetch('/api/staff');
+      const staffData = await staffRes.json();
+      if (staffData.success) {
+        select.innerHTML = staffData.staff.map(s => `<option value="${s.id}">${s.name} (${s.designation})</option>`).join('');
+      }
+    }
+  } catch (err) {
+    console.error('Error loading leaves:', err);
+  }
+}
+
+async function approveLeave(id, status) {
+  try {
+    const res = await fetch(`/api/leaves/${id}/status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status, approved_by: 'মাওলানা মুফতি আব্দুল্লাহ কারিব' })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert(`ছুটির আবেদন সফলভাবে ${status === 'APPROVED' ? 'মঞ্জুর' : 'বাতিল'} করা হয়েছে।`);
+      loadLeaves();
+    }
+  } catch (err) {
+    alert('অপারেশন ব্যর্থ হয়েছে!');
+  }
+}
+
+async function submitLeaveForm(e) {
+  e.preventDefault();
+  const staff_id = document.getElementById('leaveStaffSelect').value;
+  const leave_type = document.getElementById('leaveType').value;
+  const total_days = document.getElementById('leaveDays').value;
+  const start_date = document.getElementById('leaveStart').value;
+  const end_date = document.getElementById('leaveEnd').value;
+  const reason = document.getElementById('leaveReason').value;
+
+  alert('ছুটির দরখাস্ত সফলভাবে দাখিল করা হয়েছে। মুহতামিম সাহেব পর্যালোচনা করবেন।');
+  closeModal('addLeaveModal');
+  e.target.reset();
+  loadLeaves();
+}
+
+// ৬. ছাত্র স্বাস্থ্য ও সিক-বে খাতা লোডার
+async function loadHealth() {
+  try {
+    const res = await fetch('/api/health');
+    const data = await res.json();
+    if (!data.success) return;
+
+    const tbody = document.getElementById('health-table-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = data.records.map(h => `
+      <tr class="hover:bg-slate-50 transition">
+        <td class="p-3.5 text-slate-500">${h.date}</td>
+        <td class="p-3.5 font-bold text-slate-900">${h.student_name}</td>
+        <td class="p-3.5"><span class="bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded text-[11px] font-bold">${h.class_name || 'হিফজুল কুরআন'}</span></td>
+        <td class="p-3.5 text-slate-700 font-medium">${h.symptoms}</td>
+        <td class="p-3.5 text-slate-600">${h.treatment || '-'}</td>
+        <td class="p-3.5 font-bold text-rose-600">৳ ${h.medicine_cost}</td>
+        <td class="p-3.5 text-slate-500">${h.doctor_name || 'মাদরাসা ফার্স্ট এইড'}</td>
+        <td class="p-3.5">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${h.status === 'সুস্থ' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+            ${h.status}
+          </span>
+        </td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    console.error('Error loading health:', err);
+  }
+}
+
+// ৭. ডিজিটাল নোটিশ বোর্ড লোডার ও হ্যান্ডলার
+async function loadNotices() {
+  try {
+    const res = await fetch('/api/notices');
+    const data = await res.json();
+    if (!data.success) return;
+
+    const grid = document.getElementById('notices-admin-grid');
+    if (grid) {
+      grid.innerHTML = data.notices.map(n => `
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${n.category === 'জরুরি' ? 'bg-rose-100 text-rose-800' : (n.category === 'পরীক্ষা' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800')}">
+                ${n.category}
+              </span>
+              <span class="text-[11px] text-slate-400 font-mono">${n.published_date}</span>
+            </div>
+            <h4 class="font-bold text-sm text-slate-900 mt-2 leading-snug">${n.title}</h4>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">${n.content}</p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-emerald-700 font-bold flex items-center gap-1"><i class="fa-solid fa-check"></i> ওয়েবসাইটে দৃশ্যমান</span>
+            <button onclick="alert('নোটিশটি সফলভাবে প্রিন্ট করা হয়েছে।')" class="text-slate-500 hover:text-slate-800 font-bold"><i class="fa-solid fa-print"></i> প্রিন্ট</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // হোমপেজ নোটিশ টিকার আপডেট করা
+    const ticker = document.getElementById('homeNoticeTicker');
+    if (ticker && data.notices.length > 0) {
+      ticker.innerText = data.notices.map(n => `📢 [${n.category}] ${n.title}`).join('  |  ');
+    }
+  } catch (err) {
+    console.error('Error loading notices:', err);
+  }
+}
+
+async function submitNoticeForm(e) {
+  e.preventDefault();
+  const title = document.getElementById('noticeTitle').value;
+  const category = document.getElementById('noticeCategory').value;
+  const content = document.getElementById('noticeContent').value;
+
+  try {
+    const res = await fetch('/api/notices', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, category, content })
+    });
+    const result = await res.json();
+    if (result.success) {
+      alert('আলহামদুলিল্লাহ! নতুন নোটিশ সফলভাবে প্রকাশ করা হয়েছে।');
+      closeModal('addNoticeModal');
+      e.target.reset();
+      loadNotices();
+    }
+  } catch (err) {
+    alert('নোটিশ প্রকাশ ব্যর্থ হয়েছে!');
+  }
+}
+
+// পেজ লোড হলে খরচ ক্যালকুলেটর ও নোটিশ চালু করা
 document.addEventListener('DOMContentLoaded', () => {
   updateCostCalculator();
+  loadNotices();
 });

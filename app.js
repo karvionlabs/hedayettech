@@ -8,7 +8,6 @@ let globalStudents = [];
 
 document.addEventListener('DOMContentLoaded', () => {
   initDateDisplay();
-  loadDashboard();
   loadClasses();
 });
 
@@ -18,6 +17,46 @@ function initDateDisplay() {
   const dateStr = new Date().toLocaleDateString('bn-BD', options);
   const el = document.getElementById('current-date-bn');
   if (el) el.innerText = dateStr;
+}
+
+// ==========================================
+// হোম পেজ ও অ্যাডমিন কনসোল স্যুইচিং
+// ==========================================
+function openAdminConsole(targetTab = 'dashboard') {
+  const home = document.getElementById('public-homepage');
+  const admin = document.getElementById('admin-console');
+
+  if (home && admin) {
+    home.classList.add('hidden');
+    admin.classList.remove('hidden');
+    switchTab(targetTab);
+  }
+}
+
+function closeAdminConsole() {
+  const home = document.getElementById('public-homepage');
+  const admin = document.getElementById('admin-console');
+
+  if (home && admin) {
+    admin.classList.add('hidden');
+    home.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+function filterHomeCategory(cat) {
+  if (cat === 'হিফজ') {
+    openAdminConsole('hifz');
+  } else if (cat === 'কওমি') {
+    openAdminConsole('academics');
+  } else {
+    openAdminConsole('students');
+  }
 }
 
 // ==========================================
@@ -56,7 +95,8 @@ function switchTab(tabId) {
     attendance: '৯. ডিজিটাল উপস্থিতি ও অটো এসএমএস',
     settings: '১০. সিস্টেম সেটিংস ও লাইসেন্স'
   };
-  document.getElementById('page-title').innerText = titles[tabId] || 'মাদ্রাসা ম্যানেজমেন্ট';
+  const titleEl = document.getElementById('page-title');
+  if (titleEl) titleEl.innerText = titles[tabId] || 'মাদ্রাসা ম্যানেজমেন্ট';
 
   // ডাটা লোড
   if (tabId === 'dashboard') loadDashboard();
@@ -80,50 +120,53 @@ async function loadDashboard() {
     if (!data.success) return;
 
     const s = data.stats;
-    document.getElementById('dash-total-students').innerText = s.totalStudents.toLocaleString('bn-BD');
-    document.getElementById('dash-residential-students').innerText = s.residentialCount.toLocaleString('bn-BD');
-    document.getElementById('dash-non-residential').innerText = s.nonResidentialCount.toLocaleString('bn-BD');
-    document.getElementById('dash-hifz-students').innerText = s.hifzStudents.toLocaleString('bn-BD');
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerText = val;
+    };
 
-    document.getElementById('dash-income').innerText = `৳ ${s.incomeThisMonth.toLocaleString('bn-BD')}`;
-    document.getElementById('dash-expense').innerText = `৳ ${s.expenseThisMonth.toLocaleString('bn-BD')}`;
-    document.getElementById('dash-balance').innerText = `৳ ${s.balance.toLocaleString('bn-BD')}`;
+    setVal('dash-total-students', s.totalStudents.toLocaleString('bn-BD'));
+    setVal('dash-residential-students', s.residentialCount.toLocaleString('bn-BD'));
+    setVal('dash-non-residential', s.nonResidentialCount.toLocaleString('bn-BD'));
+    setVal('dash-hifz-students', s.hifzStudents.toLocaleString('bn-BD'));
 
-    document.getElementById('dash-att-rate').innerText = `${s.todayAttendance.rate.toLocaleString('bn-BD')}%`;
-    document.getElementById('dash-att-present').innerText = s.todayAttendance.present.toLocaleString('bn-BD');
-    document.getElementById('dash-att-absent').innerText = s.todayAttendance.absent.toLocaleString('bn-BD');
+    setVal('dash-income', `৳ ${s.incomeThisMonth.toLocaleString('bn-BD')}`);
+    setVal('dash-expense', `৳ ${s.expenseThisMonth.toLocaleString('bn-BD')}`);
+    setVal('dash-balance', `৳ ${s.balance.toLocaleString('bn-BD')}`);
 
-    if (data.institution) {
-      document.getElementById('sidebar-inst-name').innerText = data.institution.name_bn;
-    }
+    setVal('dash-att-rate', `${s.todayAttendance.rate.toLocaleString('bn-BD')}%`);
+    setVal('dash-att-present', s.todayAttendance.present.toLocaleString('bn-BD'));
+    setVal('dash-att-absent', s.todayAttendance.absent.toLocaleString('bn-BD'));
 
     // চার্ট
     renderFinanceChart(s.incomeThisMonth, s.expenseThisMonth, s.balance);
 
     // সাম্প্রতিক ট্রানজেকশন
     const tbody = document.getElementById('dash-recent-tx-body');
-    tbody.innerHTML = '';
-    data.recentTransactions.forEach(t => {
-      const isIncome = t.type === 'INCOME';
-      const tr = document.createElement('tr');
-      tr.className = 'border-b border-slate-100 hover:bg-slate-50 transition';
-      tr.innerHTML = `
-        <td class="p-3 font-mono font-bold text-slate-700">${t.voucher_no}</td>
-        <td class="p-3">${t.date}</td>
-        <td class="p-3">
-          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isIncome ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-            ${isIncome ? 'টাকা জমা' : 'টাকা খরচ'}
-          </span>
-        </td>
-        <td class="p-3 font-semibold">${t.category}</td>
-        <td class="p-3 text-slate-600">${t.student_name ? t.student_name : (t.description || '-')}</td>
-        <td class="p-3"><span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px]">${t.payment_method}</span></td>
-        <td class="p-3 text-right font-black ${isIncome ? 'text-emerald-700' : 'text-rose-600'}">
-          ${isIncome ? '+' : '-'} ৳ ${t.amount.toLocaleString('bn-BD')}
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
+    if (tbody) {
+      tbody.innerHTML = '';
+      data.recentTransactions.forEach(t => {
+        const isIncome = t.type === 'INCOME';
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-100 hover:bg-slate-50 transition';
+        tr.innerHTML = `
+          <td class="p-3 font-mono font-bold text-slate-700">${t.voucher_no}</td>
+          <td class="p-3">${t.date}</td>
+          <td class="p-3">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isIncome ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+              ${isIncome ? 'টাকা জমা' : 'টাকা খরচ'}
+            </span>
+          </td>
+          <td class="p-3 font-semibold">${t.category}</td>
+          <td class="p-3 text-slate-600">${t.student_name ? t.student_name : (t.description || '-')}</td>
+          <td class="p-3"><span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px]">${t.payment_method}</span></td>
+          <td class="p-3 text-right font-black ${isIncome ? 'text-emerald-700' : 'text-rose-600'}">
+            ${isIncome ? '+' : '-'} ৳ ${t.amount.toLocaleString('bn-BD')}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
   } catch (err) {
     console.error('Error loading dashboard:', err);
   }
@@ -181,7 +224,6 @@ async function loadClasses() {
 
     globalClasses = data.classes;
 
-    // মডাল ও ফিল্টার সিলেক্ট আপডেট
     const modalSel = document.getElementById('modalClassSelect');
     const filterSel = document.getElementById('studentClassFilter');
     if (modalSel) modalSel.innerHTML = '<option value="">জামাত বেছে নিন</option>';
@@ -234,7 +276,6 @@ async function loadStudents() {
 
     globalStudents = data.students;
 
-    // হিফজ মডালের জন্য ড্রপডাউন প্রস্তুত
     const hifzStudentSelect = document.getElementById('modalHifzStudentSelect');
     if (hifzStudentSelect) {
       hifzStudentSelect.innerHTML = '<option value="">শিক্ষার্থী বেছে নিন</option>';
@@ -244,6 +285,7 @@ async function loadStudents() {
     }
 
     const tbody = document.getElementById('students-table-body');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     if (data.students.length === 0) {
@@ -287,7 +329,7 @@ async function loadStudents() {
 }
 
 // ==========================================
-// ৫. হিফজ ট্র্যাকার ডাটা লোড
+// ৫. হিফজ ট্র্যাকার লোড
 // ==========================================
 async function loadHifz() {
   try {
@@ -296,12 +338,8 @@ async function loadHifz() {
     if (!data.success) return;
 
     const tbody = document.getElementById('hifz-table-body');
+    if (!tbody) return;
     tbody.innerHTML = '';
-
-    if (data.logs.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">কোনো হিফজ রেকর্ড পাওয়া যায়নি</td></tr>`;
-      return;
-    }
 
     data.logs.forEach(h => {
       const tr = document.createElement('tr');
@@ -341,9 +379,11 @@ async function loadBoarding() {
     const data = await res.json();
     if (!data.success) return;
 
-    document.getElementById('boarding-total-cost').innerText = `৳ ${data.summary.totalCost.toLocaleString('bn-BD')}`;
+    const totalEl = document.getElementById('boarding-total-cost');
+    if (totalEl) totalEl.innerText = `৳ ${data.summary.totalCost.toLocaleString('bn-BD')}`;
 
     const tbody = document.getElementById('boarding-table-body');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     data.bazaar.forEach(b => {
@@ -375,11 +415,17 @@ async function loadAccounts() {
     const data = await res.json();
     if (!data.success) return;
 
-    document.getElementById('acc-total-income').innerText = `৳ ${data.summary.totalIncome.toLocaleString('bn-BD')}`;
-    document.getElementById('acc-total-expense').innerText = `৳ ${data.summary.totalExpense.toLocaleString('bn-BD')}`;
-    document.getElementById('acc-net-cash').innerText = `৳ ${data.summary.netCash.toLocaleString('bn-BD')}`;
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerText = val;
+    };
+
+    setVal('acc-total-income', `৳ ${data.summary.totalIncome.toLocaleString('bn-BD')}`);
+    setVal('acc-total-expense', `৳ ${data.summary.totalExpense.toLocaleString('bn-BD')}`);
+    setVal('acc-net-cash', `৳ ${data.summary.netCash.toLocaleString('bn-BD')}`);
 
     const tbody = document.getElementById('accounts-table-body');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     data.transactions.forEach(t => {
@@ -418,9 +464,11 @@ async function loadStaff() {
     const data = await res.json();
     if (!data.success) return;
 
-    document.getElementById('staff-total-salary').innerText = `৳ ${data.totalSalary.toLocaleString('bn-BD')}`;
+    const totalEl = document.getElementById('staff-total-salary');
+    if (totalEl) totalEl.innerText = `৳ ${data.totalSalary.toLocaleString('bn-BD')}`;
 
     const grid = document.getElementById('staff-grid');
+    if (!grid) return;
     grid.innerHTML = '';
 
     data.staff.forEach(s => {
@@ -456,6 +504,7 @@ async function loadAttendance() {
     if (!data.success) return;
 
     const tbody = document.getElementById('attendance-table-body');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     data.records.forEach(r => {
@@ -513,19 +562,92 @@ async function loadSettings() {
     if (!data.success || !data.institution) return;
 
     const inst = data.institution;
-    document.getElementById('set-name-bn').innerText = inst.name_bn;
-    document.getElementById('set-name-ar').innerText = inst.name_ar || '-';
-    document.getElementById('set-muhtamim').innerText = inst.muhtamim_name;
-    document.getElementById('set-phone').innerText = inst.phone;
-    document.getElementById('set-address').innerText = inst.address;
-    document.getElementById('set-license').innerText = inst.license_expiry;
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerText = val;
+    };
+    setVal('set-name-bn', inst.name_bn);
+    setVal('set-name-ar', inst.name_ar || '-');
+    setVal('set-muhtamim', inst.muhtamim_name);
+    setVal('set-phone', inst.phone);
+    setVal('set-address', inst.address);
+    setVal('set-license', inst.license_expiry);
   } catch (err) {
     console.error('Error loading settings:', err);
   }
 }
 
 // ==========================================
-// মোডাল হ্যান্ডলার ও ফর্ম সাবমিট
+// ইউনিভার্সাল সার্চ ও অনলাইন রেজাল্ট ফাংশন
+// ==========================================
+async function handleUniversalSearch(e) {
+  e.preventDefault();
+  const query = document.getElementById('universalSearchInput').value.trim();
+  if (!query) return;
+
+  // Search in students API
+  const res = await fetch(`/api/students?search=${encodeURIComponent(query)}`);
+  const data = await res.json();
+
+  if (data.success && data.students.length > 0) {
+    const s = data.students[0];
+    alert(`🔍 পাওয়া গেছে: ${s.name_bn} | দাখেলা: ${s.admission_no} | রোল: ${s.roll_no} | জামাত: ${s.class_name}\n\nসরাসরি ড্যাশবোর্ডে প্রোফাইল ওপেন করা হচ্ছে...`);
+    openAdminConsole('students');
+    const searchInput = document.getElementById('studentSearchInput');
+    if (searchInput) {
+      searchInput.value = s.admission_no;
+      loadStudents();
+    }
+  } else {
+    alert(`"${query}" দিয়ে কোনো তথ্য পাওয়া যায়নি। সরাসরি ম্যানেজমেন্ট ড্যাশবোর্ডে প্রবেশ করা হচ্ছে...`);
+    openAdminConsole('students');
+  }
+}
+
+async function checkOnlineResult() {
+  const query = document.getElementById('resultSearchRoll').value.trim();
+  const output = document.getElementById('resultOutput');
+  if (!query) {
+    alert('অনুগ্রহ করে দাখেলা বা রোল নম্বর লিখুন');
+    return;
+  }
+
+  const res = await fetch(`/api/students?search=${encodeURIComponent(query)}`);
+  const data = await res.json();
+
+  if (data.success && data.students.length > 0) {
+    const s = data.students[0];
+    output.classList.remove('hidden');
+    output.innerHTML = `
+      <div class="space-y-1.5">
+        <div class="text-sm font-bold text-madrasa-900">${s.name_bn}</div>
+        <div class="text-xs text-slate-600">দাখেলা: <b>${s.admission_no}</b> | রোল: <b>${s.roll_no}</b></div>
+        <div class="text-xs text-slate-600">জামাত: <b>${s.class_name}</b></div>
+        <div class="mt-2 pt-2 border-t border-slate-200 flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-700">ফলাফল গ্রেড:</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs">মুমতাজ (A+)</span>
+        </div>
+      </div>
+    `;
+  } else {
+    output.classList.remove('hidden');
+    output.innerHTML = `<p class="text-rose-600 font-bold">কোনো ফলাফল পাওয়া যায়নি!</p>`;
+  }
+}
+
+function handleBookDemo(e) {
+  e.preventDefault();
+  const madrasa = document.getElementById('demoMadrasaName').value;
+  const person = document.getElementById('demoPersonName').value;
+  const phone = document.getElementById('demoPhone').value;
+
+  alert(`জাযাকাল্লাহ খাইরান!\n\n${person} সাহেব, আপনার প্রতিষ্ঠান "${madrasa}"-এর জন্য ফ্রি ডেমো বুকিং গ্রহণ করা হয়েছে।\nআমাদের এক্সপার্ট প্রতিনিধি (${phone}) নম্বরে অতিসত্বর যোগাযোগ করবেন।`);
+  closeModal('bookDemoModal');
+  e.target.reset();
+}
+
+// ==========================================
+// মোডাল হ্যান্ডলার
 // ==========================================
 function openModal(id) {
   document.getElementById(id)?.classList.remove('hidden');
@@ -651,7 +773,7 @@ function printIdCard(name, admissionNo, roll, className) {
       <body>
         <div class="card">
           <div class="header">
-            <h3>উম্মে কুলসুম মাদরাসা</h3>
+            <h3>হেদায়েত টেক মাদ্রাসা</h3>
             <p>ডিজিটাল স্টুডেন্ট আইডি কার্ড</p>
           </div>
           <div class="avatar">👤</div>

@@ -30,6 +30,17 @@
               100: '#dcfce7',
               50: '#f0fdf4',
             },
+            madrasa: {
+              950: '#071f12',
+              900: '#0b2e1b',
+              850: '#0f3c23',
+              800: '#144c2c',
+              700: '#185d37',
+              600: '#1e7545',
+              200: '#a7f3d0',
+              100: '#d1fae5',
+              50: '#ecfdf5',
+            },
             gold: {
               400: '#fbbf24',
               500: '#d4af37',
@@ -987,9 +998,9 @@
   <!-- ============================================================== -->
   <div id="admin-console" class="hidden h-screen flex overflow-hidden">
     <!-- সাইডবার (১০টি রিলিজ মেনু) -->
-    <aside class="w-72 bg-madrasa-950 text-white flex flex-col flex-shrink-0 z-30 transition-all duration-300 shadow-2xl">
+    <aside class="w-72 bg-[#071f12] text-white flex flex-col flex-shrink-0 z-30 transition-all duration-300 shadow-2xl border-r border-[#0e3a22]" style="background-color: #071f12;">
       <!-- লোগো ও ব্যাক টু হোম বাটন -->
-      <div class="p-4 border-b border-madrasa-800 flex items-center justify-between bg-madrasa-900/60">
+      <div class="p-4 border-b border-[#0e3a22] flex items-center justify-between bg-[#0a2717]" style="background-color: #0a2717;">
         <div class="flex items-center gap-2.5">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-500 to-gold-600 text-slate-950 font-black flex items-center justify-center text-lg shadow-inner">
             H
@@ -1006,9 +1017,9 @@
 
       <!-- মেনু তালিকা -->
       <nav class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1 text-sm font-medium">
-        <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400/60 px-3 pt-2 pb-1">প্রধান মডিউল</div>
+        <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400/80 px-3 pt-2 pb-1">প্রধান মডিউল</div>
 
-        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition bg-madrasa-800 text-gold-400 font-bold shadow-sm">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition bg-gradient-to-r from-emerald-800 to-emerald-700 text-gold-400 font-bold border-l-4 border-gold-400 shadow-md">
           <i class="fa-solid fa-chart-pie w-5 text-center text-base"></i>
           <span>১. ড্যাশবোর্ড ও বিশ্লেষণ</span>
         </button>
@@ -1046,7 +1057,7 @@
           <span>৬. মাদ্রাসার কিতাবখানা</span>
         </button>
 
-        <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400/60 px-3 pt-4 pb-1">হিসাব, বোর্ডিং ও দাতা ফান্ড</div>
+        <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 px-3 pt-4 pb-1">হিসাব, বোর্ডিং ও দাতা ফান্ড</div>
 
         <button onclick="switchTab('boarding')" id="nav-boarding" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition hover:bg-madrasa-900/80 text-emerald-100 hover:text-white">
           <i class="fa-solid fa-utensils w-5 text-center text-base"></i>
@@ -1079,7 +1090,7 @@
           <span>১১. পরীক্ষা ও এডমিট কার্ড</span>
         </button>
 
-        <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400/60 px-3 pt-4 pb-1">প্রশাসন, স্বাস্থ্য ও নোটিশ</div>
+        <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 px-3 pt-4 pb-1">প্রশাসন, স্বাস্থ্য ও নোটিশ</div>
 
         <button onclick="switchTab('staff')" id="nav-staff" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition hover:bg-madrasa-900/80 text-emerald-100 hover:text-white">
           <i class="fa-solid fa-chalkboard-user w-5 text-center text-base"></i>
@@ -1113,13 +1124,13 @@
       </nav>
 
       <!-- ফুটার ব্যাকআপ বাটন -->
-      <div class="p-3 border-t border-madrasa-800 bg-madrasa-900/90 text-xs flex items-center justify-between text-emerald-300">
+      <div class="p-3 border-t border-[#0e3a22] bg-[#0a2717] text-xs flex items-center justify-between text-emerald-300" style="background-color: #0a2717;">
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>লোকাল ডাটাবেজ সচল</span>
+          <span class="font-bold">লোকাল ডাটাবেজ সচল</span>
         </div>
-        <button onclick="exportBackup()" title="ডাটাবেজ ডাউনলোড" class="hover:text-gold-400 transition">
-          <i class="fa-solid fa-cloud-arrow-down"></i> ব্যাকআপ
+        <button onclick="exportBackup()" title="ডাটাবেজ ডাউনলোড" class="hover:text-gold-400 text-emerald-200 transition font-bold flex items-center gap-1">
+          <i class="fa-solid fa-cloud-arrow-down"></i> <span>ব্যাকআপ</span>
         </button>
       </div>
     </aside>

@@ -1,4 +1,17 @@
 // ==========================================
+// Stricx XSS ডিফেন্সিভ স্যানিটাইজার
+// ==========================================
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// ==========================================
 // গ্লোবাল ভেরিয়েবল ও ইনিশিয়ালাইজেশন
 // ==========================================
 let financeChartInstance = null;
@@ -1148,7 +1161,9 @@ function printIdCard(name, admissionNo, roll, className) {
 }
 
 function exportBackup() {
-  window.location.href = '/api/backup';
+  const pin = prompt('অনুগ্রহ করে অ্যাডমিন ভল্ট সিকিউরিটি কি (Vault Key / PIN) দিন:', '2026');
+  if (!pin) return;
+  window.location.href = `/api/backup?token=${encodeURIComponent(pin.trim())}`;
 }
 
 // ==========================================
@@ -1272,11 +1287,11 @@ function print3PartReceipt(voucherNo, date, studentName, className, amount, desc
           </div>
         </div>
         <div style="font-size: 11px; margin-top: 8px; line-height: 1.6; color: #1e293b;">
-          <div><strong>রসিদ নং:</strong> ${voucherNo}</div>
-          <div><strong>তারিখ:</strong> ${date}</div>
-          <div><strong>শিক্ষার্থী:</strong> ${studentName}</div>
-          <div><strong>বিভাগ:</strong> ${className}</div>
-          <div><strong>খাত:</strong> ${desc}</div>
+          <div><strong>রসিদ নং:</strong> ${escapeHtml(voucherNo)}</div>
+          <div><strong>তারিখ:</strong> ${escapeHtml(date)}</div>
+          <div><strong>শিক্ষার্থী:</strong> ${escapeHtml(studentName)}</div>
+          <div><strong>বিভাগ:</strong> ${escapeHtml(className)}</div>
+          <div><strong>খাত:</strong> ${escapeHtml(desc)}</div>
         </div>
       </div>
       <div style="margin-top: 15px;">

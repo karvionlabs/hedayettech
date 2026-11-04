@@ -267,6 +267,7 @@ function switchTab(tabId) {
     gatepass: 'আবাসিক ছাত্র খুরুজ ও সিকিউরিটি গেটপাস',
     qurbani: 'কোরবানির চামড়া ও কালেকশন ক্যাম্পেইন',
     notices: '১৬. ডিজিটাল নোটিশ বোর্ড ও ঘোষণা',
+    messages: 'ইনবক্স ও সরাসরি গ্রাহক বার্তা (Zero-Leak Private Vault)',
     settings: '১৭. সিস্টেম সেটিংস ও লাইসেন্স'
   };
   const titleEl = document.getElementById('page-title');
@@ -290,6 +291,7 @@ function switchTab(tabId) {
   if (tabId === 'attendance') loadAttendance();
   if (tabId === 'health') loadHealth();
   if (tabId === 'notices') loadNotices();
+  if (tabId === 'messages') loadContactMessages();
   if (tabId === 'settings') loadSettings();
 }
 
@@ -2502,6 +2504,74 @@ async function handleContactSubmit(e) {
       submitBtn.disabled = false;
       submitBtn.innerHTML = origBtnHtml;
     }
+  }
+}
+
+// ==========================================
+// ২১. অ্যাডমিন ইনবক্স: কন্টাক্ট বার্তা লোডার ও ডিলিট হ্যান্ডলার
+// ==========================================
+async function loadContactMessages() {
+  try {
+    const res = await fetch('/api/contact');
+    const data = await res.json();
+    if (!data.success) return;
+
+    const messages = data.messages || [];
+    const tbody = document.getElementById('contact-messages-table-body');
+    const badge = document.getElementById('badge-contact-messages');
+    const statCount = document.getElementById('stat-contact-count');
+
+    if (badge) badge.textContent = `${messages.length}`;
+    if (statCount) statCount.textContent = `${messages.length} টি`;
+
+    if (!tbody) return;
+
+    if (messages.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-slate-400">ইনবক্সে কোনো নতুন বার্তা জমা নেই</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = messages.map(m => `
+      <tr class="hover:bg-slate-50 transition">
+        <td class="p-3.5 font-mono font-bold text-slate-700">#MSG-${escapeHtml(m.id)}</td>
+        <td class="p-3.5 font-bold text-slate-900">${escapeHtml(m.name)}</td>
+        <td class="p-3.5">
+          ${m.email ? `<a href="mailto:${escapeHtml(m.email)}" class="text-blue-600 hover:underline font-mono font-medium flex items-center gap-1"><i class="fa-solid fa-envelope text-blue-500"></i> ${escapeHtml(m.email)}</a>` : '<span class="text-slate-400">-</span>'}
+        </td>
+        <td class="p-3.5">
+          <a href="https://wa.me/88${(m.phone || '').replace(/\\D/g, '')}" target="_blank" class="text-emerald-700 hover:underline font-mono font-bold flex items-center gap-1">
+            <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i> ${escapeHtml(m.phone)}
+          </a>
+        </td>
+        <td class="p-3.5 text-slate-600 font-medium">${escapeHtml(m.institution || 'ব্যক্তিগত')}</td>
+        <td class="p-3.5 text-slate-800 max-w-xs break-words">
+          <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 text-xs">${escapeHtml(m.message)}</div>
+        </td>
+        <td class="p-3.5 text-slate-500 text-[11px] font-mono">${escapeHtml(m.created_at || 'Recent')}</td>
+        <td class="p-3.5 text-center">
+          <button onclick="deleteContactMessage(${m.id})" class="text-rose-600 hover:text-rose-800 hover:bg-rose-50 p-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 mx-auto" title="মুছে ফেলুন">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    console.error('Error loading contact messages:', err);
+  }
+}
+
+async function deleteContactMessage(id) {
+  if (!confirm('আপনি কি নিশ্চিত যে এই বার্তাটি মুছে ফেলতে চান?')) return;
+  try {
+    const res = await fetch(`/api/contact/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (data.success) {
+      loadContactMessages();
+    } else {
+      alert(data.error || 'মুছে ফেলা সম্ভব হয়নি!');
+    }
+  } catch (err) {
+    alert('সার্ভার এরর!');
   }
 }
 

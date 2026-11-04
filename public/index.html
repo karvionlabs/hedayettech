@@ -1455,6 +1455,12 @@
           <i class="fa-solid fa-shield-halved text-[11px] text-gold-400"></i>
         </div>
 
+        <button onclick="switchTab('messages')" id="nav-messages" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition hover:bg-madrasa-900/80 text-emerald-100 hover:text-white">
+          <i class="fa-solid fa-envelope-open-text w-5 text-center text-base text-gold-400"></i>
+          <span>ইনবক্স ও কন্টাক্ট বার্তা</span>
+          <span class="ml-auto bg-gold-400/20 text-gold-300 text-[10px] px-2 py-0.5 rounded-full font-bold" id="badge-contact-messages">০</span>
+        </button>
+
         <button onclick="switchTab('settings')" id="nav-settings" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition hover:bg-madrasa-900/80 text-emerald-100 hover:text-white">
           <i class="fa-solid fa-sliders w-5 text-center text-base text-gold-400"></i>
           <span>মাস্টার পিন ও সিস্টেম সেটিংস</span>
@@ -1935,6 +1941,86 @@
                   </tr>
                 </thead>
                 <tbody id="attendance-table-body" class="divide-y divide-slate-100"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ট্যাব: ইনবক্স ও সরাসরি গ্রাহক বার্তা (Zero-Leak Private Vault) -->
+        <section id="tab-messages" class="tab-pane hidden space-y-5">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <i class="fa-solid fa-lock"></i> ১০০% গোপনীয় ও এনক্রিপ্টেড
+                </span>
+                <span class="text-xs text-slate-400">|</span>
+                <span class="text-xs text-slate-500 font-medium">সরাসরি মালিকের নিয়ন্ত্রণাধীনে</span>
+              </div>
+              <h3 class="text-base font-extrabold text-slate-900">ইনবক্স ও কন্টাক্ট বার্তা রেজিস্টার</h3>
+              <p class="text-xs text-slate-500">ওয়েবসাইট থেকে প্রেরিত সকল অনুসন্ধান ও ইনকোয়ারি বার্তা সরাসরি এখানে সংরক্ষিত হয়</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="loadContactMessages()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-rotate-right"></i> রিফ্রেশ
+              </button>
+            </div>
+          </div>
+
+          <!-- স্ট্যাটাস কার্ডস -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-envelope"></i>
+              </div>
+              <div>
+                <span class="text-xs text-slate-500 block">মোট বার্তা সংখ্যা</span>
+                <strong class="text-lg text-slate-900" id="stat-contact-count">০ টি</strong>
+              </div>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-paper-plane"></i>
+              </div>
+              <div>
+                <span class="text-xs text-slate-500 block">মালিকের ইমেইল নোটিফিকেশন</span>
+                <strong class="text-xs text-blue-800 font-mono block">abdullahshahjada12@gmail.com</strong>
+              </div>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-shield-check"></i>
+              </div>
+              <div>
+                <span class="text-xs text-slate-500 block">জিরো-লিক প্রাইভেসি</span>
+                <strong class="text-xs text-emerald-700 font-bold">লকড (কেবলমাত্র মাস্টার পিন)</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- বার্তা টেবিল -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+              <h4 class="font-bold text-slate-800 text-sm">সর্বশেষ প্রেরিত বার্তাসমূহ</h4>
+              <span class="text-xs text-slate-400">তালিকায় ক্লিক করে হোয়াটসঅ্যাপে সরাসরি চ্যাট করতে পারবেন</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-600">
+                <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
+                  <tr>
+                    <th class="p-3.5">আইডি</th>
+                    <th class="p-3.5">প্রেরকের নাম</th>
+                    <th class="p-3.5">ইমেইল / জিমেইল</th>
+                    <th class="p-3.5">মোবাইল নম্বর</th>
+                    <th class="p-3.5">প্রতিষ্ঠান</th>
+                    <th class="p-3.5">বার্তা / জিজ্ঞাসা</th>
+                    <th class="p-3.5">তারিখ ও সময়</th>
+                    <th class="p-3.5 text-center">অ্যাকশন</th>
+                  </tr>
+                </thead>
+                <tbody id="contact-messages-table-body" class="divide-y divide-slate-100">
+                  <!-- ডাইনামিকালি লোড হবে -->
+                </tbody>
               </table>
             </div>
           </div>

@@ -400,4 +400,15 @@ router.get('/contact', (req, res) => {
   }
 });
 
+router.delete('/contact/:id', (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (!id) return res.status(400).json({ success: false, error: 'অবৈধ আইডি!' });
+    db.prepare('DELETE FROM contact_messages WHERE id = ?').run(id);
+    res.json({ success: true, message: 'বার্তাটি মুছে ফেলা হয়েছে।' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;

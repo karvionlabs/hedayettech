@@ -1120,7 +1120,7 @@ async function handleBookDemo(e) {
   // সমস্ত তথ্য সঠিক হলে ব্যাকএন্ডে সুরক্ষিত সাবমিশন
   const madrasa = document.getElementById('demoMadrasaName').value.trim();
   const person = document.getElementById('demoPersonName').value.trim();
-  const phone = document.getElementById('demoPhone').value.trim().replace(/\D/g, '');
+  const phone = normalizeBanglaDigits(document.getElementById('demoPhone').value.trim()).replace(/\D/g, '');
   const type = document.getElementById('demoType').value;
 
   try {
@@ -1141,12 +1141,18 @@ async function handleBookDemo(e) {
       })
     });
 
-    const result = await res.json();
+    let result = null;
+    const resText = await res.text();
+    try {
+      result = JSON.parse(resText);
+    } catch (e) {
+      result = { success: false, error: 'সার্ভার রেসপন্স ত্রুটি (' + res.status + ')। পেজটি রিফ্রেশ করে আবার চেষ্টা করুন।' };
+    }
 
     if (!res.ok || !result.success) {
       // সার্ভার সাইড এরর মেসেজ প্রদর্শন
       if (globalAlert && globalAlertText) {
-        globalAlertText.innerText = result.error || 'NOT ALLOWED: সঠিক তথ্য প্রদান করুন!';
+        globalAlertText.innerText = result.error || 'সঠিক তথ্য প্রদান করুন!';
         globalAlert.classList.remove('hidden');
       }
       if (submitBtn) {
@@ -1168,8 +1174,9 @@ async function handleBookDemo(e) {
       successState.classList.remove('hidden');
     }
   } catch (err) {
+    console.error('Demo booking connection error:', err);
     if (globalAlert && globalAlertText) {
-      globalAlertText.innerText = 'NOT ALLOWED: সার্ভারের সাথে সংযোগে ব্যর্থ হয়েছে!';
+      globalAlertText.innerHTML = '<span class="font-bold">সার্ভার সংযোগ বিচ্ছিন্ন:</span> অনুগ্রহ করে ব্রাউজার পেজটি একবার রিলোড (Refresh/Reload) করে পুনরায় চেষ্টা করুন।';
       globalAlert.classList.remove('hidden');
     }
     if (submitBtn) {

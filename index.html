@@ -1252,29 +1252,56 @@
           <!-- ডান পাশ: সরাসরি মেসেজ পাঠানোর কন্টাক্ট ফরম (৬ কলাম) -->
           <div class="md:col-span-6 bg-white text-slate-900 rounded-3xl p-6 sm:p-7 shadow-2xl border border-emerald-800">
             <h4 class="text-base font-extrabold text-slate-900 mb-1">আমাদের কাছে আপনার বার্তা পাঠান</h4>
-            <p class="text-xs text-slate-500 mb-4">যেকোনো প্রশ্ন, কাস্টমাইজেশন বা ডেমোর জন্য লিখুন</p>
+            <p class="text-xs text-slate-500 mb-3">যেকোনো প্রশ্ন, কাস্টমাইজেশন বা ডেমোর জন্য লিখুন</p>
 
-            <form onsubmit="handleContactSubmit(event)" class="space-y-3 text-xs">
+            <!-- প্রাইভেসি সিকিউরিটি নোটিশ -->
+            <div class="bg-emerald-50 text-emerald-950 border border-emerald-200 rounded-xl p-2.5 text-[11px] mb-3 flex items-center gap-2 font-medium">
+              <i class="fa-solid fa-lock text-emerald-700 text-xs"></i>
+              <span>শতভাগ সুরক্ষিত ও গোপনীয় টেক্সট বার — বার্তাটি সরাসরি মালিকের জিমেইলে পৌঁছাবে।</span>
+            </div>
+
+            <!-- অ্যালার্ট মেসেজ ব্যানার -->
+            <div id="contactAlertBanner" class="hidden text-xs p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 font-semibold mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-circle-exclamation text-rose-600 flex-shrink-0"></i>
+              <span id="contactAlertText"></span>
+            </div>
+
+            <form id="publicContactForm" onsubmit="handleContactSubmit(event)" class="space-y-3 text-xs">
               <div>
-                <label class="font-bold text-slate-700 block mb-1">আপনার নাম *</label>
-                <input type="text" id="contactMsgName" required placeholder="মুহতামিম / প্রধান শিক্ষক" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm">
+                <label class="font-bold text-slate-700 block mb-1">আপনার নাম <span class="text-rose-600 font-extrabold">*</span></label>
+                <input type="text" id="contactMsgName" required minlength="2" maxlength="100" placeholder="মুহতামিম / প্রধান শিক্ষক" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
               </div>
-              <div class="grid grid-cols-2 gap-3">
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label class="font-bold text-slate-700 block mb-1">মোবাইল নম্বর *</label>
-                  <input type="tel" id="contactMsgPhone" required placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono">
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="font-bold text-slate-700 block">মোবাইল নম্বর <span class="text-rose-600 font-extrabold">*</span></label>
+                    <span id="contactPhoneCounter" class="text-[10px] font-mono text-slate-500 font-semibold bg-slate-100 px-1.5 py-0.5 rounded-full">০/১১</span>
+                  </div>
+                  <input type="tel" id="contactMsgPhone" required maxlength="11" placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
                 </div>
                 <div>
-                  <label class="font-bold text-slate-700 block mb-1">প্রতিষ্ঠানের নাম *</label>
-                  <input type="text" id="contactMsgInst" required placeholder="মাদ্রাসা বা স্কুলের নাম..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm">
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="font-bold text-slate-700 block">আপনার ইমেইল / জিমেইল <span class="text-rose-600 font-extrabold">*</span></label>
+                    <span id="contactEmailStatus" class="text-[10px] text-slate-400 font-medium">@gmail.com</span>
+                  </div>
+                  <input type="email" id="contactMsgEmail" required placeholder="example@gmail.com" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
                 </div>
               </div>
+
               <div>
-                <label class="font-bold text-slate-700 block mb-1">আপনার বার্তা / জিজ্ঞাসা *</label>
-                <textarea id="contactMsgText" required rows="3" placeholder="সফটওয়্যার সম্পর্কে বিস্তারিত জানতে চাই..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm"></textarea>
+                <label class="font-bold text-slate-700 block mb-1">প্রতিষ্ঠানের নাম</label>
+                <input type="text" id="contactMsgInst" maxlength="150" placeholder="মাদ্রাসা বা স্কুলের নাম..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
               </div>
-              <button type="submit" class="w-full bg-[#165333] hover:bg-[#114027] text-white font-bold py-2.5 rounded-xl shadow-md transition text-sm">
-                বার্তা পাঠান
+
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">আপনার বার্তা / জিজ্ঞাসা <span class="text-rose-600 font-extrabold">*</span></label>
+                <textarea id="contactMsgText" required rows="3" minlength="3" maxlength="1500" placeholder="সফটওয়্যার সম্পর্কে বিস্তারিত জানতে চাই..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition"></textarea>
+              </div>
+
+              <button type="submit" id="contactSubmitBtn" class="w-full bg-[#165333] hover:bg-[#114027] text-white font-bold py-2.5 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2 cursor-pointer">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span id="contactSubmitBtnText">বার্তা পাঠান</span>
               </button>
             </form>
           </div>
@@ -2724,27 +2751,49 @@
 
       <!-- মেসেজ পাঠানোর ফরম -->
       <form onsubmit="handleContactSubmit(event)" class="space-y-3 text-xs pt-1 border-t border-slate-100">
-        <h4 class="font-bold text-slate-800">সরাসরি বার্তা পাঠান:</h4>
-        <div class="grid grid-cols-2 gap-3">
+        <h4 class="font-bold text-slate-800 flex items-center justify-between">
+          <span>সরাসরি বার্তা পাঠান:</span>
+          <span class="text-[10px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">🔒 সরাসরি মালিকের ইনবক্সে</span>
+        </h4>
+
+        <!-- অ্যালার্ট মেসেজ ব্যানার -->
+        <div id="modalContactAlertBanner" class="hidden text-xs p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-circle-exclamation text-rose-600 flex-shrink-0"></i>
+          <span id="modalContactAlertText"></span>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">আপনার নাম <span class="text-rose-600 font-extrabold">*</span></label>
+          <input type="text" id="modalContactName" required placeholder="মুহতামিম / প্রধান শিক্ষক" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="font-bold text-slate-700 block mb-1">আপনার নাম *</label>
-            <input type="text" id="modalContactName" required placeholder="মুহতামিম / প্রধান শিক্ষক" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm">
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-bold text-slate-700 block">মোবাইল নম্বর <span class="text-rose-600 font-extrabold">*</span></label>
+              <span id="modalContactPhoneCounter" class="text-[10px] font-mono text-slate-500 font-semibold bg-slate-100 px-1.5 py-0.5 rounded-full">০/১১</span>
+            </div>
+            <input type="tel" id="modalContactPhone" required maxlength="11" placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
           </div>
           <div>
-            <label class="font-bold text-slate-700 block mb-1">মোবাইল নম্বর *</label>
-            <input type="tel" id="modalContactPhone" required placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono">
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-bold text-slate-700 block">আপনার ইমেইল / জিমেইল <span class="text-rose-600 font-extrabold">*</span></label>
+            </div>
+            <input type="email" id="modalContactEmail" required placeholder="example@gmail.com" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
           </div>
         </div>
+
         <div>
           <label class="font-bold text-slate-700 block mb-1">প্রতিষ্ঠানের নাম</label>
-          <input type="text" id="modalContactInst" placeholder="মাদ্রাসা বা স্কুলের নাম..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm">
+          <input type="text" id="modalContactInst" placeholder="মাদ্রাসা বা স্কুলের নাম..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
         </div>
         <div>
-          <label class="font-bold text-slate-700 block mb-1">আপনার প্রশ্ন বা বার্তা *</label>
-          <textarea id="modalContactMsg" required rows="3" placeholder="সফটওয়্যার প্যাকেজ বা ফিচার সম্পর্কে বিস্তারিত জানতে চাই..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm"></textarea>
+          <label class="font-bold text-slate-700 block mb-1">আপনার প্রশ্ন বা বার্তা <span class="text-rose-600 font-extrabold">*</span></label>
+          <textarea id="modalContactMsg" required rows="3" placeholder="সফটওয়্যার প্যাকেজ বা ফিচার সম্পর্কে বিস্তারিত জানতে চাই..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition"></textarea>
         </div>
-        <button type="submit" class="w-full bg-[#165333] hover:bg-[#114027] text-white font-bold py-2.5 rounded-xl shadow-md transition text-sm">
-          বার্তা পাঠিয়ে দিন
+        <button type="submit" id="modalContactSubmitBtn" class="w-full bg-[#165333] hover:bg-[#114027] text-white font-bold py-2.5 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>বার্তা পাঠিয়ে দিন</span>
         </button>
       </form>
     </div>

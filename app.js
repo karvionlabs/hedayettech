@@ -12,12 +12,33 @@ function escapeHtml(str) {
 }
 
 // ==========================================
+// Stricx API সিকিউরিটি ইন্টারসেপ্টর (Auto Admin Token Attachment)
+// ==========================================
+const _origFetch = window.fetch;
+window.fetch = function(url, options = {}) {
+  const token = sessionStorage.getItem('admin_token');
+  if (token && typeof url === 'string' && url.startsWith('/api')) {
+    options = options || {};
+    options.headers = options.headers || {};
+    if (options.headers instanceof Headers) {
+      if (!options.headers.has('x-admin-token')) {
+        options.headers.set('x-admin-token', token);
+      }
+    } else {
+      options.headers['x-admin-token'] = options.headers['x-admin-token'] || token;
+    }
+  }
+  return _origFetch(url, options);
+};
+
+// ==========================================
 // গ্লোবাল ভেরিয়েবল ও ইনিশিয়ালাইজেশন
 // ==========================================
 let financeChartInstance = null;
 let currentTab = 'dashboard';
 let globalClasses = [];
 let globalStudents = [];
+let pendingAdminTargetTab = 'dashboard';
 
 document.addEventListener('DOMContentLoaded', () => {
   initDateDisplay();
@@ -33,9 +54,23 @@ function initDateDisplay() {
 }
 
 // ==========================================
-// হোম পেজ ও অ্যাডমিন কনসোল স্যুইচিং
+// হোম পেজ ও অ্যাডমিন কনসোল স্যুইচিং ও সিকিউরিটি গেটওয়ে
 // ==========================================
 function openAdminConsole(targetTab = 'dashboard') {
+  pendingAdminTargetTab = targetTab;
+  const token = sessionStorage.getItem('admin_token');
+  if (!token) {
+    const errorEl = document.getElementById('adminLoginError');
+    if (errorEl) errorEl.classList.add('hidden');
+    const pinInput = document.getElementById('adminPinInput');
+    if (pinInput) pinInput.value = '';
+    openModal('adminLoginModal');
+    setTimeout(() => {
+      if (pinInput) pinInput.focus();
+    }, 200);
+    return;
+  }
+
   const home = document.getElementById('public-homepage');
   const admin = document.getElementById('admin-console');
 
@@ -43,6 +78,75 @@ function openAdminConsole(targetTab = 'dashboard') {
     home.classList.add('hidden');
     admin.classList.remove('hidden');
     switchTab(targetTab);
+  }
+}
+
+async function submitAdminLogin(e) {
+  if (e) e.preventDefault();
+  const pinInput = document.getElementById('adminPinInput');
+  const errorEl = document.getElementById('adminLoginError');
+  const pin = pinInput ? pinInput.value.trim() : '';
+
+  if (!pin) {
+    if (errorEl) {
+      errorEl.innerText = 'অনুগ্রহ করে সিকিউরিটি পিন দিন!';
+      errorEl.classList.remove('hidden');
+    }
+    return;
+  }
+
+  try {
+    const res = await _origFetch('/api/auth/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin })
+    });
+    const data = await res.json();
+    if (data.success) {
+      sessionStorage.setItem('admin_token', data.token);
+      closeModal('adminLoginModal');
+      if (pinInput) pinInput.value = '';
+      if (errorEl) errorEl.classList.add('hidden');
+
+      const home = document.getElementById('public-homepage');
+      const admin = document.getElementById('admin-console');
+      if (home && admin) {
+        home.classList.add('hidden');
+        admin.classList.remove('hidden');
+        switchTab(pendingAdminTargetTab || 'dashboard');
+      }
+    } else {
+      if (errorEl) {
+        errorEl.innerText = data.error || 'ভুল সিকিউরিটি পিন! পুনরায় চেষ্টা করুন।';
+        errorEl.classList.remove('hidden');
+      }
+    }
+  } catch (err) {
+    if (errorEl) {
+      errorEl.innerText = 'সার্ভারের সাথে সংযোগ স্থাপন করা সম্ভব হয়নি।';
+      errorEl.classList.remove('hidden');
+    }
+  }
+}
+
+function adminLogout() {
+  sessionStorage.removeItem('admin_token');
+  closeAdminConsole();
+  alert('আলহামদুলিল্লাহ! আপনি নিরাপদে ড্যাশবোর্ড থেকে লগআউট করেছেন।');
+}
+
+function togglePinVisibility() {
+  const pinInput = document.getElementById('adminPinInput');
+  const icon = document.getElementById('pinToggleIcon');
+  if (!pinInput || !icon) return;
+  if (pinInput.type === 'password') {
+    pinInput.type = 'text';
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+  } else {
+    pinInput.type = 'password';
+    icon.classList.remove('fa-eye-slash');
+    icon.classList.add('fa-eye');
   }
 }
 
@@ -341,35 +445,35 @@ async function loadStudents() {
       const tr = document.createElement('tr');
       tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
       tr.innerHTML = `
-        <td class="p-3.5 font-mono font-bold text-madrasa-900">${s.admission_no}</td>
-        <td class="p-3.5 font-bold">${s.roll_no.toLocaleString('bn-BD')}</td>
+        <td class="p-3.5 font-mono font-bold text-madrasa-900">${escapeHtml(s.admission_no)}</td>
+        <td class="p-3.5 font-bold">${escapeHtml(s.roll_no ? s.roll_no.toLocaleString('bn-BD') : '')}</td>
         <td class="p-3.5">
-          <div class="font-bold text-slate-800 text-sm">${s.name_bn}</div>
-          <div class="font-arabic text-emerald-800 text-xs">${s.name_ar || ''}</div>
+          <div class="font-bold text-slate-800 text-sm">${escapeHtml(s.name_bn)}</div>
+          <div class="font-arabic text-emerald-800 text-xs">${escapeHtml(s.name_ar || '')}</div>
         </td>
-        <td class="p-3.5 font-semibold text-slate-700">${s.class_name || '-'}</td>
+        <td class="p-3.5 font-semibold text-slate-700">${escapeHtml(s.class_name || '-')}</td>
         <td class="p-3.5">
           <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${s.residential ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}">
             ${s.residential ? 'আবাসিক' : 'অনাবাসিক'}
           </span>
           ${s.free_type === 'FULL_FREE' ? `
             <span class="block mt-1 bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.5 rounded text-[9px] font-black">
-              মুফত এতিম (${s.sponsor_name || 'লিল্লাহ ফান্ড'})
+              মুফত এতিম (${escapeHtml(s.sponsor_name || 'লিল্লাহ ফান্ড')})
             </span>
           ` : (s.free_type === 'HALF_FREE' ? `
             <span class="block mt-1 bg-emerald-50 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded text-[9px] font-bold">
-              অর্ধ-মুফত (${s.sponsor_name || 'দাতা অনুদান'})
+              অর্ধ-মুফত (${escapeHtml(s.sponsor_name || 'দাতা অনুদান')})
             </span>
           ` : '')}
         </td>
         <td class="p-3.5">
-          <div class="font-bold text-slate-800">${s.guardian_name}</div>
-          <div class="text-[11px] text-slate-500 font-mono"><i class="fa-solid fa-phone text-emerald-600"></i> ${s.guardian_phone}</div>
+          <div class="font-bold text-slate-800">${escapeHtml(s.guardian_name)}</div>
+          <div class="text-[11px] text-slate-500 font-mono"><i class="fa-solid fa-phone text-emerald-600"></i> ${escapeHtml(s.guardian_phone)}</div>
         </td>
-        <td class="p-3.5"><span class="bg-rose-50 text-rose-700 px-2 py-0.5 rounded font-bold">${s.blood_group || 'O+'}</span></td>
-        <td class="p-3.5 text-right font-bold text-madrasa-900">৳ ${s.monthly_fee.toLocaleString('bn-BD')}</td>
+        <td class="p-3.5"><span class="bg-rose-50 text-rose-700 px-2 py-0.5 rounded font-bold">${escapeHtml(s.blood_group || 'O+')}</span></td>
+        <td class="p-3.5 text-right font-bold text-madrasa-900">৳ ${escapeHtml(s.monthly_fee ? s.monthly_fee.toLocaleString('bn-BD') : '০')}</td>
         <td class="p-3.5 text-center">
-          <button onclick="printIdCard('${s.name_bn}', '${s.admission_no}', '${s.roll_no}', '${s.class_name}')" class="text-xs bg-slate-100 hover:bg-madrasa-900 hover:text-white px-2.5 py-1.5 rounded-lg transition" title="ডিজিটাল আইডি কার্ড">
+          <button onclick="printIdCard(${s.id})" class="text-xs bg-slate-100 hover:bg-madrasa-900 hover:text-white px-2.5 py-1.5 rounded-lg transition" title="ডিজিটাল আইডি কার্ড">
             <i class="fa-solid fa-id-card"></i>
           </button>
         </td>
@@ -1117,7 +1221,22 @@ async function submitBazaarForm(e) {
   }
 }
 
-function printIdCard(name, admissionNo, roll, className) {
+function printIdCard(target, admissionNo, roll, className) {
+  let sName = target;
+  let sAdm = admissionNo;
+  let sRoll = roll;
+  let sClass = className;
+
+  if (typeof target === 'number' || (typeof target === 'string' && /^\d+$/.test(target))) {
+    const found = (globalStudents || []).find(x => x.id == target);
+    if (found) {
+      sName = found.name_bn;
+      sAdm = found.admission_no;
+      sRoll = found.roll_no ? found.roll_no.toLocaleString('bn-BD') : '';
+      sClass = found.class_name;
+    }
+  }
+
   const printWindow = window.open('', '', 'width=450,height=600');
   printWindow.document.write(`
     <html>
@@ -1127,10 +1246,10 @@ function printIdCard(name, admissionNo, roll, className) {
           body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #eee; }
           .card { width: 320px; height: 480px; background: white; border-radius: 16px; border: 3px solid #145032; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); text-align: center; }
           .header { background: #145032; color: #d4af37; padding: 20px 10px; }
-          .header h3 { margin: 0; font-size: 16px; font-weight: bold; }
+          .header h3 { margin: 0; font-size: 15px; font-weight: bold; }
           .header p { margin: 4px 0 0; font-size: 11px; color: #a7f3d0; }
           .avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #d4af37; margin: 20px auto 10px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #145032; }
-          .name { font-size: 18px; font-weight: bold; color: #145032; margin-bottom: 5px; }
+          .name { font-size: 17px; font-weight: bold; color: #145032; margin-bottom: 5px; }
           .info { font-size: 13px; color: #475569; line-height: 1.6; margin-top: 15px; }
           .footer { margin-top: 25px; border-top: 1px dashed #cbd5e1; padding-top: 15px; font-size: 11px; color: #94a3b8; }
         </style>
@@ -1138,15 +1257,15 @@ function printIdCard(name, admissionNo, roll, className) {
       <body>
         <div class="card">
           <div class="header">
-            <h3>হেদায়েত টেক মাদ্রাসা</h3>
+            <h3>মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা</h3>
             <p>ডিজিটাল স্টুডেন্ট আইডি কার্ড</p>
           </div>
           <div class="avatar">👤</div>
-          <div class="name">${name}</div>
+          <div class="name">${escapeHtml(sName)}</div>
           <div class="info">
-            <div><b>দাখেলা নং:</b> ${admissionNo}</div>
-            <div><b>রোল নম্বর:</b> ${roll}</div>
-            <div><b>জামাত:</b> ${className}</div>
+            <div><b>দাখেলা নং:</b> ${escapeHtml(sAdm)}</div>
+            <div><b>রোল নম্বর:</b> ${escapeHtml(sRoll)}</div>
+            <div><b>জামাত:</b> ${escapeHtml(sClass || 'হিফজ বিভাগ')}</div>
             <div><b>সেশন:</b> ২০২৬-২০২৭</div>
           </div>
           <div class="footer">
@@ -1452,10 +1571,10 @@ function printSeatStickers() {
   const w = window.open('', '', 'width=750,height=700');
   const sticker = (roll, name, jamat) => `
     <div style="border: 2px solid #0c351f; border-radius: 10px; padding: 12px; text-align: center; background: #fff; box-sizing: border-box;">
-      <div style="font-size: 11px; font-weight: bold; color: #0c351f;">হেদায়েত টেক মাদ্রাসা পরীক্ষা ২০২৬</div>
-      <div style="font-size: 32px; font-weight: 900; color: #b45309; line-height: 1; margin: 6px 0;">রোল: ${roll}</div>
-      <div style="font-size: 13px; font-weight: bold; color: #1e293b;">${name}</div>
-      <div style="font-size: 11px; color: #64748b;">জামাত: ${jamat}</div>
+      <div style="font-size: 11px; font-weight: bold; color: #0c351f;">মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা পরীক্ষা ২০২৬</div>
+      <div style="font-size: 32px; font-weight: 900; color: #b45309; line-height: 1; margin: 6px 0;">রোল: ${escapeHtml(roll)}</div>
+      <div style="font-size: 13px; font-weight: bold; color: #1e293b;">${escapeHtml(name)}</div>
+      <div style="font-size: 11px; color: #64748b;">জামাত: ${escapeHtml(jamat)}</div>
     </div>
   `;
 
@@ -1505,13 +1624,13 @@ async function loadAdmissions() {
 
     tbody.innerHTML = data.admissions.map(a => `
       <tr class="hover:bg-slate-50 transition">
-        <td class="p-3.5 font-mono font-bold text-slate-700">#ADM-${a.id}</td>
-        <td class="p-3.5 font-bold text-slate-900">${a.applicant_name}</td>
-        <td class="p-3.5 text-slate-600">${a.father_name}</td>
-        <td class="p-3.5 font-mono text-slate-700">${a.phone}</td>
-        <td class="p-3.5"><span class="bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-md font-bold">${a.class_name || 'হিফজুল কুরআন'}</span></td>
-        <td class="p-3.5 font-medium">${a.residential_type}</td>
-        <td class="p-3.5 text-slate-500">${a.address}</td>
+        <td class="p-3.5 font-mono font-bold text-slate-700">#ADM-${escapeHtml(a.id)}</td>
+        <td class="p-3.5 font-bold text-slate-900">${escapeHtml(a.applicant_name)}</td>
+        <td class="p-3.5 text-slate-600">${escapeHtml(a.father_name)}</td>
+        <td class="p-3.5 font-mono text-slate-700">${escapeHtml(a.phone)}</td>
+        <td class="p-3.5"><span class="bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-md font-bold">${escapeHtml(a.class_name || 'হিফজুল কুরআন')}</span></td>
+        <td class="p-3.5 font-medium">${escapeHtml(a.residential_type)}</td>
+        <td class="p-3.5 text-slate-500">${escapeHtml(a.address)}</td>
         <td class="p-3.5">
           <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${a.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
             ${a.status === 'APPROVED' ? 'অনুমোদিত ✓' : 'অপেক্ষমাণ ⏳'}
@@ -2417,8 +2536,8 @@ async function openSponsorCardsModal() {
                   <i class="fa-solid fa-graduation-cap"></i>
                 </div>
                 <div>
-                  <h4 class="font-extrabold text-sm text-slate-900">${s.name_bn}</h4>
-                  <p class="text-[11px] text-slate-500">${s.class_name} • দাখেলা: <span class="font-mono font-bold">${s.admission_no}</span></p>
+                  <h4 class="font-extrabold text-sm text-slate-900">${escapeHtml(s.name_bn)}</h4>
+                  <p class="text-[11px] text-slate-500">${escapeHtml(s.class_name)} • দাখেলা: <span class="font-mono font-bold">${escapeHtml(s.admission_no)}</span></p>
                 </div>
               </div>
               <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2.5 py-1 rounded-full border border-amber-300">
@@ -2429,19 +2548,19 @@ async function openSponsorCardsModal() {
             <div class="space-y-1.5 text-xs text-slate-700">
               <div class="flex justify-between bg-white p-2 rounded-xl border border-slate-100">
                 <span class="text-slate-500 font-medium">শ্রদ্ধেয় দাতা / স্পনসর:</span>
-                <span class="font-bold text-emerald-800">${s.sponsor_name || 'সাধারণ লিল্লাহ ফান্ড'}</span>
+                <span class="font-bold text-emerald-800">${escapeHtml(s.sponsor_name || 'সাধারণ লিল্লাহ ফান্ড')}</span>
               </div>
               <div class="flex justify-between p-1 text-[11px]">
                 <span class="text-slate-500">উপস্থিতি শতকরা:</span>
-                <span class="font-bold text-emerald-700">${s.attendancePercent}% (নিয়মিত)</span>
+                <span class="font-bold text-emerald-700">${escapeHtml(s.attendancePercent)}% (নিয়মিত)</span>
               </div>
               <div class="flex justify-between p-1 text-[11px]">
                 <span class="text-slate-500">পড়ালেখার অগ্রগতি:</span>
-                <span class="font-bold text-slate-900">${hifzInfo}</span>
+                <span class="font-bold text-slate-900">${escapeHtml(hifzInfo)}</span>
               </div>
               <div class="flex justify-between p-1 text-[11px]">
                 <span class="text-slate-500">শারীরিক স্বাস্থ্য:</span>
-                <span class="font-bold text-slate-800">${healthStatus}</span>
+                <span class="font-bold text-slate-800">${escapeHtml(healthStatus)}</span>
               </div>
             </div>
 
@@ -2451,7 +2570,7 @@ async function openSponsorCardsModal() {
 
             <div class="pt-1 flex items-center justify-between">
               <span class="text-[10px] text-slate-400">প্রতিষ্ঠান প্রধানের সত্যায়িত</span>
-              <button onclick="printSingleSponsorCard('${s.name_bn}', '${s.class_name}', '${s.admission_no}', '${s.sponsor_name || 'সাধারণ দাতা ফান্ড'}', '${hifzInfo}')" class="bg-emerald-800 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1 shadow-sm">
+              <button onclick="printSingleSponsorCard('${escapeHtml(s.name_bn)}', '${escapeHtml(s.class_name)}', '${escapeHtml(s.admission_no)}', '${escapeHtml(s.sponsor_name || 'সাধারণ দাতা ফান্ড')}', '${escapeHtml(hifzInfo)}')" class="bg-emerald-800 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1 shadow-sm">
                 <i class="fa-solid fa-print"></i> কার্ড প্রিন্ট
               </button>
             </div>
@@ -2481,10 +2600,10 @@ function printSingleSponsorCard(name, className, admissionNo, sponsor, progress)
             <h2 style="font-size: 20px; font-weight: bold; color: #0d3822; margin: 0;">মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা</h2>
             <p style="font-size: 11px; color: #666; margin: 4px 0 0 0;">এতিম ও মুফত ছাত্র স্পনসরশিপ অগ্রগতি কার্ড</p>
           </div>
-          <p><strong>শিক্ষার্থীর নাম:</strong> ${name}</p>
-          <p><strong>জামাত:</strong> ${className} (দাখেলা নং: ${admissionNo})</p>
-          <p><strong>সম্মানিত স্পনসর:</strong> ${sponsor}</p>
-          <p><strong>হিফজ ও পড়ালেখার অগ্রগতি:</strong> ${progress}</p>
+          <p><strong>শিক্ষার্থীর নাম:</strong> ${escapeHtml(name)}</p>
+          <p><strong>জামাত:</strong> ${escapeHtml(className)} (দাখেলা নং: ${escapeHtml(admissionNo)})</p>
+          <p><strong>সম্মানিত স্পনসর:</strong> ${escapeHtml(sponsor)}</p>
+          <p><strong>হিফজ ও পড়ালেখার অগ্রগতি:</strong> ${escapeHtml(progress)}</p>
           <div style="margin: 20px 0; background: #e6f4ea; border: 1px dashed #145032; padding: 12px; border-radius: 10px; font-style: italic; text-align: center; font-size: 12px;">
             "হে আল্লাহ! আমার শ্রদ্ধেয় স্পনসরকারী দাতা মহোদয়কে দুনিয়া ও আখিরাতে উত্তম জাযা এবং বরকত দান করুন। আমিন।"
           </div>

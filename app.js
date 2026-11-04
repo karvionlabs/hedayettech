@@ -43,7 +43,43 @@ let pendingAdminTargetTab = 'dashboard';
 document.addEventListener('DOMContentLoaded', () => {
   initDateDisplay();
   loadClasses();
+  checkStealthHashRoute();
 });
+
+// ==========================================
+// স্টিলথ অ্যাডমিন অ্যাক্সেস কন্ট্রোলার (Stealth Admin Security Access)
+// ==========================================
+function checkStealthHashRoute() {
+  const hash = (window.location.hash || '').toLowerCase();
+  if (['#admin', '#portal', '#control', '#owner'].includes(hash)) {
+    openAdminConsole();
+  }
+}
+window.addEventListener('hashchange', checkStealthHashRoute);
+
+// সিক্রেট কিবোর্ড শর্টকাট (Ctrl + Shift + A অথবা Alt + A)
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) || (e.altKey && (e.key === 'a' || e.key === 'A'))) {
+    e.preventDefault();
+    openAdminConsole();
+  }
+});
+
+// ফুটার ব্র্যান্ডে সিক্রেট ট্রিপল ক্লিক
+let stealthClickCount = 0;
+let stealthClickTimer = null;
+function handleStealthAdminClick(e) {
+  stealthClickCount++;
+  clearTimeout(stealthClickTimer);
+  stealthClickTimer = setTimeout(() => {
+    stealthClickCount = 0;
+  }, 1200);
+
+  if (stealthClickCount >= 3) {
+    stealthClickCount = 0;
+    openAdminConsole();
+  }
+}
 
 // হিজরি ও বাংলা তারিখ
 function initDateDisplay() {
@@ -157,6 +193,9 @@ function closeAdminConsole() {
   if (home && admin) {
     admin.classList.add('hidden');
     home.classList.remove('hidden');
+    if (window.location.hash) {
+      history.replaceState(null, null, window.location.pathname);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
@@ -180,13 +219,7 @@ function toggleMobileNav() {
 }
 
 function filterHomeCategory(cat) {
-  if (cat === 'হিফজ') {
-    openAdminConsole('hifz');
-  } else if (cat === 'কওমি') {
-    openAdminConsole('academics');
-  } else {
-    openAdminConsole('students');
-  }
+  scrollToSection('features-section');
 }
 
 // ==========================================

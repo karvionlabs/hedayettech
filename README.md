@@ -1,9 +1,14 @@
 # 🕌 মাদ্রাসা ম্যানেজমেন্ট সিস্টেম ওএস (Madrasa Management System OS)
 > **হেদায়েত টেক (Hedayet Tech)** এবং **মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা**-এর জন্য বিশেষায়িত স্মার্ট মাদ্রাসা ইআরপি ও অটোমেশন প্ল্যাটফর্ম।
 
+🌐 **ক্লাউডফ্লেয়ার লাইভ লিঙ্ক (Cloudflare Global Live):**  
+👉 **[https://engage-funky-smart-wan.trycloudflare.com](https://engage-funky-smart-wan.trycloudflare.com)**  
+*(সারা বিশ্ব থেকে যে কেউ সরাসরি ব্রাউজারে প্রবেশ করে লাইভ দেখতে পারবে)*
+
 [![Node.js Version](https://img.shields.io/badge/Node.js-v22+-16a34a?style=for-the-badge&logo=node.js)](https://nodejs.org)
 [![Express](https://img.shields.io/badge/Express-4.21-000000?style=for-the-badge&logo=express)](https://expressjs.com)
 [![SQLite WAL](https://img.shields.io/badge/Database-SQLite%20(WAL)-003b57?style=for-the-badge&logo=sqlite)](https://sqlite.org)
+[![Cloudflare Tunnel](https://img.shields.io/badge/Live-Cloudflare%20Edge-f38020?style=for-the-badge&logo=cloudflare)](https://engage-funky-smart-wan.trycloudflare.com)
 [![Security](https://img.shields.io/badge/Security-Helmet%20%2B%20Zero--Leak-gold?style=for-the-badge&logo=shield)](https://owasp.org)
 [![Architecture](https://img.shields.io/badge/Design-Islamic%20Emerald%20%26%20Gold-145032?style=for-the-badge)](#)
 

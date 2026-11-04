@@ -31,16 +31,16 @@ const globalApiLimiter = rateLimit({
   }
 });
 
-// ৩. স্পর্শকাতর পোস্ট এপিআই রেট লিমিটার (ভর্তি আবেদন ও ডেমো লিড স্প্যাম প্রতিরোধ - প্রতি ১৫ মিনিটে ১৫টি)
+// ৩. স্পর্শকাতর পোস্ট এপিআই রেট লিমিটার (ভর্তি আবেদন ও ডেমো লিড স্প্যাম প্রতিরোধ - প্রতি ১৫ মিনিটে ৬০টি)
 const strictLeadLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 15,
+  max: 60,
   standardHeaders: true,
   legacyHeaders: false,
   validate: { xForwardedForHeader: false },
   message: {
     success: false,
-    error: 'অল্প সময়ের মধ্যে একাধিক আবেদন পাঠানো হয়েছে। অনুগ্রহ করে ১৫ মিনিট পর চেষ্টা করুন।'
+    error: 'অল্প সময়ের মধ্যে একাধিক আবেদন পাঠানো হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।'
   }
 });
 

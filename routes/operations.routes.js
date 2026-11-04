@@ -4,9 +4,16 @@ const db = require('../database');
 const { strictLeadLimiter } = require('../middleware/security');
 
 // ইনপুট স্যানিটাইজার (XSS / SQL Injection প্রিভেনশন)
-function sanitizeInput(str) {
+function sanitizeInput(str, maxLength = 255) {
   if (typeof str !== 'string') return '';
-  return str.replace(/[<>'"`;\\]/g, '').trim();
+  return str.replace(/<[^>]*>?/gm, '').replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '').trim().substring(0, maxLength);
+}
+
+// বাংলা ডিজিট থেকে ইংরেজি ডিজিট কনভার্টার
+function normalizeBanglaToEng(str) {
+  if (!str) return '';
+  const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+  return String(str).replace(/[০-৯]/g, d => bnDigits.indexOf(d));
 }
 
 // ১. হাজিরা তালিকা ও উপস্থিতি
@@ -92,7 +99,7 @@ router.post('/leads/demo', strictLeadLimiter, (req, res) => {
       });
     }
 
-    const cleanPhone = (phone || '').replace(/\D/g, '');
+    const cleanPhone = normalizeBanglaToEng(phone || '').replace(/\D/g, '');
     const bdPhoneRegex = /^01[3-9]\d{8}$/;
     if (!bdPhoneRegex.test(cleanPhone) || cleanPhone.length !== 11) {
       return res.status(400).json({

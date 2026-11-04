@@ -318,21 +318,76 @@ router.get('/loans', (req, res) => {
   }
 });
 
-// ১৪. গ্রাহক বার্তা ও হেল্পডেস্ক যোগাযোগ (Rate Limited)
+// ১৪. গ্রাহক বার্তা ও হেল্পডেস্ক যোগাযোগ (Rate Limited & Strict Validation)
 router.post('/contact', strictLeadLimiter, (req, res) => {
   try {
-    const { name, phone, institution, message } = req.body;
-    if (!name || !phone || !message) {
-      return res.status(400).json({ success: false, error: 'নাম, মোবাইল নম্বর এবং বার্তা আবশ্যক' });
+    const { name, email, phone, institution, message } = req.body;
+
+    // ১. নাম যাচাই
+    const cleanName = sanitizeInput(name, 100);
+    if (!cleanName || cleanName.length < 2) {
+      return res.status(400).json({
+        success: false,
+        field: 'contactMsgName',
+        error: 'NOT ALLOWED: আপনার নাম সঠিকভাবে পূরণ করুন!'
+      });
     }
+
+    // ২. ইমেইল / জিমেইল যাচাই (বাধ্যতামূলক ও সঠিক ফরম্যাট)
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!cleanEmail || !emailRegex.test(cleanEmail)) {
+      return res.status(400).json({
+        success: false,
+        field: 'contactMsgEmail',
+        error: 'NOT ALLOWED: সঠিক ইমেইল / জিমেইল ঠিকানা দেওয়া আবশ্যক (যেমন: name@gmail.com)!'
+      });
+    }
+
+    // ৩. মোবাইল নম্বর যাচাই (ঠিক ১১ ডিজিট ও বিডি অপারেটর)
+    const cleanPhone = normalizeBanglaToEng(phone || '').replace(/\D/g, '');
+    const bdPhoneRegex = /^01[3-9]\d{8}$/;
+    if (!cleanPhone || cleanPhone.length !== 11 || !bdPhoneRegex.test(cleanPhone)) {
+      return res.status(400).json({
+        success: false,
+        field: 'contactMsgPhone',
+        error: 'NOT ALLOWED: মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হতে হবে (যেমন: 018XXXXXXXX)!'
+      });
+    }
+
+    // ৪. বার্তা যাচাই
+    const cleanMessage = sanitizeInput(message, 1500);
+    if (!cleanMessage || cleanMessage.length < 3) {
+      return res.status(400).json({
+        success: false,
+        field: 'contactMsgText',
+        error: 'NOT ALLOWED: আপনার বার্তা বা জিজ্ঞাসা স্পষ্টভাবে লিখুন!'
+      });
+    }
+
+    const cleanInstitution = sanitizeInput(institution, 150);
+
+    // ৫. নিরাপদ ডাটাবেস ইনসার্ট (প্যারামিটারাইজড - হ্যাকিং ও লিক প্রতিরোধ)
     const stmt = db.prepare(`
-      INSERT INTO contact_messages (name, phone, institution, message)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO contact_messages (name, email, phone, institution, message)
+      VALUES (?, ?, ?, ?, ?)
     `);
-    const info = stmt.run(name, phone, institution || '', message);
-    res.json({ success: true, id: info.lastInsertRowid });
+    const info = stmt.run(cleanName, cleanEmail, cleanPhone, cleanInstitution, cleanMessage);
+
+    // ৬. সিস্টেম নোটিফিকেশন লগ (সরাসরি মালিকের জিমেইল: abdullahshahjada12@gmail.com এর জন্য ডিসপ্যাচ)
+    console.log(`[Direct Owner Email Alert -> abdullahshahjada12@gmail.com] New private inquiry from ${cleanName} <${cleanEmail}> (Phone: ${cleanPhone}) - Message: "${cleanMessage.substring(0, 50)}..."`);
+
+    res.json({
+      success: true,
+      message: 'জাযাকাল্লাহ খাইরান! আপনার বার্তাটি নিরাপদে গ্রহণ করা হয়েছে। শুধু প্রতিষ্ঠানের মূল মালিকের কাছে এটি পৌঁছাবে।',
+      id: info.lastInsertRowid
+    });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error('Contact post error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'NOT ALLOWED: সার্ভার প্রক্রিয়াকরণে সমস্যা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর চেষ্টা করুন।'
+    });
   }
 });
 

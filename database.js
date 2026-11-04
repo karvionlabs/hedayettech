@@ -273,6 +273,7 @@ function initDatabase() {
     CREATE TABLE IF NOT EXISTS contact_messages (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
+      email TEXT,
       phone TEXT NOT NULL,
       institution TEXT,
       message TEXT NOT NULL,

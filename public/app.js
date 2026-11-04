@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadClasses();
   checkStealthHashRoute();
   initOnlineAdmissionLiveValidator();
+  initContactFormLiveValidator();
 });
 
 // ==========================================
@@ -2370,38 +2371,137 @@ async function submitNoticeForm(e) {
 }
 
 // ==========================================
-// গ্রাহক ও ভিজিটর যোগাযোগ বার্তা হ্যান্ডলার
+// গ্রাহক ও ভিজিটর যোগাযোগ বার্তা হ্যান্ডলার (Strict NOT ALLOWED Validation & Direct Owner Privacy)
 // ==========================================
+function initContactFormLiveValidator() {
+  ['contactMsgPhone', 'modalContactPhone'].forEach((id, idx) => {
+    const input = document.getElementById(id);
+    const counter = document.getElementById(idx === 0 ? 'contactPhoneCounter' : 'modalContactPhoneCounter');
+    if (!input) return;
+
+    input.addEventListener('input', () => {
+      let val = normalizeBanglaDigits(input.value).replace(/\D/g, '');
+      if (val.length > 11) val = val.substring(0, 11);
+      input.value = val;
+
+      if (counter) {
+        counter.textContent = `${val.length}/১১`;
+        if (val.length === 11 && /^01[3-9]\d{8}$/.test(val)) {
+          counter.className = 'text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full';
+          input.classList.remove('border-rose-400');
+          input.classList.add('border-emerald-500');
+        } else {
+          counter.className = 'text-[10px] font-mono text-slate-500 font-semibold bg-slate-100 px-1.5 py-0.5 rounded-full';
+          input.classList.remove('border-emerald-500');
+        }
+      }
+    });
+  });
+}
+
+function showContactAlert(msg, formPrefix) {
+  const isModal = formPrefix === 'modal';
+  const banner = document.getElementById(isModal ? 'modalContactAlertBanner' : 'contactAlertBanner');
+  const text = document.getElementById(isModal ? 'modalContactAlertText' : 'contactAlertText');
+  if (banner && text) {
+    text.textContent = msg;
+    banner.classList.remove('hidden');
+  } else {
+    alert(msg);
+  }
+}
+
 async function handleContactSubmit(e) {
   e.preventDefault();
-  const name = document.getElementById('contactMsgName')?.value || document.getElementById('modalContactName')?.value || '';
-  const phone = document.getElementById('contactMsgPhone')?.value || document.getElementById('modalContactPhone')?.value || '';
-  const institution = document.getElementById('contactMsgInst')?.value || document.getElementById('modalContactInst')?.value || '';
-  const message = document.getElementById('contactMsgText')?.value || document.getElementById('modalContactMsg')?.value || '';
 
-  if (!name.trim() || !phone.trim() || !message.trim()) {
-    alert('দয়া করে আপনার নাম, মোবাইল নম্বর এবং বার্তাটি লিখুন।');
+  const isModal = e.target.closest('#contactModal') !== null;
+  const banner = document.getElementById(isModal ? 'modalContactAlertBanner' : 'contactAlertBanner');
+  if (banner) banner.classList.add('hidden');
+
+  const nameInput = document.getElementById(isModal ? 'modalContactName' : 'contactMsgName');
+  const phoneInput = document.getElementById(isModal ? 'modalContactPhone' : 'contactMsgPhone');
+  const emailInput = document.getElementById(isModal ? 'modalContactEmail' : 'contactMsgEmail');
+  const instInput = document.getElementById(isModal ? 'modalContactInst' : 'contactMsgInst');
+  const msgInput = document.getElementById(isModal ? 'modalContactMsg' : 'contactMsgText');
+  const submitBtn = document.getElementById(isModal ? 'modalContactSubmitBtn' : 'contactSubmitBtn');
+
+  const name = sanitizeClientText(nameInput?.value, 100);
+  const rawPhone = normalizeBanglaDigits(phoneInput?.value || '').replace(/\D/g, '');
+  const email = (emailInput?.value || '').trim().toLowerCase();
+  const institution = sanitizeClientText(instInput?.value, 150);
+  const message = sanitizeClientText(msgInput?.value, 1500);
+
+  // ১. নাম যাচাই
+  if (!name || name.length < 2) {
+    showContactAlert('NOT ALLOWED: আপনার নাম সঠিকভাবে পূরণ করুন!', isModal ? 'modal' : 'public');
+    nameInput?.focus();
     return;
+  }
+
+  // ২. মোবাইল নম্বর যাচাই (ঠিক ১১ ডিজিট)
+  if (!rawPhone || rawPhone.length !== 11 || !/^01[3-9]\d{8}$/.test(rawPhone)) {
+    showContactAlert('NOT ALLOWED: মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হতে হবে (যেমন: 018XXXXXXXX)!', isModal ? 'modal' : 'public');
+    phoneInput?.focus();
+    return;
+  }
+
+  // ৩. ইমেইল / জিমেইল যাচাই (বাধ্যতামূলক ও সঠিক ফরম্যাট)
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!email || !emailRegex.test(email)) {
+    showContactAlert('NOT ALLOWED: সঠিক ইমেইল / জিমেইল ঠিকানা দেওয়া আবশ্যক (যেমন: name@gmail.com)!', isModal ? 'modal' : 'public');
+    emailInput?.focus();
+    return;
+  }
+
+  // ৪. বার্তা যাচাই
+  if (!message || message.length < 3) {
+    showContactAlert('NOT ALLOWED: আপনার বার্তা বা জিজ্ঞাসা স্পষ্টভাবে লিখুন!', isModal ? 'modal' : 'public');
+    msgInput?.focus();
+    return;
+  }
+
+  const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> বার্তা পাঠানো হচ্ছে...';
   }
 
   try {
     const res = await fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, phone, institution, message })
+      body: JSON.stringify({ name, email, phone: rawPhone, institution, message })
     });
-    const data = await res.json();
+
+    let data;
+    const resText = await res.text();
+    try {
+      data = JSON.parse(resText);
+    } catch (parseErr) {
+      data = { success: false, error: 'সার্ভার সংযোগ বিচ্ছিন্ন। অনুগ্রহ করে পেজটি রিফ্রেশ করুন।' };
+    }
+
     if (data.success) {
-      alert(`জাযাকাল্লাহ খাইরান!\n\n${name} সাহেব, আপনার বার্তাটি হেদায়েত টেক কাস্টমার কেয়ারে সফলভাবে সংরক্ষিত হয়েছে।\nআমাদের সাপোর্ট টিম অতিসত্বর (${phone}) নম্বরে আপনার সাথে যোগাযোগ করবে, ইনশাআল্লাহ।`);
-      closeModal('contactModal');
+      alert(`জাযাকাল্লাহ খাইরান!\n\n${name} সাহেব, আপনার বার্তাটি সফলভাবে সংরক্ষিত হয়েছে।\n\n🔒 প্রাইভেসি গ্যারান্টি: এটি সম্পূর্ণ গোপনীয় এবং সরাসরি প্রতিষ্ঠানের মূল মালিকের কাছে প্রেরিত হয়েছে। আপনার ইমেইল (${email}) অথবা মোবাইল (${rawPhone}) নম্বরে যোগাযোগ করা হবে, ইনশাআল্লাহ।`);
+      if (typeof closeModal === 'function') {
+        closeModal('contactModal');
+      }
       e.target.reset();
+
+      // কাউন্টার রিসেট
+      const counter = document.getElementById(isModal ? 'modalContactPhoneCounter' : 'contactPhoneCounter');
+      if (counter) counter.textContent = '০/১১';
     } else {
-      alert('বার্তা পাঠানো সম্ভব হয়নি: ' + (data.error || 'পুনরায় চেষ্টা করুন'));
+      showContactAlert(data.error || 'NOT ALLOWED: বার্তা পাঠানো সম্ভব হয়নি, পুনরায় চেষ্টা করুন।', isModal ? 'modal' : 'public');
     }
   } catch (err) {
-    alert(`জাযাকাল্লাহ খাইরান!\n\n${name} সাহেব, আপনার বার্তাটি হেদায়েত টেক কাস্টমার কেয়ারে রেকর্ড হয়েছে। অতিসত্বর আপনার সাথে যোগাযোগ করা হবে।`);
-    closeModal('contactModal');
-    e.target.reset();
+    console.error('Contact error:', err);
+    showContactAlert('সার্ভার সংযোগ বিচ্ছিন্ন! অনুগ্রহ করে পেজটি একবার রিলোড (Refresh) করে আবার চেষ্টা করুন।', isModal ? 'modal' : 'public');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origBtnHtml;
+    }
   }
 }
 

@@ -350,6 +350,9 @@ function initDatabase() {
   try {
     db.prepare("ALTER TABLE students ADD COLUMN sponsor_name TEXT").run();
   } catch (e) {}
+  try {
+    db.prepare("ALTER TABLE institution ADD COLUMN admin_pin TEXT DEFAULT '2026'").run();
+  } catch (e) {}
 
   // Seed sample data if empty
   const instCount = db.prepare('SELECT count(*) as count FROM institution').get();

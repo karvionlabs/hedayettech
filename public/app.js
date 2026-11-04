@@ -734,61 +734,126 @@ async function loadSettings() {
   }
 }
 
+async function updateAdminPin(e) {
+  if (e) e.preventDefault();
+  const currentPin = document.getElementById('currentPinInput')?.value?.trim();
+  const newPin = document.getElementById('newPinInput')?.value?.trim();
+  const confirmPin = document.getElementById('confirmPinInput')?.value?.trim();
+  const msgEl = document.getElementById('changePinMsg');
+
+  if (!currentPin || !newPin || !confirmPin) {
+    if (msgEl) {
+      msgEl.className = 'text-xs font-bold text-rose-600 block bg-rose-50 p-2.5 rounded-xl border border-rose-200';
+      msgEl.innerText = 'অনুগ্রহ করে সকল ফিল্ড পূরণ করুন!';
+    }
+    return;
+  }
+
+  if (newPin !== confirmPin) {
+    if (msgEl) {
+      msgEl.className = 'text-xs font-bold text-rose-600 block bg-rose-50 p-2.5 rounded-xl border border-rose-200';
+      msgEl.innerText = 'নতুন পিন এবং নিশ্চিতকরণ পিন মিলছে না!';
+    }
+    return;
+  }
+
+  if (newPin.length < 4) {
+    if (msgEl) {
+      msgEl.className = 'text-xs font-bold text-rose-600 block bg-rose-50 p-2.5 rounded-xl border border-rose-200';
+      msgEl.innerText = 'নতুন পিন কমপক্ষে ৪ অক্ষরের হতে হবে!';
+    }
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/auth/change-pin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ current_pin: currentPin, new_pin: newPin })
+    });
+    const data = await res.json();
+    if (data.success) {
+      sessionStorage.setItem('admin_token', data.token);
+      if (msgEl) {
+        msgEl.className = 'text-xs font-bold text-emerald-800 block bg-emerald-50 p-2.5 rounded-xl border border-emerald-300';
+        msgEl.innerText = data.message;
+      }
+      e.target.reset();
+      alert('আলহামদুলিল্লাহ! আপনার অ্যাডমিন পিন সফলভাবে আপডেট করা হয়েছে। পরবর্তী লগইনে এই নতুন পিন ব্যবহার করুন।');
+    } else {
+      if (msgEl) {
+        msgEl.className = 'text-xs font-bold text-rose-600 block bg-rose-50 p-2.5 rounded-xl border border-rose-200';
+        msgEl.innerText = data.error || 'পিন পরিবর্তন ব্যর্থ হয়েছে!';
+      }
+    }
+  } catch (err) {
+    if (msgEl) {
+      msgEl.className = 'text-xs font-bold text-rose-600 block bg-rose-50 p-2.5 rounded-xl border border-rose-200';
+      msgEl.innerText = 'সার্ভারে সংযোগ স্থাপন করা সম্ভব হয়নি!';
+    }
+  }
+}
+
 // ==========================================
 // ইউনিভার্সাল সার্চ ও অনলাইন রেজাল্ট ফাংশন
 // ==========================================
 async function handleUniversalSearch(e) {
   e.preventDefault();
-  const query = document.getElementById('universalSearchInput').value.trim();
+  const query = document.getElementById('universalSearchInput')?.value?.trim();
   if (!query) return;
 
-  // Search in students API
-  const res = await fetch(`/api/students?search=${encodeURIComponent(query)}`);
-  const data = await res.json();
+  const token = sessionStorage.getItem('admin_token');
+  if (!token) {
+    // পাবলিক অনুসন্ধান: ফলাফল মোডাল ওপেন
+    const input = document.getElementById('resultSearchRoll');
+    if (input) input.value = query;
+    openModal('onlineResultModal');
+    checkOnlineResult();
+    return;
+  }
 
-  if (data.success && data.students.length > 0) {
-    const s = data.students[0];
-    alert(`🔍 পাওয়া গেছে: ${s.name_bn} | দাখেলা: ${s.admission_no} | রোল: ${s.roll_no} | জামাত: ${s.class_name}\n\nসরাসরি ড্যাশবোর্ডে প্রোফাইল ওপেন করা হচ্ছে...`);
-    openAdminConsole('students');
-    const searchInput = document.getElementById('studentSearchInput');
-    if (searchInput) {
-      searchInput.value = s.admission_no;
-      loadStudents();
-    }
-  } else {
-    alert(`"${query}" দিয়ে কোনো তথ্য পাওয়া যায়নি। সরাসরি ম্যানেজমেন্ট ড্যাশবোর্ডে প্রবেশ করা হচ্ছে...`);
-    openAdminConsole('students');
+  // অ্যাডমিন অনুসন্ধান: সুরক্ষিত ড্যাশবোর্ডে ফিল্টার
+  openAdminConsole('students');
+  const searchInput = document.getElementById('studentSearchInput');
+  if (searchInput) {
+    searchInput.value = query;
+    loadStudents();
   }
 }
 
 async function checkOnlineResult() {
-  const query = document.getElementById('resultSearchRoll').value.trim();
+  const query = document.getElementById('resultSearchRoll')?.value?.trim();
   const output = document.getElementById('resultOutput');
   if (!query) {
     alert('অনুগ্রহ করে দাখেলা বা রোল নম্বর লিখুন');
     return;
   }
 
-  const res = await fetch(`/api/students?search=${encodeURIComponent(query)}`);
-  const data = await res.json();
+  try {
+    const res = await _origFetch(`/api/public/results?search=${encodeURIComponent(query)}`);
+    const data = await res.json();
 
-  if (data.success && data.students.length > 0) {
-    const s = data.students[0];
-    output.classList.remove('hidden');
-    output.innerHTML = `
-      <div class="space-y-1.5">
-        <div class="text-sm font-bold text-madrasa-900">${s.name_bn}</div>
-        <div class="text-xs text-slate-600">দাখেলা: <b>${s.admission_no}</b> | রোল: <b>${s.roll_no}</b></div>
-        <div class="text-xs text-slate-600">জামাত: <b>${s.class_name}</b></div>
-        <div class="mt-2 pt-2 border-t border-slate-200 flex items-center justify-between">
-          <span class="text-xs font-bold text-slate-700">ফলাফল গ্রেড:</span>
-          <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs">মুমতাজ (A+)</span>
+    if (data.success && data.student) {
+      const s = data.student;
+      output.classList.remove('hidden');
+      output.innerHTML = `
+        <div class="space-y-1.5">
+          <div class="text-sm font-bold text-madrasa-900">${escapeHtml(s.name_bn)}</div>
+          <div class="text-xs text-slate-600">দাখেলা: <b>${escapeHtml(s.admission_no)}</b> | রোল: <b>${escapeHtml(s.roll_no ? s.roll_no.toLocaleString('bn-BD') : '')}</b></div>
+          <div class="text-xs text-slate-600">জামাত: <b>${escapeHtml(s.class_name || 'হিফজ বিভাগ')}</b></div>
+          <div class="mt-2 pt-2 border-t border-slate-200 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700">ফলাফল গ্রেড:</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs">${escapeHtml(s.grade)}</span>
+          </div>
         </div>
-      </div>
-    `;
-  } else {
+      `;
+    } else {
+      output.classList.remove('hidden');
+      output.innerHTML = `<p class="text-rose-600 font-bold">${escapeHtml(data.message || 'কোনো ফলাফল পাওয়া যায়নি!')}</p>`;
+    }
+  } catch (err) {
     output.classList.remove('hidden');
-    output.innerHTML = `<p class="text-rose-600 font-bold">কোনো ফলাফল পাওয়া যায়নি!</p>`;
+    output.innerHTML = `<p class="text-rose-600 font-bold">ফলাফল অনুসন্ধানে ত্রুটি ঘটেছে।</p>`;
   }
 }
 

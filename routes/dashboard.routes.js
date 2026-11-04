@@ -63,11 +63,21 @@ router.get('/dashboard', (req, res) => {
   }
 });
 
-// ২. প্রতিষ্ঠান সেটিংস
+// ২. প্রতিষ্ঠান সেটিংস (সংবেদনশীল পিন মাস্ক করা)
 router.get('/settings', (req, res) => {
   try {
-    const institution = db.prepare('SELECT * FROM institution LIMIT 1').get();
+    const institution = db.prepare('SELECT id, name_bn, name_ar, name_en, code, muhtamim_name, phone, email, address, established, license_expiry FROM institution LIMIT 1').get();
     res.json({ success: true, institution });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ৩. সর্বজনীন নিরাপদ প্রতিষ্ঠান তথ্য (পাবলিক হোমপেজের জন্য জিরো-লিক রুট)
+router.get('/institution/public', (req, res) => {
+  try {
+    const inst = db.prepare('SELECT name_bn, name_ar, name_en, code, phone, address, established FROM institution LIMIT 1').get();
+    res.json({ success: true, institution: inst });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

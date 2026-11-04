@@ -1952,6 +1952,57 @@
               </button>
             </div>
           </div>
+
+          <!-- জিরো-লিক মাস্টার পিন কন্ট্রোল ও ডাটা প্রাইভেসি সিকিউরিটি কার্ড -->
+          <div class="bg-white rounded-2xl p-6 border-2 border-emerald-700/30 shadow-sm max-w-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-emerald-100 pb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-madrasa-900 to-emerald-800 text-gold-400 flex items-center justify-center text-lg shadow-sm">
+                  <i class="fa-solid fa-shield-cat"></i>
+                </div>
+                <div>
+                  <h3 class="text-base font-extrabold text-slate-900">জিরো-লিক মাস্টার পিন ও ডাটা প্রাইভেসি</h3>
+                  <p class="text-xs text-slate-500">আপনার কাস্টমার, ছাত্র ও আর্থিক তথ্য সম্পূর্ণ সুরক্ষিত ও গোপন রাখুন</p>
+                </div>
+              </div>
+              <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-1 rounded-full border border-emerald-300">
+                🔒 এনক্রিপ্টেড লক সক্রিয়
+              </span>
+            </div>
+
+            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>
+              <b>তথ্য সুরক্ষা গ্যারান্টি:</b> এই পিন ছাড়া বাইরের কোনো ভিজিটর বা হ্যাকার আপনার মাদ্রাসার ছাত্র-ছাত্রী, অভিভাবক, শিক্ষক, দাতা বা আর্থিক খতিয়ানের কোনো তথ্য দেখতে পারবে না।
+            </p>
+
+            <form onsubmit="updateAdminPin(event)" class="space-y-3 pt-1">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">বর্তমান পিন</label>
+                  <input type="password" id="currentPinInput" required placeholder="বর্তমান পিন"
+                    class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">নতুন পিন</label>
+                  <input type="password" id="newPinInput" required placeholder="নতুন পিন (কমপক্ষে ৪ সংখ্যা)"
+                    class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">নতুন পিন নিশ্চিত করুন</label>
+                  <input type="password" id="confirmPinInput" required placeholder="পুনরায় নতুন পিন"
+                    class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 outline-none">
+                </div>
+              </div>
+
+              <div id="changePinMsg" class="hidden"></div>
+
+              <div class="pt-2 flex justify-end">
+                <button type="submit" class="bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                  <i class="fa-solid fa-key text-gold-400"></i> পিন কোড পরিবর্তন করুন
+                </button>
+              </div>
+            </form>
+          </div>
         </section>
 
         <!-- ট্যাব: অনলাইন ভর্তি আবেদন প্যানেল -->

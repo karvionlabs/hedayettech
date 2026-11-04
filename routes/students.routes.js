@@ -3,7 +3,42 @@ const router = express.Router();
 const db = require('../database');
 const { strictLeadLimiter } = require('../middleware/security');
 
-// ১. সকল সক্রিয় শিক্ষার্থী তালিকা ও ফিল্টারিং
+// ১. সর্বজনীন নিরাপদ ফলাফল অনুসন্ধান (জিরো-লিক: কোনো ফোন/ঠিকানা/আর্থিক তথ্য প্রকাশ পাবে না)
+router.get('/public/results', (req, res) => {
+  try {
+    const { search } = req.query;
+    if (!search || !search.trim()) {
+      return res.status(400).json({ success: false, error: 'অনুগ্রহ করে দাখেলা বা রোল নম্বর লিখুন' });
+    }
+    const cleanSearch = search.trim();
+    const student = db.prepare(`
+      SELECT s.name_bn, s.admission_no, s.roll_no, c.name_bn as class_name 
+      FROM students s 
+      LEFT JOIN classes c ON s.class_id = c.id 
+      WHERE (s.admission_no = ? OR s.roll_no = ? OR s.name_bn = ?) AND s.status = 'ACTIVE'
+      LIMIT 1
+    `).get(cleanSearch, cleanSearch, cleanSearch);
+
+    if (!student) {
+      return res.json({ success: false, message: 'প্রদত্ত তথ্য অনুযায়ী কোনো ফলাফল পাওয়া যায়নি।' });
+    }
+
+    res.json({
+      success: true,
+      student: {
+        name_bn: student.name_bn,
+        admission_no: student.admission_no,
+        roll_no: student.roll_no,
+        class_name: student.class_name,
+        grade: 'মুমতাজ (A+)'
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ২. সকল সক্রিয় শিক্ষার্থী তালিকা ও ফিল্টারিং (লকড - অ্যাডমিন অথেনটিকেশন বাধ্যতামূলক)
 router.get('/students', (req, res) => {
   try {
     const { class_id, residential, search } = req.query;

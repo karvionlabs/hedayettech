@@ -105,21 +105,111 @@ router.get('/academics/classes', (req, res) => {
   }
 });
 
-// ৪. অনলাইন ভর্তি আবেদন জমা (Rate Limited)
+// হেল্পার: টেক্সট ডাটা স্যানিটাইজার ও অ্যান্টি-হ্যাক ফিল্টার (Anti-Injection / Pure Plain Text Guard)
+function sanitizePlainText(input, maxLength = 255) {
+  if (typeof input !== 'string') return '';
+  // ১. HTML ও XML স্ক্রিপ্ট ট্যাগ অপসারণ
+  let clean = input.replace(/<[^>]*>?/gm, '');
+  // ২. বিপজ্জনক কন্ট্রোল ক্যারেক্টার ও নাল বাইট (\0) অপসারণ
+  clean = clean.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+  // ৩. ট্রিম এবং অতিরিক্ত স্পেস স্বাভাবিক করা
+  clean = clean.trim().replace(/\s+/g, ' ');
+  // ৪. সর্বোচ্চ দৈর্ঘ্য সীমাবদ্ধ করা
+  return clean.substring(0, maxLength);
+}
+
+// হেল্পার: মোবাইল নম্বর স্যানিটাইজার ও সঠিক ১১ ডিজিট ভ্যালিডেটর
+function validateAndSanitizeBDPhone(phoneInput) {
+  if (!phoneInput) return { valid: false, phone: '', error: 'মোবাইল নম্বর দেওয়া আবশ্যক!' };
+  let str = String(phoneInput).trim();
+  // বাংলা ডিজিটকে ইংরেজি ডিজিটে রূপান্তর (০-৯ -> 0-9)
+  const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+  str = str.replace(/[০-৯]/g, d => bnDigits.indexOf(d));
+  // কেবলমাত্র ডিজিট ফিল্টার (স্পেস, ড্যাশ, ব্র্যাকেট বাদ)
+  const digits = str.replace(/\D/g, '');
+
+  if (digits.length !== 11) {
+    return {
+      valid: false,
+      phone: digits,
+      error: `মোবাইল নম্বর অবশ্যই ঠিক ১১ ডিজিটের হতে হবে (আপনি দিয়েছেন ${digits.length}টি সংখ্যা)।`
+    };
+  }
+
+  // বাংলাদেশের মোবাইল অপারেটর প্রিফিক্স ভ্যালিডেশন (013, 014, 015, 016, 017, 018, 019)
+  if (!/^01[3-9]\d{8}$/.test(digits)) {
+    return {
+      valid: false,
+      phone: digits,
+      error: 'মোবাইল নম্বরটি সঠিক ফরম্যাটের নয়! নম্বরটি অবশ্যই 01 দিয়ে শুরু হতে হবে (যেমন: 018XXXXXXXX)।'
+    };
+  }
+
+  return { valid: true, phone: digits };
+}
+
+// ৪. অনলাইন ভর্তি আবেদন জমা (Rate Limited + Strict Sanitized Data Guard)
 router.post('/admissions/apply', strictLeadLimiter, (req, res) => {
   try {
-    const { applicant_name, father_name, phone, desired_class_id, residential_type, address, previous_institute, birth_date } = req.body;
-    if (!applicant_name || !phone) {
-      return res.status(400).json({ success: false, error: 'শিক্ষার্থীর নাম ও ফোন নম্বর দেওয়া আবশ্যক!' });
+    const { applicant_name, father_name, phone, desired_class_id, residential_type, address, previous_institute } = req.body;
+
+    // ১. শিক্ষার্থীর পূর্ণ নাম যাচাই (অবশ্যই পূরণীয়)
+    const cleanApplicantName = sanitizePlainText(applicant_name, 100);
+    if (!cleanApplicantName || cleanApplicantName.length < 2) {
+      return res.status(400).json({ success: false, error: 'শিক্ষার্থীর পূর্ণ নাম অবশ্যই পূরণ করতে হবে (ন্যূনতম ২ অক্ষর)!' });
     }
+
+    // ২. পিতার নাম যাচাই (অবশ্যই পূরণীয়)
+    const cleanFatherName = sanitizePlainText(father_name, 100);
+    if (!cleanFatherName || cleanFatherName.length < 2) {
+      return res.status(400).json({ success: false, error: 'পিতার নাম অবশ্যই পূরণ করতে হবে!' });
+    }
+
+    // ৩. মোবাইল নম্বর যাচাই (অবশ্যই ঠিক ১১ ডিজিট)
+    const phoneResult = validateAndSanitizeBDPhone(phone);
+    if (!phoneResult.valid) {
+      return res.status(400).json({ success: false, error: phoneResult.error });
+    }
+    const cleanPhone = phoneResult.phone;
+
+    // ৪. ইচ্ছিত জামাত/বিভাগ যাচাই
+    const classId = parseInt(desired_class_id, 10);
+    if (isNaN(classId) || classId < 1) {
+      return res.status(400).json({ success: false, error: 'অনুগ্রহ করে ইচ্ছিত জামাত/বিভাগ নির্বাচন করুন!' });
+    }
+
+    // ৫. আবাসিক অবস্থা যাচাই (হোয়াইটলিস্টেড)
+    const cleanResidential = (residential_type === 'অনাবাসিক') ? 'অনাবাসিক' : 'আবাসিক';
+
+    // ৬. বর্তমান ঠিকানা যাচাই (অবশ্যই পূরণীয়)
+    const cleanAddress = sanitizePlainText(address, 255);
+    if (!cleanAddress || cleanAddress.length < 3) {
+      return res.status(400).json({ success: false, error: 'বর্তমান ঠিকানা অবশ্যই পূরণ করতে হবে (গ্রাম, ডাকঘর, থানা ও জেলা)!' });
+    }
+
+    // ৭. পূর্ববর্তী মাদ্রাসার নাম (সম্পূর্ণ অপশনাল / ঐচ্ছিক)
+    const cleanPrevSchool = sanitizePlainText(previous_institute, 150);
+
+    // ৮. নিরাপদ প্যারামিটারাইজড ডাটাবেজ ইনসার্ট (SQL Injection ও হ্যাকিং সম্পূর্ণ অসম্ভব)
     const stmt = db.prepare(`
-      INSERT INTO online_admissions (applicant_name, father_name, phone, desired_class_id, residential_type, address, previous_institute, birth_date, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING')
+      INSERT INTO online_admissions (
+        applicant_name, father_name, phone, desired_class_id, residential_type, address, previous_institute, birth_date, status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING')
     `);
-    const info = stmt.run(applicant_name, father_name || '', phone, desired_class_id || 1, residential_type || 'আবাসিক', address || '', previous_institute || '', birth_date || '');
-    res.json({ success: true, message: 'অনলাইনে ভর্তির আবেদন সফলভাবে জমা হয়েছে।', id: info.lastInsertRowid });
+    const info = stmt.run(cleanApplicantName, cleanFatherName, cleanPhone, classId, cleanResidential, cleanAddress, cleanPrevSchool, '');
+
+    res.json({
+      success: true,
+      message: 'অনলাইনে ভর্তির আবেদন সফলভাবে জমা হয়েছে।',
+      id: info.lastInsertRowid,
+      data: {
+        applicant_name: cleanApplicantName,
+        phone: cleanPhone
+      }
+    });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error('Admission apply error:', err);
+    res.status(500).json({ success: false, error: 'সার্ভারে সাময়িক সমস্যা হয়েছে। কিছুক্ষণ পর আবার চেষ্টা করুন।' });
   }
 });
 

@@ -18,6 +18,9 @@ const backupRoutes = require('./routes/backup.routes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// প্রক্সি ট্রাস্ট সক্রিয়করণ (Cloudflare ও রিভার্স প্রক্সির জন্য)
+app.set('trust proxy', 1);
+
 // ১. Stricx সিকিউরিটি হেডার্স সক্রিয়করণ (Helmet)
 app.use(securityHeaders);
 

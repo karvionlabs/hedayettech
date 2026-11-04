@@ -3052,25 +3052,46 @@
         </div>
         <button onclick="closeModal('onlineAdmissionModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times text-lg"></i></button>
       </div>
+
+      <!-- নির্দেশনা ব্যানার -->
+      <div class="bg-emerald-50/80 border border-emerald-200/80 rounded-xl p-2.5 text-[11px] text-emerald-900 flex items-center justify-between">
+        <span class="flex items-center gap-1.5 font-medium">
+          <i class="fa-solid fa-shield-halved text-emerald-700"></i>
+          <span><strong class="text-rose-600">*</strong> চিহ্নিত ঘরগুলো পূরণ বাধ্যতামূলক</span>
+        </span>
+        <span class="bg-white border border-emerald-300 text-emerald-800 font-bold px-2 py-0.5 rounded-full text-[10px]">পূর্ববর্তী মাদ্রাসা অপশনাল</span>
+      </div>
+
       <form id="onlineAdmissionForm" onsubmit="handleOnlineAdmission(event)" class="space-y-3.5 text-xs">
         <div>
-          <label class="font-bold text-slate-700 block mb-1">শিক্ষার্থীর পূর্ণ নাম *</label>
-          <input type="text" id="admStudentName" required placeholder="মুহাম্মদ তাওহীদুর রহমান" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
+          <label class="font-bold text-slate-700 block mb-1">শিক্ষার্থীর পূর্ণ নাম <span class="text-rose-600 font-extrabold">*</span></label>
+          <input type="text" id="admStudentName" required minlength="2" maxlength="100" placeholder="মুহাম্মদ তাওহীদুর রহমান" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
         </div>
-        <div class="grid grid-cols-2 gap-3">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="font-bold text-slate-700 block mb-1">পিতার নাম *</label>
-            <input type="text" id="admFatherName" required placeholder="মাওলানা সাইফুল্লাহ" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
+            <label class="font-bold text-slate-700 block mb-1">পিতার নাম <span class="text-rose-600 font-extrabold">*</span></label>
+            <input type="text" id="admFatherName" required minlength="2" maxlength="100" placeholder="মাওলানা সাইফুল্লাহ" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
           </div>
           <div>
-            <label class="font-bold text-slate-700 block mb-1">মোবাইল নম্বর *</label>
-            <input type="tel" id="admPhone" required placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-mono">
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-bold text-slate-700 block">মোবাইল নম্বর <span class="text-rose-600 font-extrabold">*</span></label>
+              <span id="admPhoneCounter" class="text-[11px] font-mono text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded-full">০/১১</span>
+            </div>
+            <div class="relative">
+              <input type="tel" id="admPhone" required maxlength="11" placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition pr-8">
+              <span id="admPhoneValidIcon" class="absolute right-2.5 top-1/2 -translate-y-1/2 hidden text-emerald-600 text-sm">
+                <i class="fa-solid fa-circle-check"></i>
+              </span>
+            </div>
+            <p id="admPhoneHint" class="text-[10px] text-slate-500 mt-1">১১ ডিজিটের সঠিক নম্বর দিন (যেমন: 018XXXXXXXX)</p>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-3">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="font-bold text-slate-700 block mb-1">ইচ্ছিত জামাত/বিভাগ *</label>
-            <select id="admClassSelect" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm bg-white">
+            <label class="font-bold text-slate-700 block mb-1">ইচ্ছিত জামাত/বিভাগ <span class="text-rose-600 font-extrabold">*</span></label>
+            <select id="admClassSelect" required class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
               <option value="1">হিফজুল কুরআন বিভাগ</option>
               <option value="2">নূরানি ও নাজেরা</option>
               <option value="3">ইবতেদায়ী (১ম-৫ম)</option>
@@ -3079,23 +3100,36 @@
             </select>
           </div>
           <div>
-            <label class="font-bold text-slate-700 block mb-1">আবাসিক অবস্থা *</label>
-            <select id="admResidential" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm bg-white">
+            <label class="font-bold text-slate-700 block mb-1">আবাসিক অবস্থা <span class="text-rose-600 font-extrabold">*</span></label>
+            <select id="admResidential" required class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
               <option value="আবাসিক">আবাসিক (লিল্লাহ বোর্ডিং)</option>
               <option value="অনাবাসিক">অনাবাসিক (ডে কেয়ার)</option>
             </select>
           </div>
         </div>
+
         <div>
-          <label class="font-bold text-slate-700 block mb-1">বর্তমান ঠিকানা *</label>
-          <input type="text" id="admAddress" required placeholder="গ্রাম, ডাকঘর, থানা ও জেলা" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
+          <label class="font-bold text-slate-700 block mb-1">বর্তমান ঠিকানা <span class="text-rose-600 font-extrabold">*</span></label>
+          <input type="text" id="admAddress" required minlength="3" maxlength="255" placeholder="গ্রাম, ডাকঘর, থানা ও জেলা" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
         </div>
+
         <div>
-          <label class="font-bold text-slate-700 block mb-1">পূর্ববর্তী মাদ্রাসার নাম (যদি থাকে)</label>
-          <input type="text" id="admPrevSchool" placeholder="যেমন: নূরানি মক্তব চান্দগাঁও" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
+          <div class="flex items-center justify-between mb-1">
+            <label class="font-bold text-slate-700 block">পূর্ববর্তী মাদ্রাসার নাম</label>
+            <span class="text-emerald-700 bg-emerald-50 border border-emerald-200 text-[10px] px-2 py-0.5 rounded-full font-semibold">ঐচ্ছিক / অপশনাল</span>
+          </div>
+          <input type="text" id="admPrevSchool" maxlength="150" placeholder="যেমন: নূরানি মক্তব চান্দগাঁও (না থাকলে খালি রাখুন)" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
         </div>
-        <button type="submit" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition text-sm">
-          অনলাইন আবেদন দাখিল করুন
+
+        <!-- এরর / স্ট্যাটাস ব্যানার -->
+        <div id="admErrorBanner" class="hidden text-xs p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 font-medium flex items-center gap-2">
+          <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm flex-shrink-0"></i>
+          <span id="admErrorText"></span>
+        </div>
+
+        <button type="submit" id="admSubmitBtn" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm cursor-pointer">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span id="admSubmitBtnText">অনলাইন আবেদন দাখিল করুন</span>
         </button>
       </form>
     </div>

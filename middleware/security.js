@@ -24,6 +24,7 @@ const globalApiLimiter = rateLimit({
   max: 120,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
   message: {
     success: false,
     error: 'অতিরিক্ত রিকোয়েস্ট পাঠানো হয়েছে (Too Many Requests), অনুগ্রহ করে ১ মিনিট পর আবার চেষ্টা করুন।'
@@ -36,6 +37,7 @@ const strictLeadLimiter = rateLimit({
   max: 15,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
   message: {
     success: false,
     error: 'অল্প সময়ের মধ্যে একাধিক আবেদন পাঠানো হয়েছে। অনুগ্রহ করে ১৫ মিনিট পর চেষ্টা করুন।'

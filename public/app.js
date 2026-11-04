@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDateDisplay();
   loadClasses();
   checkStealthHashRoute();
+  initOnlineAdmissionLiveValidator();
 });
 
 // ==========================================
@@ -1772,31 +1773,211 @@ async function approveAdmission(id) {
   }
 }
 
+// --- অনলাইন শিক্ষার্থী ভর্তি ফরম: রিয়েল-টাইম ভ্যালিডেশন ও সিকিউর সাবমিশন ---
+function normalizeBanglaDigits(str) {
+  if (!str) return '';
+  const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+  return String(str).replace(/[০-৯]/g, d => bnDigits.indexOf(d));
+}
+
+function sanitizeClientText(str, maxLength = 255) {
+  if (!str) return '';
+  return String(str).replace(/<[^>]*>?/gm, '').trim().substring(0, maxLength);
+}
+
+// ফরম ফিল্ডগুলোর লাইভ ভ্যালিডেশন ও ফোন কাউন্টার ইনিশিয়ালাইজার
+function initOnlineAdmissionLiveValidator() {
+  const phoneInput = document.getElementById('admPhone');
+  const phoneCounter = document.getElementById('admPhoneCounter');
+  const phoneValidIcon = document.getElementById('admPhoneValidIcon');
+  const phoneHint = document.getElementById('admPhoneHint');
+  const errorBanner = document.getElementById('admErrorBanner');
+
+  if (!phoneInput) return;
+
+  phoneInput.addEventListener('input', () => {
+    // ১. বাংলা সংখ্যা থাকলে ইংরেজি সংখ্যায় রূপান্তর ও নন-ডিজিট ফিল্টার
+    let val = normalizeBanglaDigits(phoneInput.value).replace(/\D/g, '');
+    if (val.length > 11) val = val.substring(0, 11);
+    phoneInput.value = val;
+
+    // ২. কাউন্টার ও আইকন আপডেট
+    const len = val.length;
+    if (phoneCounter) {
+      phoneCounter.textContent = `${len}/১১`;
+      if (len === 11) {
+        if (/^01[3-9]\d{8}$/.test(val)) {
+          phoneCounter.className = 'text-[11px] font-mono font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full';
+          if (phoneValidIcon) phoneValidIcon.classList.remove('hidden');
+          if (phoneHint) {
+            phoneHint.innerHTML = '<span class="text-emerald-700 font-semibold flex items-center gap-1"><i class="fa-solid fa-check"></i> ১১ ডিজিটের সঠিক মোবাইল নম্বর</span>';
+          }
+          phoneInput.classList.remove('border-rose-400', 'bg-rose-50/20');
+          phoneInput.classList.add('border-emerald-500');
+        } else {
+          phoneCounter.className = 'text-[11px] font-mono font-bold bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full';
+          if (phoneValidIcon) phoneValidIcon.classList.add('hidden');
+          if (phoneHint) {
+            phoneHint.innerHTML = '<span class="text-rose-600 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle-exclamation"></i> নম্বরটি অবশ্যই 01 দিয়ে শুরু হতে হবে (যেমন: 018XXXXXXXX)</span>';
+          }
+          phoneInput.classList.add('border-rose-400');
+          phoneInput.classList.remove('border-emerald-500');
+        }
+      } else {
+        phoneCounter.className = 'text-[11px] font-mono text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded-full';
+        if (phoneValidIcon) phoneValidIcon.classList.add('hidden');
+        if (phoneHint) {
+          phoneHint.innerHTML = `<span class="text-slate-500">১১ ডিজিটের সঠিক নম্বর দিন (${len}/১১)</span>`;
+        }
+        phoneInput.classList.remove('border-rose-400', 'border-emerald-500');
+      }
+    }
+
+    // টাইপ করার সময় এরর ব্যানার লুকানো
+    if (errorBanner) errorBanner.classList.add('hidden');
+  });
+
+  // অন্যান্য ফিল্ডে ইনপুট দিলে এরর ব্যানার হাইড করা
+  ['admStudentName', 'admFatherName', 'admAddress', 'admClassSelect', 'admResidential'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', () => {
+        if (errorBanner) errorBanner.classList.add('hidden');
+        el.classList.remove('border-rose-400', 'bg-rose-50/20');
+      });
+    }
+  });
+}
+
+function showAdmissionError(msg, focusElementId) {
+  const errorBanner = document.getElementById('admErrorBanner');
+  const errorText = document.getElementById('admErrorText');
+  if (errorBanner && errorText) {
+    errorText.textContent = msg;
+    errorBanner.classList.remove('hidden');
+  } else {
+    alert(msg);
+  }
+
+  if (focusElementId) {
+    const el = document.getElementById(focusElementId);
+    if (el) {
+      el.classList.add('border-rose-400', 'bg-rose-50/20');
+      el.focus();
+    }
+  }
+}
+
 async function handleOnlineAdmission(e) {
   e.preventDefault();
-  const applicant_name = document.getElementById('admStudentName').value;
-  const father_name = document.getElementById('admFatherName').value;
-  const phone = document.getElementById('admPhone').value;
-  const desired_class_id = document.getElementById('admClassSelect').value;
-  const residential_type = document.getElementById('admResidential').value;
-  const address = document.getElementById('admAddress').value;
-  const previous_institute = document.getElementById('admPrevSchool').value;
+
+  const studentNameInput = document.getElementById('admStudentName');
+  const fatherNameInput = document.getElementById('admFatherName');
+  const phoneInput = document.getElementById('admPhone');
+  const classSelect = document.getElementById('admClassSelect');
+  const residentialSelect = document.getElementById('admResidential');
+  const addressInput = document.getElementById('admAddress');
+  const prevSchoolInput = document.getElementById('admPrevSchool');
+  const submitBtn = document.getElementById('admSubmitBtn');
+  const submitBtnText = document.getElementById('admSubmitBtnText');
+  const errorBanner = document.getElementById('admErrorBanner');
+
+  if (errorBanner) errorBanner.classList.add('hidden');
+
+  // ১. শিক্ষার্থীর পূর্ণ নাম যাচাই (অবশ্যই পূরণ করতে হবে)
+  const applicant_name = sanitizeClientText(studentNameInput?.value, 100);
+  if (!applicant_name || applicant_name.length < 2) {
+    showAdmissionError('অনুগ্রহ করে শিক্ষার্থীর পূর্ণ নাম সঠিকভাবে পূরণ করুন (ন্যূনতম ২ অক্ষর)।', 'admStudentName');
+    return;
+  }
+
+  // ২. পিতার নাম যাচাই (অবশ্যই পূরণ করতে হবে)
+  const father_name = sanitizeClientText(fatherNameInput?.value, 100);
+  if (!father_name || father_name.length < 2) {
+    showAdmissionError('অনুগ্রহ করে পিতার নাম পূরণ করুন।', 'admFatherName');
+    return;
+  }
+
+  // ৩. মোবাইল নম্বর যাচাই (অবশ্যই ঠিক ১১ ডিজিট হতে হবে)
+  const rawPhone = normalizeBanglaDigits(phoneInput?.value || '').replace(/\D/g, '');
+  if (!rawPhone || rawPhone.length !== 11) {
+    showAdmissionError(`মোবাইল নম্বর অবশ্যই ঠিক ১১ ডিজিটের হতে হবে! (বর্তমানে ${rawPhone.length}টি ডিজিট রয়েছে)`, 'admPhone');
+    return;
+  }
+  if (!/^01[3-9]\d{8}$/.test(rawPhone)) {
+    showAdmissionError('মোবাইল নম্বরটি সঠিক নয়! নম্বরটি অবশ্যই 01 দিয়ে শুরু হতে হবে (যেমন: 018XXXXXXXX)।', 'admPhone');
+    return;
+  }
+  const phone = rawPhone;
+
+  // ৪. ইচ্ছিত জামাত ও আবাসিক অবস্থা
+  const desired_class_id = classSelect ? parseInt(classSelect.value, 10) : 1;
+  const residential_type = residentialSelect ? residentialSelect.value : 'আবাসিক';
+
+  // ৫. বর্তমান ঠিকানা যাচাই (অবশ্যই পূরণ করতে হবে)
+  const address = sanitizeClientText(addressInput?.value, 255);
+  if (!address || address.length < 3) {
+    showAdmissionError('অনুগ্রহ করে বর্তমান ঠিকানা পূরণ করুন (গ্রাম, ডাকঘর, থানা ও জেলা)।', 'admAddress');
+    return;
+  }
+
+  // ৬. পূর্ববর্তী মাদ্রাসার নাম (সম্পূর্ণ অপশনাল / ঐচ্ছিক)
+  const previous_institute = sanitizeClientText(prevSchoolInput?.value, 150);
+
+  // ৭. সাবমিশন স্টেট হ্যান্ডলিং
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    if (submitBtnText) submitBtnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> আবেদন দাখিল হচ্ছে...';
+  }
 
   try {
     const res = await fetch('/api/admissions/apply', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ applicant_name, father_name, phone, desired_class_id, residential_type, address, previous_institute })
+      body: JSON.stringify({
+        applicant_name,
+        father_name,
+        phone,
+        desired_class_id,
+        residential_type,
+        address,
+        previous_institute
+      })
     });
+
     const result = await res.json();
+
     if (result.success) {
-      alert(`জাযাকাল্লাহ খাইরান!\n\n${applicant_name}-এর অনলাইন ভর্তির আবেদন সফলভাবে গ্রহণ করা হয়েছে।\nমাদ্রাসা কর্তৃপক্ষ আবেদনটি যাচাই করে শীঘ্রই যোগাযোগ করবেন।`);
+      alert(`আলহামদুলিল্লাহ! জাযাকাল্লাহ খাইরান।\n\nশিক্ষার্থী: ${applicant_name}\nমোবাইল: ${phone}\n\nআপনার অনলাইন ভর্তির আবেদন সফলভাবে গ্রহণ করা হয়েছে।\nমাদ্রাসা কর্তৃপক্ষ আবেদনটি যাচাই করে উক্ত নম্বরে যোগাযোগ করবেন।`);
       closeModal('onlineAdmissionModal');
       e.target.reset();
-      loadAdmissions();
+
+      // কাউন্টার ও আইকন রিসেট
+      const phoneCounter = document.getElementById('admPhoneCounter');
+      const phoneValidIcon = document.getElementById('admPhoneValidIcon');
+      const phoneHint = document.getElementById('admPhoneHint');
+      if (phoneCounter) {
+        phoneCounter.textContent = '০/১১';
+        phoneCounter.className = 'text-[11px] font-mono text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded-full';
+      }
+      if (phoneValidIcon) phoneValidIcon.classList.add('hidden');
+      if (phoneHint) phoneHint.innerHTML = '<span class="text-slate-500">১১ ডিজিটের সঠিক নম্বর দিন (যেমন: 018XXXXXXXX)</span>';
+      if (phoneInput) phoneInput.classList.remove('border-rose-400', 'border-emerald-500');
+
+      if (typeof loadAdmissions === 'function') {
+        loadAdmissions();
+      }
+    } else {
+      showAdmissionError(result.error || 'আবেদন জমা দিতে সমস্যা হয়েছে। অনুগ্রহ করে সকল তথ্য পুনরায় যাচাই করুন।');
     }
   } catch (err) {
-    alert('আবেদন জমা দিতে সমস্যা হয়েছে!');
+    console.error('Admission submit error:', err);
+    showAdmissionError('নেটওয়ার্ক অথবা সার্ভার এরর! অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      if (submitBtnText) submitBtnText.innerHTML = 'অনলাইন আবেদন দাখিল করুন';
+    }
   }
 }
 

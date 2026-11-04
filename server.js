@@ -1,9 +1,10 @@
 const express = require('express');
 const path = require('path');
 const db = require('./database');
-const { securityHeaders, globalApiLimiter } = require('./middleware/security');
+const { securityHeaders, globalApiLimiter, requireAdminAuth } = require('./middleware/security');
 
 // মডুলার ডোমেইন রাউটারসমূহ (Nestrix Decoupled Architecture)
+const authRoutes = require('./routes/auth.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const studentsRoutes = require('./routes/students.routes');
 const hifzRoutes = require('./routes/hifz.routes');
@@ -28,7 +29,13 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ৪. মডুলার এপিআই রাউটস মাউন্টিং
+// ৪. অথেনটিকেশন রুট (লগইন ভেরিফিকেশন)
+app.use('/api', authRoutes);
+
+// ৫. অ্যাডমিন রাইট অথেনটিকেশন গার্ড (OWASP Broken Access Control প্রতিরোধ)
+app.use('/api', requireAdminAuth);
+
+// ৬. মডুলার এপিআই রাউটস মাউন্টিং
 app.use('/api', dashboardRoutes);
 app.use('/api', studentsRoutes);
 app.use('/api', hifzRoutes);
@@ -39,7 +46,7 @@ app.use('/api', gatepassRoutes);
 app.use('/api', operationsRoutes);
 app.use('/api', backupRoutes);
 
-// ৫. সেন্ট্রালাইজড এরর হ্যান্ডলার (Sensitive Data Leakage প্রতিরোধ)
+// ৭. সেন্ট্রালাইজড এরর হ্যান্ডলার (Sensitive Data Leakage প্রতিরোধ)
 app.use((err, req, res, next) => {
   console.error('[Internal Error]:', err.stack || err.message);
   res.status(500).json({
@@ -48,17 +55,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ৬. ৪MD স্পা ফলব্যাক রাউটিং
+// ৮. ৪MD স্পা ফলব্যাক রাউটিং
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ৭. সার্ভার স্টার্ট
+// ৯. সার্ভার স্টার্ট
 const server = app.listen(PORT, () => {
   console.log(`\n======================================================`);
   console.log(`🕌 Madrasa Management System is LIVE (Nestrix Hardened)!`);
   console.log(`🌐 Local Server: http://localhost:${PORT}`);
-  console.log(`🛡️  Security: Helmet + Rate Limit + Vault Token Active`);
+  console.log(`🛡️  Security: Helmet + Rate Limit + Admin PIN Auth Guard`);
   console.log(`📁 Database: SQLite (WAL Mode active)`);
   console.log(`======================================================\n`);
 });

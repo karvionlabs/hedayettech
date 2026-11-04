@@ -56,9 +56,51 @@ function requireVaultKey(req, res, next) {
   });
 }
 
+// ৫. অ্যাডমিন মিউটেশন সিকিউরিটি গার্ড (OWASP Broken Access Control প্রতিরোধ)
+// পাবলিক ফর্মসমূহ এই গার্ডের বাইরে থাকবে (ভর্তি আবেদন, ডেমো বুকিং, মেসেজ ও লগইন ভেরিফাই)
+const PUBLIC_MUTATION_PATHS = [
+  '/admissions/apply',
+  '/contact',
+  '/leads/demo',
+  '/auth/verify'
+];
+
+function requireAdminAuth(req, res, next) {
+  // কেবল পরিবর্তনের অপারেশনগুলো (POST, PUT, PATCH, DELETE) গার্ড করা হবে
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+    return next();
+  }
+
+  // পাবলিক এন্ট্রি রুটগুলো বাইপাস পাবে
+  const path = req.path || '';
+  if (PUBLIC_MUTATION_PATHS.some(p => path === p || path.endsWith(p))) {
+    return next();
+  }
+
+  const token = req.headers['x-admin-token'] || (req.headers['authorization'] ? req.headers['authorization'].replace('Bearer ', '') : null) || req.query.admin_token;
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      error: 'অননুমোদিত অ্যাক্সেস! এই অপারেশনটি সম্পন্ন করতে অ্যাডমিন পিন বা লগইন প্রয়োজন।'
+    });
+  }
+
+  if (token === BACKUP_ADMIN_PIN || token === BACKUP_SECRET_KEY) {
+    return next();
+  }
+
+  return res.status(403).json({
+    success: false,
+    error: 'প্রদত্ত অ্যাডমিন পিন বা সিক্রেট কি সঠিক নয়! রিকোয়েস্ট ব্লক করা হয়েছে।'
+  });
+}
+
 module.exports = {
   securityHeaders,
   globalApiLimiter,
   strictLeadLimiter,
-  requireVaultKey
+  requireVaultKey,
+  requireAdminAuth,
+  BACKUP_SECRET_KEY,
+  BACKUP_ADMIN_PIN
 };

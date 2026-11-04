@@ -494,10 +494,10 @@
           <a href="#contact-section" onclick="scrollToSection('contact-section'); return false;" class="hover:text-hedayet-800 transition">যোগাযোগ</a>
         </nav>
 
-        <!-- ডানপাশের বাটন: লগইন ও ফ্রি ডেমো -->
+        <!-- ডানপাশের বাটন: অনলাইন ভর্তি ও ফ্রি ডেমো -->
         <div class="flex items-center gap-3">
-          <button onclick="openAdminConsole()" class="px-5 py-2 text-sm font-bold text-slate-800 border-2 border-slate-300 hover:border-hedayet-800 hover:text-hedayet-800 rounded-full transition shadow-sm">
-            লগইন
+          <button onclick="openModal('onlineAdmissionModal')" class="px-5 py-2 text-sm font-bold text-emerald-800 border-2 border-emerald-600 hover:bg-emerald-50 rounded-full transition shadow-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-graduation-cap"></i> অনলাইন ভর্তি
           </button>
           <button onclick="openModal('bookDemoModal')" class="px-5 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-hedayet-900 to-hedayet-700 hover:from-hedayet-800 hover:to-hedayet-600 rounded-full transition shadow-md flex items-center gap-2">
             <span>ফ্রি ডেমো বুক করুন</span>
@@ -568,7 +568,7 @@
           <span class="text-slate-300">|</span>
           <button onclick="openModal('quickPaymentModal')" class="hover:text-hedayet-800 hover:underline transition">দ্রুত ফি পেমেন্ট</button>
           <span class="text-slate-300">|</span>
-          <button onclick="openAdminConsole()" class="text-emerald-700 font-bold hover:underline transition">ম্যানেজমেন্ট ড্যাশবোর্ড</button>
+          <button onclick="openModal('contactModal')" class="hover:text-hedayet-800 hover:underline transition">যোগাযোগ ও হেল্পডেস্ক</button>
         </div>
 
         <!-- ডিজিটাল নোটিশ টিকার -->
@@ -623,9 +623,9 @@
                 <i class="fa-regular fa-circle-play text-base text-gold-400"></i>
                 <span>২ মিনিটের ভিডিও</span>
               </button>
-              <button onclick="openAdminConsole()" class="bg-gold-500 hover:bg-gold-600 text-slate-950 font-extrabold px-5 py-3 rounded-xl text-sm shadow-lg transition flex items-center gap-1.5">
-                <i class="fa-solid fa-gauge-high"></i>
-                <span>সফটওয়্যার ড্যাশবোর্ড</span>
+              <button onclick="openModal('onlineAdmissionModal')" class="bg-gold-500 hover:bg-gold-600 text-slate-950 font-extrabold px-5 py-3 rounded-xl text-sm shadow-lg transition flex items-center gap-1.5">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>অনলাইন ভর্তি ফরম</span>
               </button>
             </div>
 
@@ -672,10 +672,10 @@
               <div class="my-2.5 rounded-xl overflow-hidden bg-slate-900 shadow-inner relative">
                 <img src="/assets/hero_card_scholars.jpg" alt="হেদায়েত টেক মাদ্রাসা ম্যানেজমেন্ট স্কলার্স" class="w-full h-auto object-cover transform group-hover:scale-102 transition duration-500">
                 
-                <!-- লাইভ ড্যাশবোর্ড ওভারলে বোতাম -->
-                <button onclick="openAdminConsole()" class="absolute inset-0 bg-madrasa-950/40 hover:bg-madrasa-950/20 backdrop-blur-[1px] flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition duration-300">
+                <!-- ডেমো বুকিং ওভারলে বোতাম -->
+                <button onclick="openModal('bookDemoModal')" class="absolute inset-0 bg-madrasa-950/40 hover:bg-madrasa-950/20 backdrop-blur-[1px] flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition duration-300">
                   <span class="bg-gold-500 text-slate-950 px-4 py-2 rounded-xl text-xs font-black shadow-lg flex items-center gap-2">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> লাইভ সফটওয়্যার ড্যাশবোর্ডে প্রবেশ করুন
+                    <i class="fa-solid fa-calendar-check"></i> ফ্রি ডেমো বুকিং করুন
                   </span>
                 </button>
               </div>
@@ -714,7 +714,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div onclick="openAdminConsole('students')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm cursor-pointer transition group">
+        <div onclick="openModal('onlineAdmissionModal')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm cursor-pointer transition group">
           <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl mb-3 group-hover:bg-emerald-700 group-hover:text-white transition">
             <i class="fa-solid fa-id-card"></i>
           </div>
@@ -722,7 +722,7 @@
           <p class="text-xs text-slate-500 mt-1">স্বয়ংক্রিয় দাখেলা নম্বর তৈরি, পিতা-মাতার সম্পূর্ণ ডাটাবেজ ও রঙিন আইডি কার্ড প্রিন্ট।</p>
         </div>
 
-        <div onclick="openAdminConsole('hifz')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-gold-500 shadow-sm cursor-pointer transition group">
+        <div onclick="openModal('onlineAdmissionModal')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-gold-500 shadow-sm cursor-pointer transition group">
           <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-600 flex items-center justify-center text-xl mb-3 group-hover:bg-gold-500 group-hover:text-slate-900 transition">
             <i class="fa-solid fa-quran"></i>
           </div>
@@ -730,7 +730,7 @@
           <p class="text-xs text-slate-500 mt-1">প্রতিদিনের সবক, সাত সবক ও আমোখতা রিভিশন, ভুলের সংখ্যা ও উস্তাদের মন্তব্য ট্র্যাকার।</p>
         </div>
 
-        <div onclick="openAdminConsole('boarding')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm cursor-pointer transition group">
+        <div onclick="openModal('onlineDonationModal')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm cursor-pointer transition group">
           <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl mb-3 group-hover:bg-emerald-700 group-hover:text-white transition">
             <i class="fa-solid fa-utensils"></i>
           </div>
@@ -1282,13 +1282,13 @@
         </div>
 
         <div class="mt-10 pt-6 border-t border-emerald-900/80 flex flex-wrap items-center justify-between text-xs text-emerald-300/80 gap-3">
-          <div>© ২০২৬ Hedayet Tech. সর্বস্বত্ব সংরক্ষিত।</div>
+          <div id="stealthHedayetBrand" onclick="handleStealthAdminClick(event)" class="cursor-pointer select-none hover:text-emerald-200 transition" title="Hedayet Tech Engineering">© ২০২৬ Hedayet Tech. সর্বস্বত্ব সংরক্ষিত।</div>
           <div class="flex items-center gap-4">
             <a href="https://wa.me/8801884636312" target="_blank" class="hover:text-gold-400">হোয়াটসঅ্যাপ সাপোর্ট</a>
             <span>|</span>
             <a href="mailto:hello@hedayettech.com" class="hover:text-gold-400">হেল্পডেস্ক</a>
             <span>|</span>
-            <button onclick="openAdminConsole()" class="text-gold-400 font-bold hover:underline">ম্যানেজমেন্ট কনসোল</button>
+            <a href="#about-section" onclick="scrollToSection('about-section'); return false;" class="hover:text-gold-400">মাদ্রাসার পরিচিতি</a>
           </div>
         </div>
       </div>
@@ -1299,12 +1299,6 @@
       <span>হোয়াটসঅ্যাপ কল বা মেসেজ দিন</span>
       <i class="fa-brands fa-whatsapp text-xl"></i>
     </a>
-
-    <!-- কুইক ড্যাশবোর্ড সুইচিং ফ্লোটিং বাটন (বটম লেফট) -->
-    <button onclick="openAdminConsole()" class="fixed bottom-6 left-6 bg-madrasa-900 hover:bg-madrasa-800 text-gold-400 border border-gold-500 px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 z-40 text-xs font-bold transition">
-      <i class="fa-solid fa-gauge-high"></i>
-      <span>অ্যাডমিন ড্যাশবোর্ড খুলুন</span>
-    </button>
   </div>
 
   <!-- ============================================================== -->
@@ -1429,9 +1423,14 @@
           <span>১৬. ডিজিটাল নোটিশ বোর্ড</span>
         </button>
 
+        <div class="text-[11px] font-bold uppercase tracking-wider text-gold-400 px-3 pt-4 pb-1 flex items-center justify-between border-t border-emerald-900/60 mt-2">
+          <span>মালিকানা ও কোর সিস্টেম কন্ট্রোল</span>
+          <i class="fa-solid fa-shield-halved text-[11px] text-gold-400"></i>
+        </div>
+
         <button onclick="switchTab('settings')" id="nav-settings" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition hover:bg-madrasa-900/80 text-emerald-100 hover:text-white">
-          <i class="fa-solid fa-gear w-5 text-center text-base"></i>
-          <span>১৭. সিস্টেম সেটিংস</span>
+          <i class="fa-solid fa-sliders w-5 text-center text-base text-gold-400"></i>
+          <span>মাস্টার পিন ও সিস্টেম সেটিংস</span>
         </button>
       </nav>
 
@@ -1459,6 +1458,9 @@
             <span><i class="fa-regular fa-calendar-check text-madrasa-700"></i> আজ: <span id="current-date-bn"></span></span>
             <span>•</span>
             <span class="font-arabic text-emerald-800 font-bold flex items-center gap-1.5"><img src="/assets/makkatul_logo.png" alt="মক্কাতুল মুকাররমা লোগো" class="w-4 h-4 rounded-full inline-block object-contain">মক্কাতুল মুকাররমা মহিলা এতিমখানা ও হেফজখানা</span>
+            <span class="hidden md:inline-block bg-emerald-50 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full text-[10px] font-bold">
+              <i class="fa-solid fa-user-shield text-gold-500 mr-1"></i>পরিচালনা: মুহতামিম অফিস
+            </span>
           </p>
         </div>
 
@@ -2766,8 +2768,8 @@
         <p class="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
           ছাত্র ভর্তি থেকে শুরু করে হিফজ তথ্য খাতা, লিল্লাহ বোর্ডিংয়ের বাজার খরচ ও পরীক্ষার ফলাফল—মাত্র ৫ মিনিটে পুরো সিস্টেম বুঝে নিন।
         </p>
-        <button onclick="closeModal('videoTourModal'); openAdminConsole();" class="bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-xs shadow-md transition">
-          সরাসরি লাইভ সফটওয়্যার ড্যাশবোর্ড চালান →
+        <button onclick="closeModal('videoTourModal'); openModal('bookDemoModal');" class="bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-xs shadow-md transition">
+          ফ্রি ডেমো বুকিং করুন →
         </button>
       </div>
     </div>

@@ -55,7 +55,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ৮. ৪MD স্পা ফলব্যাক রাউটিং
+// ৮. স্টিলথ অ্যাডমিন ও পোর্টাল রিডাইরেক্ট রুট
+app.get(['/admin', '/portal', '/control', '/owner'], (req, res) => {
+  res.redirect('/#admin');
+});
+
+// ৯. ৪MD স্পা ফলব্যাক রাউটিং
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

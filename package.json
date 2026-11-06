@@ -1,7 +1,7 @@
 {
-  "name": "madrasa-management-system",
+  "name": "hedayettech",
   "version": "1.0.0",
-  "description": "Comprehensive Bangladeshi Madrasa Management System (Qawmi, Alia, Hifz & Cadet)",
+  "description": "Hedayet Tech — Comprehensive Smart Madrasa Management System (Qawmi, Alia, Hifz & Cadet)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

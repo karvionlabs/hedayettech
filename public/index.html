@@ -22,7 +22,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Anek+Bangla:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Anek+Bangla:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
@@ -59,7 +59,7 @@
             }
           },
           fontFamily: {
-            bangla: ['Anek Bangla', 'Hind Siliguri', 'sans-serif'],
+            bangla: ['Hind Siliguri', 'Noto Sans Bengali', 'Anek Bangla', 'sans-serif'],
             arabic: ['Amiri', 'serif'],
           }
         }
@@ -69,7 +69,10 @@
 
   <style>
     body {
-      font-family: 'Anek Bangla', 'Hind Siliguri', sans-serif;
+      font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Anek Bangla', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
     }
     .custom-scrollbar::-webkit-scrollbar {
       width: 5px;
@@ -562,22 +565,41 @@
           </button>
         </form>
 
-        <!-- কুইক এক্সেস লিঙ্ক -->
-        <div class="flex flex-wrap items-center justify-center gap-2 text-xs font-semibold text-slate-600 mt-2.5">
-          <span class="text-slate-400">কুইক এক্সেস:</span>
-          <button onclick="openModal('onlineResultModal')" class="hover:text-hedayet-800 hover:underline transition">অনলাইন ফলাফল</button>
-          <span class="text-slate-300">|</span>
-          <button onclick="openModal('onlineAdmissionModal')" class="text-emerald-700 font-bold hover:underline transition flex items-center gap-1">
-            <i class="fa-solid fa-graduation-cap"></i> অনলাইন ভর্তি ফরম
+        <!-- আধুনিক কুইক এক্সেস ন্যাভিগেশন বার (UI/UX Pro Max স্টাইল) -->
+        <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mt-3 pt-1">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-200/70 text-slate-600 text-[11px] font-bold tracking-wide">
+            <i class="fa-solid fa-bolt text-amber-500 text-xs"></i>
+            <span>কুইক এক্সেস:</span>
+          </span>
+
+          <button onclick="openModal('onlineResultModal')" class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-emerald-700 text-xs font-semibold border border-slate-200 hover:border-emerald-300 shadow-2xs hover:shadow-xs transition-all duration-200">
+            <i class="fa-solid fa-square-poll-vertical text-slate-400 group-hover:text-emerald-600 text-xs transition-colors"></i>
+            <span>অনলাইন ফলাফল</span>
           </button>
-          <span class="text-slate-300">|</span>
-          <button onclick="openModal('onlineDonationModal')" class="text-amber-700 font-bold hover:underline transition flex items-center gap-1">
-            <i class="fa-solid fa-hand-holding-heart"></i> দান ও যাকাত ফান্ড
+
+          <button onclick="openModal('onlineAdmissionModal')" class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200/80 shadow-2xs hover:shadow-xs transition-all duration-200">
+            <i class="fa-solid fa-graduation-cap text-emerald-600 group-hover:scale-110 text-xs transition-transform"></i>
+            <span>অনলাইন ভর্তি ফরম</span>
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+            </span>
           </button>
-          <span class="text-slate-300">|</span>
-          <button onclick="openModal('quickPaymentModal')" class="hover:text-hedayet-800 hover:underline transition">দ্রুত ফি পেমেন্ট</button>
-          <span class="text-slate-300">|</span>
-          <button onclick="openModal('contactModal')" class="hover:text-hedayet-800 hover:underline transition">যোগাযোগ ও হেল্পডেস্ক</button>
+
+          <button onclick="openModal('onlineDonationModal')" class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold border border-amber-200/80 shadow-2xs hover:shadow-xs transition-all duration-200">
+            <i class="fa-solid fa-hand-holding-heart text-amber-600 group-hover:scale-110 text-xs transition-transform"></i>
+            <span>দান ও যাকাত ফান্ড</span>
+          </button>
+
+          <button onclick="openModal('quickPaymentModal')" class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-emerald-700 text-xs font-semibold border border-slate-200 hover:border-emerald-300 shadow-2xs hover:shadow-xs transition-all duration-200">
+            <i class="fa-solid fa-credit-card text-slate-400 group-hover:text-emerald-600 text-xs transition-colors"></i>
+            <span>দ্রুত ফি পেমেন্ট</span>
+          </button>
+
+          <button onclick="openModal('contactModal')" class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-emerald-700 text-xs font-semibold border border-slate-200 hover:border-emerald-300 shadow-2xs hover:shadow-xs transition-all duration-200">
+            <i class="fa-solid fa-headset text-slate-400 group-hover:text-emerald-600 text-xs transition-colors"></i>
+            <span>যোগাযোগ ও হেল্পডেস্ক</span>
+          </button>
         </div>
 
         <!-- ডিজিটাল নোটিশ টিকার -->

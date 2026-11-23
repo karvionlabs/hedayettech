@@ -12,7 +12,7 @@ router.get('/public/results', (req, res) => {
     }
     const cleanSearch = search.trim();
     const student = db.prepare(`
-      SELECT s.name_bn, s.admission_no, s.roll_no, c.name_bn as class_name 
+      SELECT s.id, s.name_bn, s.admission_no, s.roll_no, c.name_bn as class_name 
       FROM students s 
       LEFT JOIN classes c ON s.class_id = c.id 
       WHERE (s.admission_no = ? OR s.roll_no = ? OR s.name_bn = ?) AND s.status = 'ACTIVE'
@@ -23,6 +23,31 @@ router.get('/public/results', (req, res) => {
       return res.json({ success: false, message: 'প্রদত্ত তথ্য অনুযায়ী কোনো ফলাফল পাওয়া যায়নি।' });
     }
 
+    // পরীক্ষা ও নম্বর কোয়েরি
+    const marks = db.prepare(`
+      SELECT em.subject_name, em.marks_obtained, em.total_marks, em.grade, e.name as exam_name
+      FROM exam_marks em
+      JOIN exams e ON em.exam_id = e.id
+      WHERE em.student_id = ?
+      ORDER BY em.id ASC
+    `).all(student.id);
+
+    let totalObtained = 0;
+    let totalMarks = 0;
+    let finalGrade = 'মুমতাজ (A+)';
+
+    if (marks.length > 0) {
+      totalObtained = marks.reduce((sum, m) => sum + (m.marks_obtained || 0), 0);
+      totalMarks = marks.reduce((sum, m) => sum + (m.total_marks || 100), 0);
+      const percentage = totalMarks > 0 ? (totalObtained / totalMarks) * 100 : 0;
+
+      if (percentage >= 80) finalGrade = 'মুমতাজ (A+)';
+      else if (percentage >= 65) finalGrade = 'জায়্যিদ জিদ্দান (A)';
+      else if (percentage >= 50) finalGrade = 'জায়্যিদ (B)';
+      else if (percentage >= 33) finalGrade = 'মাকবুল (C)';
+      else finalGrade = 'রাসিব (F)';
+    }
+
     res.json({
       success: true,
       student: {
@@ -30,11 +55,101 @@ router.get('/public/results', (req, res) => {
         admission_no: student.admission_no,
         roll_no: student.roll_no,
         class_name: student.class_name,
-        grade: 'মুমতাজ (A+)'
+        grade: finalGrade,
+        total_obtained: totalObtained,
+        total_marks: totalMarks,
+        marks_breakdown: marks
       }
     });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ১.১ পাবলিক শিক্ষার্থী অনুসন্ধান (ফি পরিশোধের জন্য)
+router.get('/public/student-lookup', (req, res) => {
+  try {
+    const { admission_no } = req.query;
+    if (!admission_no || !admission_no.trim()) {
+      return res.status(400).json({ success: false, error: 'দাখেলা বা রোল নম্বর প্রদান করুন।' });
+    }
+    const cleanSearch = admission_no.trim();
+    const student = db.prepare(`
+      SELECT s.id, s.name_bn, s.admission_no, s.roll_no, c.name_bn as class_name, s.monthly_fee
+      FROM students s
+      LEFT JOIN classes c ON s.class_id = c.id
+      WHERE (s.admission_no = ? OR s.roll_no = ?) AND s.status = 'ACTIVE'
+      LIMIT 1
+    `).get(cleanSearch, cleanSearch);
+
+    if (!student) {
+      return res.json({ success: false, message: 'প্রদত্ত দাখেলা বা রোল নম্বরের কোনো শিক্ষার্থী পাওয়া যায়নি।' });
+    }
+
+    res.json({
+      success: true,
+      student: {
+        id: student.id,
+        name_bn: student.name_bn,
+        admission_no: student.admission_no,
+        roll_no: student.roll_no,
+        class_name: student.class_name,
+        monthly_fee: student.monthly_fee || 1500
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ১.২ পাবলিক দ্রুত ফি পরিশোধ রুট (ক্যাশবুকে স্বয়ংক্রিয় পোস্টিং)
+router.post('/public/pay-fee', strictLeadLimiter, (req, res) => {
+  try {
+    const { admission_no, amount, payment_method, trx_id } = req.body;
+    if (!admission_no || !admission_no.trim() || !amount) {
+      return res.status(400).json({ success: false, error: 'দাখেলা নম্বর এবং ফি এর পরিমাণ প্রদান করুন।' });
+    }
+
+    const cleanAdmission = admission_no.trim();
+    const student = db.prepare(`
+      SELECT s.id, s.name_bn, s.admission_no, c.name_bn as class_name
+      FROM students s
+      LEFT JOIN classes c ON s.class_id = c.id
+      WHERE s.admission_no = ? AND s.status = 'ACTIVE'
+      LIMIT 1
+    `).get(cleanAdmission);
+
+    if (!student) {
+      return res.status(404).json({ success: false, error: 'প্রদত্ত দাখেলা নম্বরের কোনো শিক্ষার্থী পাওয়া যায়নি।' });
+    }
+
+    const payAmount = parseFloat(amount);
+    if (isNaN(payAmount) || payAmount <= 0) {
+      return res.status(400).json({ success: false, error: 'ফি এর পরিমাণ সঠিক নয়।' });
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    const vCount = db.prepare('SELECT count(*) as count FROM transactions').get().count + 1;
+    const voucherNo = `V-${1000 + vCount}`;
+    const receiptNo = `FEE-2026-${String(vCount).padStart(4, '0')}`;
+    const cleanMethod = payment_method || 'bKash';
+    const cleanTrx = trx_id ? trx_id.trim() : 'অনলাইন ট্রানজ্যাকশন';
+
+    db.prepare(`
+      INSERT INTO transactions (voucher_no, date, type, category, amount, payment_method, student_id, description, received_by)
+      VALUES (?, ?, 'INCOME', 'মাসিক বেতন ও ফি', ?, ?, ?, ?, 'অনলাইন ফি গেটওয়ে')
+    `).run(voucherNo, today, payAmount, cleanMethod, student.id, `অনলাইন ফি পরিশোধ (${student.name_bn}, দাখেলা: ${student.admission_no}, রসিদ: ${receiptNo}, TrxID: ${cleanTrx})`);
+
+    res.json({
+      success: true,
+      receiptNo,
+      voucherNo,
+      studentName: student.name_bn,
+      amount: payAmount,
+      message: `আলহামদুলিল্লাহ! ${student.name_bn}-এর ৳ ${payAmount.toLocaleString('bn-BD')} ফি সফলভাবে পরিশোধিত হয়েছে। রসিদ নং: ${receiptNo}`
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'ফি পরিশোধ প্রক্রিয়ায় ত্রুটি ঘটেছে: ' + err.message });
   }
 });
 

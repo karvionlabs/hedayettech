@@ -69,10 +69,15 @@
 
   <style>
     body {
-      font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Anek Bangla', system-ui, -apple-system, sans-serif;
+      font-family: 'Hind Siliguri', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
+      letter-spacing: -0.01em;
+    }
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Anek Bangla', 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+      letter-spacing: -0.012em;
     }
     .custom-scrollbar::-webkit-scrollbar {
       width: 5px;
@@ -565,48 +570,55 @@
           </button>
         </form>
 
-        <!-- আধুনিক কুইক এক্সেস ন্যাভিগেশন বার (UI/UX Pro Max স্টাইল) -->
-        <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mt-3 pt-1">
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-200/70 text-slate-600 text-[11px] font-bold tracking-wide">
-            <i class="fa-solid fa-bolt text-amber-500 text-xs"></i>
-            <span>কুইক এক্সেস:</span>
-          </span>
+        <!-- আধুনিক প্রফেশনাল কুইক এক্সেস টেক্সটবার (Executive Floating Glassmorphism Toolbar) -->
+        <div class="mt-4 p-2 sm:p-2.5 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-sm transition-all">
+          <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+            <!-- কুইক এক্সেস লেবেল ব্যাজ -->
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-900 to-emerald-800 text-white text-[11px] font-bold shadow-xs flex-shrink-0">
+              <i class="fa-solid fa-bolt text-amber-400 text-xs"></i>
+              <span>কুইক এক্সেস:</span>
+            </div>
 
-          <button onclick="openModal('onlineResultModal')" class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-emerald-700 text-xs font-semibold border border-slate-200 hover:border-emerald-300 shadow-2xs hover:shadow-xs transition-all duration-200">
-            <i class="fa-solid fa-square-poll-vertical text-slate-400 group-hover:text-emerald-600 text-xs transition-colors"></i>
-            <span>অনলাইন ফলাফল</span>
-          </button>
+            <!-- বাটন ১: অনলাইন ফলাফল -->
+            <button onclick="openModal('onlineResultModal')" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 text-xs font-bold border border-slate-200 hover:border-emerald-300 shadow-2xs hover:shadow-xs transition-all duration-200">
+              <i class="fa-solid fa-square-poll-vertical text-emerald-600 group-hover:scale-110 text-xs transition-transform"></i>
+              <span>অনলাইন ফলাফল</span>
+            </button>
 
-          <button onclick="openModal('onlineAdmissionModal')" class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200/80 shadow-2xs hover:shadow-xs transition-all duration-200">
-            <i class="fa-solid fa-graduation-cap text-emerald-600 group-hover:scale-110 text-xs transition-transform"></i>
-            <span>অনলাইন ভর্তি ফরম</span>
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
-            </span>
-          </button>
+            <!-- বাটন ২: অনলাইন ভর্তি ফরম -->
+            <button onclick="openModal('onlineAdmissionModal')" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-xs font-bold border border-emerald-300 shadow-2xs hover:shadow-xs transition-all duration-200">
+              <i class="fa-solid fa-graduation-cap text-emerald-700 group-hover:scale-110 text-xs transition-transform"></i>
+              <span>অনলাইন ভর্তি ফরম</span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-600 text-white tracking-wider animate-pulse">নতুন</span>
+            </button>
 
-          <button onclick="openModal('onlineDonationModal')" class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold border border-amber-200/80 shadow-2xs hover:shadow-xs transition-all duration-200">
-            <i class="fa-solid fa-hand-holding-heart text-amber-600 group-hover:scale-110 text-xs transition-transform"></i>
-            <span>দান ও যাকাত ফান্ড</span>
-          </button>
+            <!-- বাটন ৩: দান ও যাকাত ফান্ড -->
+            <button onclick="openModal('onlineDonationModal')" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-950 text-xs font-bold border border-amber-300 shadow-2xs hover:shadow-xs transition-all duration-200">
+              <i class="fa-solid fa-hand-holding-heart text-amber-600 group-hover:scale-110 text-xs transition-transform"></i>
+              <span>দান ও যাকাত ফান্ড</span>
+            </button>
 
-          <button onclick="openModal('quickPaymentModal')" class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-emerald-700 text-xs font-semibold border border-slate-200 hover:border-emerald-300 shadow-2xs hover:shadow-xs transition-all duration-200">
-            <i class="fa-solid fa-credit-card text-slate-400 group-hover:text-emerald-600 text-xs transition-colors"></i>
-            <span>দ্রুত ফি পেমেন্ট</span>
-          </button>
+            <!-- বাটন ৪: দ্রুত ফি পেমেন্ট -->
+            <button onclick="openModal('quickPaymentModal')" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-950 text-xs font-bold border border-indigo-200 shadow-2xs hover:shadow-xs transition-all duration-200">
+              <i class="fa-solid fa-receipt text-indigo-600 group-hover:scale-110 text-xs transition-transform"></i>
+              <span>দ্রুত ফি পেমেন্ট</span>
+            </button>
 
-          <button onclick="openModal('contactModal')" class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-emerald-700 text-xs font-semibold border border-slate-200 hover:border-emerald-300 shadow-2xs hover:shadow-xs transition-all duration-200">
-            <i class="fa-solid fa-headset text-slate-400 group-hover:text-emerald-600 text-xs transition-colors"></i>
-            <span>যোগাযোগ ও হেল্পডেস্ক</span>
-          </button>
+            <!-- বাটন ৫: যোগাযোগ ও হেল্পডেস্ক -->
+            <button onclick="openModal('contactModal')" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-700 hover:text-rose-900 text-xs font-bold border border-slate-200 hover:border-rose-300 shadow-2xs hover:shadow-xs transition-all duration-200">
+              <i class="fa-solid fa-headset text-rose-500 group-hover:scale-110 text-xs transition-transform"></i>
+              <span>যোগাযোগ ও হেল্পডেস্ক</span>
+            </button>
+          </div>
         </div>
 
-        <!-- ডিজিটাল নোটিশ টিকার -->
-        <div class="mt-3 bg-amber-50/90 border border-amber-200 text-amber-900 rounded-xl px-3 py-1.5 flex items-center gap-2 text-xs">
-          <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 animate-pulse">নোটিশ</span>
-          <marquee class="font-medium text-xs text-slate-700" id="homeNoticeTicker">
-            📢 আসন্ন দ্বিতীয় সাময়িক পরীক্ষা আগামী ১৫ ডিসেম্বর হতে অনুষ্ঠিত হবে | পবিত্র রমজানুল মুবারকের ছুটি ২০ রমজান হতে শুরু হবে | মাদ্রাসার বার্ষিক ওয়াজ মাহফিল আগামী ২৮ জানুয়ারি।
+        <!-- ডিজিটাল নোটিশ টেক্সটবার (Premium Live Broadcast Ticker) -->
+        <div class="mt-2.5 bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 text-white rounded-xl px-3 py-2 flex items-center gap-2.5 border border-emerald-800/80 shadow-md">
+          <span class="bg-amber-400 text-emerald-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md flex items-center gap-1.5 tracking-wider shadow-sm flex-shrink-0">
+            <i class="fa-solid fa-bullhorn animate-pulse text-emerald-950"></i> লাইভ নোটিশ
+          </span>
+          <marquee class="font-medium text-xs text-emerald-100" id="homeNoticeTicker">
+            📢 আসন্ন দ্বিতীয় সাময়িক পরীক্ষা আগামী ১৫ ডিসেম্বর হতে অনুষ্ঠিত হবে ✦ পবিত্র রমজানুল মুবারকের ছুটি ২০ রমজান হতে শুরু হবে ✦ মাদ্রাসার বার্ষিক ওয়াজ ও পুরস্কার বিতরণী মাহফিল আগামী ২৮ জানুয়ারি।
           </marquee>
         </div>
       </div>
@@ -1179,63 +1191,138 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- প্রতিষ্ঠান ১ -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm transition">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg font-bold">
-              <i class="fa-solid fa-mosque"></i>
-            </div>
+        <!-- প্রতিষ্ঠান ১: মক্কাতুল মুকাররমা মাদ্রাসা -->
+        <div class="bg-white rounded-3xl border border-slate-200/90 hover:border-emerald-500 shadow-xs hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group">
+          <div class="h-1.5 w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-400"></div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
             <div>
-              <h4 class="font-bold text-sm text-slate-900">মক্কাতুল মুকাররমা মাদ্রাসা</h4>
-              <p class="text-[11px] text-slate-500">খাজার রোড, চান্দগাঁও, চট্টগ্রাম (১২০০+ শিক্ষার্থী)</p>
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-xl font-bold border border-emerald-200/80 shadow-2xs group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-mosque"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-heading font-bold text-base text-slate-900 group-hover:text-emerald-800 transition-colors">মক্কাতুল মুকাররমা মাদ্রাসা</h4>
+                    <p class="text-xs text-slate-500">খাজার রোড, চান্দগাঁও, চট্টগ্রাম</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 mb-3">
+                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                <span>ভেরিফাইড প্রতিষ্ঠান • ১২০০+ শিক্ষার্থী</span>
+              </div>
+
+              <!-- টেস্টোমেনিয়াল টেক্সট বক্স (কোনো আঁকাবাঁকা বা ডিসটর্টেড ইটালিক ছাড়া সুবিন্যস্ত হরফ) -->
+              <div class="relative bg-slate-50/80 rounded-2xl p-4 border border-slate-100 text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                <i class="fa-solid fa-quote-left text-emerald-400/40 text-base mb-1 block"></i>
+                <p>
+                  "হিফজখানার দৈনিক সবক ট্র্যাকিং এবং ফি কালেকশনে খাতা-কলমের ঝামেলা চিরতরে দূর হয়েছে। প্রতি মাসের স্বয়ংক্রিয় হিসাব এখন এক ক্লিকেই পাচ্ছি।"
+                </p>
+              </div>
             </div>
-          </div>
-          <p class="text-xs text-slate-600 italic leading-relaxed">
-            "হিফজখানার দৈনিক সবক ট্র্যাকিং এবং ফি কালেকশনে খাতা-কলমের ঝামেলা চিরতরে দূর হয়েছে। প্রতি মাসের হিসাব এক ক্লিকেই পাচ্ছি।"
-          </p>
-          <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-            <span class="text-amber-500 font-bold">★★★★★ ৫/৫</span>
-            <span class="text-slate-400 font-medium">মুহতামিম মুফতি আব্দুর রহিম</span>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <div class="flex items-center gap-1 text-amber-500 font-bold">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <span class="text-slate-800 font-extrabold ml-1">৫.০/৫</span>
+              </div>
+              <span class="text-slate-600 font-semibold text-[11px]">মুহতামিম মুফতি আব্দুর রহিম</span>
+            </div>
           </div>
         </div>
 
-        <!-- প্রতিষ্ঠান ২ -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm transition">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-10 h-10 rounded-xl bg-amber-100 text-gold-700 flex items-center justify-center text-lg font-bold">
-              <i class="fa-solid fa-quran"></i>
-            </div>
+        <!-- প্রতিষ্ঠান ২: সানাউল্লাহ মুন্সিবাড়ি মাদ্রাসা (সাতকানিয়া, চট্টগ্রাম) -->
+        <div class="bg-white rounded-3xl border border-slate-200/90 hover:border-amber-500 shadow-xs hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group">
+          <div class="h-1.5 w-full bg-gradient-to-r from-amber-500 via-gold-500 to-yellow-400"></div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
             <div>
-              <h4 class="font-bold text-sm text-slate-900">সানাউল্লাহ মুন্সিবাড়ি মাদ্রাসা</h4>
-              <p class="text-[11px] text-slate-500">সাতকানিয়া, চট্টগ্রাম (৬৫০+ শিক্ষার্থী)</p>
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-2xl bg-amber-50 text-gold-700 flex items-center justify-center text-xl font-bold border border-amber-200/80 shadow-2xs group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-quran"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-heading font-bold text-base text-slate-900 group-hover:text-amber-800 transition-colors">সানাউল্লাহ মুন্সিবাড়ি মাদ্রাসা</h4>
+                    <p class="text-xs text-slate-500">সাতকানিয়া, চট্টগ্রাম</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200/80 mb-3">
+                <i class="fa-solid fa-shield-halved text-amber-600"></i>
+                <span>প্রিমিয়াম ক্লায়েন্ট • ৬৫০+ শিক্ষার্থী</span>
+              </div>
+
+              <!-- টেস্টোমেনিয়াল টেক্সট বক্স -->
+              <div class="relative bg-slate-50/80 rounded-2xl p-4 border border-slate-100 text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                <i class="fa-solid fa-quote-left text-amber-400/50 text-base mb-1 block"></i>
+                <p>
+                  "অভিভাবকদের মোবাইলে স্বয়ংক্রিয় এসএমএস এবং অনলাইন থেকে পরীক্ষার পূর্ণাঙ্গ ফলাফল দেখার সুবিধাটি আমাদের মাদ্রাসার সুনাম বহুগুণ বাড়িয়ে দিয়েছে।"
+                </p>
+              </div>
             </div>
-          </div>
-          <p class="text-xs text-slate-600 italic leading-relaxed">
-            "অভিভাবকদের কাছে স্বয়ংক্রিয় এসএমএস এবং মোবাইল থেকে পরীক্ষার ফলাফল দেখার সুবিধাটি আমাদের মাদ্রাসার সুনাম বহুগুণ বৃদ্ধি করেছে।"
-          </p>
-          <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-            <span class="text-amber-500 font-bold">★★★★★ ৫/৫</span>
-            <span class="text-slate-400 font-medium">হাফেজ মাওলানা জহিরুল ইসলাম</span>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <div class="flex items-center gap-1 text-amber-500 font-bold">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <span class="text-slate-800 font-extrabold ml-1">৫.০/৫</span>
+              </div>
+              <span class="text-slate-600 font-semibold text-[11px]">হাফেজ মাওলানা জহিরুল ইসলাম</span>
+            </div>
           </div>
         </div>
 
-        <!-- প্রতিষ্ঠান ৩ -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm transition">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg font-bold">
-              <i class="fa-solid fa-graduation-cap"></i>
-            </div>
+        <!-- প্রতিষ্ঠান ৩: দারুচ্ছালাম আলিয়া কামিল মাদরাসা -->
+        <div class="bg-white rounded-3xl border border-slate-200/90 hover:border-teal-500 shadow-xs hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group">
+          <div class="h-1.5 w-full bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-500"></div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
             <div>
-              <h4 class="font-bold text-sm text-slate-900">দারুচ্ছালাম আলিয়া কামিল মাদরাসা</h4>
-              <p class="text-[11px] text-slate-500">বরিশাল সদর (৮৫০+ শিক্ষার্থী)</p>
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-800 flex items-center justify-center text-xl font-bold border border-teal-200/80 shadow-2xs group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-heading font-bold text-base text-slate-900 group-hover:text-teal-800 transition-colors">দারুচ্ছালাম আলিয়া কামিল মাদরাসা</h4>
+                    <p class="text-xs text-slate-500">বরিশাল সদর</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200/80 mb-3">
+                <i class="fa-solid fa-award text-teal-600"></i>
+                <span>শীর্ষ কামিল প্রতিষ্ঠান • ৮৫০+ শিক্ষার্থী</span>
+              </div>
+
+              <!-- টেস্টোমেনিয়াল টেক্সট বক্স -->
+              <div class="relative bg-slate-50/80 rounded-2xl p-4 border border-slate-100 text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                <i class="fa-solid fa-quote-left text-teal-400/50 text-base mb-1 block"></i>
+                <p>
+                  "লিল্লাহ বোর্ডিং ও মেসের দৈনিক বাজার খরচের পর স্বয়ংক্রিয় মিল রেট ক্যালকুলেশন এবং শিক্ষকদের বেতন ভাউচার ফিচারটি এককথায় অসাধারণ।"
+                </p>
+              </div>
             </div>
-          </div>
-          <p class="text-xs text-slate-600 italic leading-relaxed">
-            "লিল্লাহ বোর্ডিং ও মেসের দৈনিক বাজার খরচের পর স্বয়ংক্রিয় মিল রেট ক্যালকুলেশন ফিচারটি এককথায় অসাধারণ।"
-          </p>
-          <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-            <span class="text-amber-500 font-bold">★★★★★ ৫/৫</span>
-            <span class="text-slate-400 font-medium">অধ্যক্ষ ড. মো: নুরুল ইসলাম</span>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <div class="flex items-center gap-1 text-amber-500 font-bold">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <span class="text-slate-800 font-extrabold ml-1">৫.০/৫</span>
+              </div>
+              <span class="text-slate-600 font-semibold text-[11px]">অধ্যক্ষ ড. মো: নুরুল ইসলাম</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1952,8 +2039,8 @@
               <h3 class="text-lg font-bold text-madrasa-900">দৈনিক ডিজিটাল উপস্থিতি তালিকা</h3>
               <p class="text-xs text-slate-500">ম্যানুয়াল ও ZKTeco বায়োমেট্রিক পাঞ্চ ট্র্যাকিং</p>
             </div>
-            <button onclick="alert('স্বয়ংক্রিয় বাংলা এসএমএস সকল অনুপস্থিত অভিভাবকের মোবাইলে পাঠানো হয়েছে!')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2">
-              <i class="fa-solid fa-paper-plane"></i> অনুপস্থিতির এসএমএস পাঠান
+            <button onclick="dispatchAbsenceNotifications()" class="bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-sm transition">
+              <i class="fa-brands fa-whatsapp text-sm"></i> অনুপস্থিত অভিভাবকদের বার্তা পাঠান
             </button>
           </div>
 
@@ -2799,7 +2886,7 @@
       <!-- রিভিউ কোট -->
       <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-xs space-y-1.5 text-emerald-950">
         <div class="flex items-center gap-1 text-amber-500 text-xs font-bold">★★★★★ ৫/৫ কাস্টমার সন্তুষ্টি</div>
-        <p class="italic text-slate-700 leading-relaxed">
+        <p class="text-slate-700 leading-relaxed font-normal">
           "হেদায়েত টেক ব্যবহারের পর আমাদের মাদ্রাসার ফি কালেকশন ও হিসাবরক্ষণে পূর্ণাঙ্গ স্বচ্ছতা এসেছে। অভিভাবকরাও এসএমএস পেয়ে অত্যন্ত সন্তুষ্ট।"
         </p>
         <div class="font-bold text-emerald-900 text-[11px] pt-1 border-t border-emerald-200/60">
@@ -2926,17 +3013,71 @@
         </div>
         <button onclick="closeModal('videoTourModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-times text-lg"></i></button>
       </div>
-      <div class="p-8 text-center text-white space-y-4">
-        <div class="w-20 h-20 rounded-full bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-3xl mx-auto shadow-inner">
-          <i class="fa-solid fa-film"></i>
+      <div class="p-6 text-white space-y-4">
+        <!-- ইন্টারেক্টিভ সিমুলেটেড ভিডিও ও ফিচার ওয়াকথ্রু -->
+        <div class="relative bg-gradient-to-br from-slate-950 via-[#071f12] to-slate-900 rounded-2xl p-4 border border-emerald-500/30 overflow-hidden shadow-2xl">
+          <div class="flex items-center justify-between border-b border-emerald-900/60 pb-3 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              <span class="text-xs text-emerald-300 font-mono ml-2">hedayettech.com/demo-walkthrough</span>
+            </div>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">
+              <i class="fa-solid fa-circle text-[8px] text-emerald-400 mr-1 animate-pulse"></i> লাইভ ডেমো ভিডিও
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+            <div class="space-y-2.5">
+              <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider bg-amber-400/10 px-2 py-0.5 rounded">
+                মিনিট ০১ • অটোমেশন
+              </span>
+              <h4 class="text-base font-bold text-white">খাতা-কলমের ঝামেলা ছাড়া স্বয়ংক্রিয় ক্লাউড ক্যাম্পাস</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                হিফজখানার দৈনিক সবক, ৭ স্তরের ভর্তি প্রক্রিয়া, বোর্ডিং মিল রেট ও স্বয়ংক্রিয় পরীক্ষার ফলাফল কার্ড—সবকিছু মোবাইল এবং ল্যাপটপ থেকে এক ক্লিকেই সম্পূর্ণ হয়।
+              </p>
+              <div class="flex items-center gap-2 pt-1 text-[11px] text-emerald-200">
+                <i class="fa-solid fa-check text-emerald-400"></i> ১০০% অফলাইন ও অনলাইন ব্যাকআপ
+              </div>
+            </div>
+
+            <!-- ভিজ্যুয়াল প্রিভিউ বক্স -->
+            <div class="bg-black/60 rounded-xl p-3 border border-emerald-500/20 space-y-2">
+              <div class="flex items-center justify-between text-[11px] text-slate-400 border-b border-white/10 pb-1.5">
+                <span>ফিচার মডিউলসমূহ</span>
+                <span class="text-emerald-400 font-mono">৪টি কোর হাব</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="p-2 bg-emerald-950/60 rounded-lg border border-emerald-800/40 text-center">
+                  <i class="fa-solid fa-graduation-cap text-emerald-400 block mb-1"></i>
+                  <span class="text-[11px] text-emerald-100 font-bold">অনলাইন ভর্তি</span>
+                </div>
+                <div class="p-2 bg-emerald-950/60 rounded-lg border border-emerald-800/40 text-center">
+                  <i class="fa-solid fa-quran text-amber-400 block mb-1"></i>
+                  <span class="text-[11px] text-amber-100 font-bold">হিফজ ট্র্যাকার</span>
+                </div>
+                <div class="p-2 bg-emerald-950/60 rounded-lg border border-emerald-800/40 text-center">
+                  <i class="fa-solid fa-money-bill-wave text-teal-400 block mb-1"></i>
+                  <span class="text-[11px] text-teal-100 font-bold">ফি ও ক্যাশ খাতা</span>
+                </div>
+                <div class="p-2 bg-emerald-950/60 rounded-lg border border-emerald-800/40 text-center">
+                  <i class="fa-solid fa-square-poll-vertical text-cyan-400 block mb-1"></i>
+                  <span class="text-[11px] text-cyan-100 font-bold">মার্কশিট ও রেজাল্ট</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <h3 class="text-xl font-black">মাদ্রাসার সকল খাতা-কলম এখন একটি স্মার্ট সফটওয়্যারে</h3>
-        <p class="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
-          ছাত্র ভর্তি থেকে শুরু করে হিফজ তথ্য খাতা, লিল্লাহ বোর্ডিংয়ের বাজার খরচ ও পরীক্ষার ফলাফল—মাত্র ৫ মিনিটে পুরো সিস্টেম বুঝে নিন।
-        </p>
-        <button onclick="closeModal('videoTourModal'); openModal('bookDemoModal');" class="bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-xs shadow-md transition">
-          ফ্রি ডেমো বুকিং করুন →
-        </button>
+
+        <div class="flex items-center justify-between pt-2">
+          <button onclick="closeModal('videoTourModal'); enterAdminGateway();" class="text-xs text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1.5 underline">
+            <i class="fa-solid fa-key"></i> সরাসরি অ্যাডমিন ওএস ডেমোতে প্রবেশ করুন &rarr;
+          </button>
+          <button onclick="closeModal('videoTourModal'); openModal('bookDemoModal');" class="bg-gradient-to-r from-amber-500 to-gold-500 hover:from-amber-600 hover:to-gold-600 text-slate-950 font-black px-6 py-2.5 rounded-xl text-xs shadow-lg transition">
+            ফ্রি লাইভ ডেমো বুক করুন
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -2961,33 +3102,57 @@
     </div>
   </div>
 
-  <!-- মোডাল: দ্রুত ফি পেমেন্ট -->
+  <!-- মোডাল: দ্রুত ফি পেমেন্ট (১০০% রিয়েল ডাটাবেস ও গেটওয়ে ইন্টিগ্রেটেড) -->
   <div id="quickPaymentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-base text-slate-900">দ্রুত অনলাইন ফি পরিশোধ</h3>
+        <div>
+          <h3 class="font-bold text-base text-slate-900">দ্রুত অনলাইন ফি পরিশোধ</h3>
+          <p class="text-xs text-slate-500">বিকাশ/নগদের মাধ্যমে মাসিক বেতন ও ফি পরিশোধ</p>
+        </div>
         <button onclick="closeModal('quickPaymentModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times text-lg"></i></button>
       </div>
-      <div class="space-y-3 text-xs">
+
+      <form onsubmit="submitQuickFeePayment(event)" class="space-y-3.5 text-xs">
         <div>
-          <label class="font-bold text-slate-700 block mb-1">শিক্ষার্থীর দাখেলা নং</label>
-          <input type="text" id="payStudentId" placeholder="DAKH-101" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">পেমেন্ট গেটওয়ে</label>
-          <div class="grid grid-cols-2 gap-3 text-center">
-            <div class="p-3 border-2 border-pink-500 rounded-xl bg-pink-50 font-bold text-pink-700 cursor-pointer">
-              bKash
-            </div>
-            <div class="p-3 border-2 border-orange-500 rounded-xl bg-orange-50 font-bold text-orange-700 cursor-pointer">
-              Nagad
-            </div>
+          <label class="font-bold text-slate-700 block mb-1">শিক্ষার্থীর দাখেলা বা রোল নম্বর *</label>
+          <div class="relative">
+            <input type="text" id="payStudentId" required oninput="lookupPaymentStudent()" placeholder="যেমন: DAKH-101 বা রোল ১" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-emerald-600">
+            <span id="payStudentLoading" class="absolute right-3 top-2.5 text-slate-400 hidden"><i class="fa-solid fa-spinner fa-spin"></i></span>
           </div>
+          <div id="payStudentInfo" class="mt-2 p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-xs hidden"></div>
         </div>
-        <button onclick="alert('পেমেন্ট গেটওয়ে সফলভাবে সংযুক্ত! টেস্ট ট্রানজ্যাকশন সম্পন্ন হয়েছে।'); closeModal('quickPaymentModal');" class="w-full bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition">
-          পেমেন্ট সম্পন্ন করুন
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">পরিশোধের পরিমাণ (টাকা) *</label>
+          <input type="number" id="payAmount" required placeholder="৳ 1500" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-900">
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">পেমেন্ট মেথড নির্বাচন করুন</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="p-2.5 border-2 border-pink-500 rounded-xl bg-pink-50 font-bold text-pink-700 flex items-center justify-center gap-2 cursor-pointer hover:bg-pink-100 transition">
+              <input type="radio" name="payGateway" value="bKash" checked class="accent-pink-600">
+              <span>বিকাশ (bKash)</span>
+            </label>
+            <label class="p-2.5 border-2 border-orange-500 rounded-xl bg-orange-50 font-bold text-orange-700 flex items-center justify-center gap-2 cursor-pointer hover:bg-orange-100 transition">
+              <input type="radio" name="payGateway" value="Nagad" class="accent-orange-600">
+              <span>নগদ (Nagad)</span>
+            </label>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1.5">মার্চেন্ট / পেমেন্ট নম্বর: <strong class="font-mono text-slate-800">01884636312</strong></p>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">ট্রানজ্যাকশন আইডি (TrxID) *</label>
+          <input type="text" id="payTrxId" required placeholder="যেমন: BK987654321" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-mono uppercase">
+        </div>
+
+        <button type="submit" id="paySubmitBtn" class="w-full bg-gradient-to-r from-emerald-800 to-emerald-700 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold py-3 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2">
+          <i class="fa-solid fa-receipt"></i>
+          <span>ফি পরিশোধ নিশ্চিত করুন</span>
         </button>
-      </div>
+      </form>
     </div>
   </div>
 

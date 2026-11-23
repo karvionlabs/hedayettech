@@ -510,9 +510,20 @@ async function loadStudents() {
         <td class="p-3.5"><span class="bg-rose-50 text-rose-700 px-2 py-0.5 rounded font-bold">${escapeHtml(s.blood_group || 'O+')}</span></td>
         <td class="p-3.5 text-right font-bold text-madrasa-900">৳ ${escapeHtml(s.monthly_fee ? s.monthly_fee.toLocaleString('bn-BD') : '০')}</td>
         <td class="p-3.5 text-center">
-          <button onclick="printIdCard(${s.id})" class="text-xs bg-slate-100 hover:bg-madrasa-900 hover:text-white px-2.5 py-1.5 rounded-lg transition" title="ডিজিটাল আইডি কার্ড">
-            <i class="fa-solid fa-id-card"></i>
-          </button>
+          <div class="flex items-center justify-center gap-1.5">
+            <button onclick="printIdCard(${s.id})" class="text-xs bg-slate-100 hover:bg-madrasa-900 hover:text-white px-2 py-1.5 rounded-lg transition" title="ডিজিটাল আইডি কার্ড">
+              <i class="fa-solid fa-id-card"></i>
+            </button>
+            <button onclick="printSampleAdmitCard(${s.id})" class="text-xs bg-emerald-50 text-emerald-800 hover:bg-emerald-700 hover:text-white px-2 py-1.5 rounded-lg transition" title="প্রবেশপত্র (Admit Card)">
+              <i class="fa-solid fa-address-card"></i>
+            </button>
+            <button onclick="printSampleCertificate(${s.id})" class="text-xs bg-amber-50 text-amber-800 hover:bg-amber-600 hover:text-white px-2 py-1.5 rounded-lg transition" title="চারিত্রিক প্রশংসাপত্র">
+              <i class="fa-solid fa-certificate"></i>
+            </button>
+            <button onclick="openWhatsAppMessenger('fee', '${s.guardian_phone || '01884636312'}', '${escapeHtml(s.name_bn)}')" class="text-xs bg-green-50 text-green-700 hover:bg-green-600 hover:text-white px-2 py-1.5 rounded-lg transition" title="অভিভাবককে হোয়াটসঅ্যাপ বার্তা">
+              <i class="fa-brands fa-whatsapp"></i>
+            </button>
+          </div>
         </td>
       `;
       tbody.appendChild(tr);
@@ -873,15 +884,39 @@ async function checkOnlineResult() {
     if (data.success && data.student) {
       const s = data.student;
       output.classList.remove('hidden');
+
+      let marksHtml = '';
+      if (s.marks_breakdown && s.marks_breakdown.length > 0) {
+        marksHtml = `
+          <div class="mt-3 border-t border-slate-200 pt-2.5">
+            <div class="text-[11px] font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+              <span>বিষয়ভিত্তিক নম্বরপত্র (${escapeHtml(s.marks_breakdown[0].exam_name || 'বার্ষিক পরীক্ষা')}):</span>
+              <span class="text-emerald-700 font-bold">মোট: ${s.total_obtained}/${s.total_marks}</span>
+            </div>
+            <div class="space-y-1 text-[11px]">
+              ${s.marks_breakdown.map(m => `
+                <div class="flex items-center justify-between py-1 px-2 rounded-lg bg-white border border-slate-100">
+                  <span class="text-slate-700">${escapeHtml(m.subject_name)}</span>
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-slate-900">${m.marks_obtained}/${m.total_marks}</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800">${escapeHtml(m.grade || 'মুমতাজ')}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
       output.innerHTML = `
         <div class="space-y-1.5">
-          <div class="text-sm font-bold text-madrasa-900">${escapeHtml(s.name_bn)}</div>
-          <div class="text-xs text-slate-600">দাখেলা: <b>${escapeHtml(s.admission_no)}</b> | রোল: <b>${escapeHtml(s.roll_no ? s.roll_no.toLocaleString('bn-BD') : '')}</b></div>
-          <div class="text-xs text-slate-600">জামাত: <b>${escapeHtml(s.class_name || 'হিফজ বিভাগ')}</b></div>
-          <div class="mt-2 pt-2 border-t border-slate-200 flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-700">ফলাফল গ্রেড:</span>
+          <div class="flex items-center justify-between">
+            <div class="text-sm font-bold text-madrasa-900">${escapeHtml(s.name_bn)}</div>
             <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs">${escapeHtml(s.grade)}</span>
           </div>
+          <div class="text-xs text-slate-600">দাখেলা: <b>${escapeHtml(s.admission_no)}</b> | রোল: <b>${escapeHtml(s.roll_no ? s.roll_no.toLocaleString('bn-BD') : '')}</b></div>
+          <div class="text-xs text-slate-600">জামাত: <b>${escapeHtml(s.class_name || 'হিফজ বিভাগ')}</b></div>
+          ${marksHtml}
         </div>
       `;
     } else {
@@ -1559,7 +1594,17 @@ function print3PartReceipt(voucherNo, date, studentName, className, amount, desc
 }
 
 // ২. ১২টি স্টাইলের এডমিট কার্ড প্রিন্ট
-function printSampleAdmitCard() {
+function printSampleAdmitCard(studentId) {
+  let s = (typeof globalStudents !== 'undefined' && globalStudents) ? globalStudents.find(x => x.id == studentId) : null;
+  if (!s && typeof globalStudents !== 'undefined' && globalStudents && globalStudents.length > 0) {
+    s = globalStudents[0];
+  }
+  const sName = s ? s.name_bn : 'মুহাম্মদ আবু বকর সিদ্দিক';
+  const sFather = s ? s.guardian_name : 'মাওলানা সাইফুল্লাহ';
+  const sAdm = s ? s.admission_no : 'DAKH-101';
+  const sRoll = s ? (s.roll_no ? s.roll_no.toLocaleString('bn-BD') : '০১') : '০১';
+  const sClass = s ? (s.class_name || 'হিফজুল কুরআন বিভাগ') : 'হিফজুল কুরআন বিভাগ';
+
   const w = window.open('', '', 'width=750,height=800');
   w.document.write(`
     <html>
@@ -1590,10 +1635,10 @@ function printSampleAdmitCard() {
           </div>
           <div class="student-info">
             <div>
-              <div><strong>শিক্ষার্থীর নাম:</strong> মো: আব্দুল্লাহ আল কারিফ</div>
-              <div><strong>পিতার নাম:</strong> মুফতি আব্দুর রহিম</div>
-              <div><strong>দাখেলা নং:</strong> ADM-2026-001 | <strong>রোল:</strong> ০১</div>
-              <div><strong>জামাত/বিভাগ:</strong> হিফজুল কুরআন ও কিতাব বিভাগ</div>
+              <div><strong>শিক্ষার্থীর নাম:</strong> ${escapeHtml(sName)}</div>
+              <div><strong>অভিভাবক/পিতা:</strong> ${escapeHtml(sFather)}</div>
+              <div><strong>দাখেলা নং:</strong> ${escapeHtml(sAdm)} | <strong>রোল:</strong> ${escapeHtml(sRoll)}</div>
+              <div><strong>জামাত/বিভাগ:</strong> ${escapeHtml(sClass)}</div>
               <div><strong>পরীক্ষা কেন্দ্র:</strong> মাদরাসা কেন্দ্রীয় মিলনায়তন</div>
             </div>
             <div class="photo-box">
@@ -1634,7 +1679,15 @@ function printSampleAdmitCard() {
 }
 
 // ৩. প্রশংসাপত্র ও চারিত্রিক সনদ প্রিন্ট
-function printSampleCertificate() {
+function printSampleCertificate(studentId) {
+  let s = (typeof globalStudents !== 'undefined' && globalStudents) ? globalStudents.find(x => x.id == studentId) : null;
+  if (!s && typeof globalStudents !== 'undefined' && globalStudents && globalStudents.length > 0) {
+    s = globalStudents[0];
+  }
+  const sName = s ? s.name_bn : 'মুহাম্মদ আবু বকর সিদ্দিক';
+  const sFather = s ? s.guardian_name : 'মাওলানা সাইফুল্লাহ';
+  const sClass = s ? (s.class_name || 'হিফজুল কুরআন বিভাগ') : 'হিফজুল কুরআন বিভাগ';
+
   const w = window.open('', '', 'width=800,height=600');
   w.document.write(`
     <html>
@@ -1658,7 +1711,7 @@ function printSampleCertificate() {
           <p style="margin: 0; font-size: 12px; color: #64748b;">চান্দগাঁও, চট্টগ্রাম | স্থাপিত: ২০১৮ খ্রিষ্টাব্দ</p>
           <div class="title">চারিত্রিক প্রশংসাপত্র ও প্রত্যয়ন</div>
           <div class="content">
-            এই মর্মে প্রত্যয়ন করা যাইতেছে যে, <strong>মো: মাহদী হাসান</strong>, পিতা: মো: নুরুল হুদা, গ্রাম: চান্দগাঁও, ডাকঘর: চান্দগাঁও, উপজেলা: চান্দগাঁও, জেলা: চট্টগ্রাম অত্র মাদ্রাসার হিফজুল কুরআন বিভাগের একজন নিয়মিত শিক্ষার্থী ছিল। সে অত্র প্রতিষ্ঠানে অধ্যয়নকালীন সময়ে পবিত্র কুরআনের ৩০ পারা হিফজ কৃতিত্বের সাথে সম্পন্ন করিয়াছে। মাদ্রাসায় অবস্থানকালীন তাহার স্বভাব-চরিত্র প্রশংসনীয় এবং সে কখনো প্রতিষ্ঠানবিরোধী কোনো কার্যকলাপে লিপ্ত ছিল না।
+            এই মর্মে প্রত্যয়ন করা যাইতেছে যে, <strong>${escapeHtml(sName)}</strong>, পিতা: ${escapeHtml(sFather)}, অত্র মাদ্রাসার ${escapeHtml(sClass)}-এর একজন নিয়মিত শিক্ষার্থী ছিল। সে অত্র প্রতিষ্ঠানে অধ্যয়নকালীন সময়ে উত্তম ফলাফল ও শরিয়াহ নির্দেশিত আদব-আখলাকের পরাকাষ্ঠা প্রদর্শন করিয়াছে। মাদ্রাসায় অবস্থানকালীন তাহার স্বভাব-চরিত্র প্রশংসনীয় এবং সে কখনো প্রতিষ্ঠানবিরোধী কোনো কার্যকলাপে লিপ্ত ছিল না।
             <br>
             আমরা তাহার ইহকালীন ও পরকালীন সর্বাঙ্গীন মঙ্গল ও সাফল্য কামনা করি।
           </div>
@@ -2098,14 +2151,183 @@ async function submitContributionForm(e) {
   }
 }
 
-function handleOnlineDonationSubmit(e) {
+async function handleOnlineDonationSubmit(e) {
   e.preventDefault();
-  const name = document.getElementById('donatorName').value;
-  const amount = document.getElementById('donatorAmount').value;
-  const trx = document.getElementById('donatorTrx').value;
-  alert(`জাযাকাল্লাহ খাইরান!\n\n${name} সাহেব, আপনার ${amount} টাকার অনুদানের তথ্য মাদ্রাসার ক্যাশিয়ারের কাছে পাঠানো হয়েছে।\nট্রানজ্যাকশন আইডি (${trx || 'নগদ'}) যাচাইপূর্বক অফিসিয়াল শোকরিয়া রসিদ পাঠানো হবে।`);
-  closeModal('onlineDonationModal');
-  e.target.reset();
+  const name = document.getElementById('donatorName')?.value?.trim();
+  const phone = document.getElementById('donatorPhone')?.value?.trim();
+  const amount = document.getElementById('donatorAmount')?.value;
+  const category = document.getElementById('donatorCategory')?.value || 'লিল্লাহ বোর্ডিং দান';
+  const trx = document.getElementById('donatorTrx')?.value?.trim();
+
+  if (!name || !phone || !amount) {
+    alert('অনুগ্রহ করে নাম, মোবাইল নম্বর এবং অনুদানের পরিমাণ সঠিকভাবে প্রদান করুন।');
+    return;
+  }
+
+  const btn = e.target.querySelector('button[type="submit"]');
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> অনুদান প্রক্রিয়াধীন...';
+
+  try {
+    const res = await _origFetch('/api/donors/public-donate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone, amount, category, trx_id: trx })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      alert(`জাযাকাল্লাহ খাইরান!\n\n${data.message}\nঅফিসিয়াল অনুদান রসিদ নং: ${data.receiptNo}\nভাউচার নং: ${data.voucherNo}\n\nআপনার অনুদান সরাসরি মাদ্রাসার ক্যাশবুক ফান্ডে যুক্ত হয়েছে।`);
+      closeModal('onlineDonationModal');
+      e.target.reset();
+      if (typeof loadDonors === 'function') loadDonors();
+      if (typeof loadDashboard === 'function') loadDashboard();
+    } else {
+      alert('অনুদান সংরক্ষণে সমস্যা: ' + (data.error || 'পুনরায় চেষ্টা করুন'));
+    }
+  } catch (err) {
+    alert('সার্ভার সংযোগে ত্রুটি ঘটেছে: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
+// ==========================================
+// দ্রুত ফি পেমেন্ট ও ছাত্র অনুসন্ধান ইঞ্জিন
+// ==========================================
+let _feeLookupTimeout = null;
+
+async function lookupPaymentStudent() {
+  const idInput = document.getElementById('payStudentId');
+  const infoBox = document.getElementById('payStudentInfo');
+  const loader = document.getElementById('payStudentLoading');
+  const amountInput = document.getElementById('payAmount');
+  if (!idInput || !infoBox) return;
+
+  const query = idInput.value.trim();
+  if (!query || query.length < 2) {
+    infoBox.classList.add('hidden');
+    infoBox.innerHTML = '';
+    return;
+  }
+
+  clearTimeout(_feeLookupTimeout);
+  _feeLookupTimeout = setTimeout(async () => {
+    if (loader) loader.classList.remove('hidden');
+    try {
+      const res = await _origFetch(`/api/public/student-lookup?admission_no=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      if (data.success && data.student) {
+        const s = data.student;
+        infoBox.classList.remove('hidden', 'bg-rose-50', 'text-rose-900', 'border-rose-200');
+        infoBox.classList.add('bg-emerald-50', 'text-emerald-900', 'border-emerald-200');
+        infoBox.innerHTML = `
+          <div class="font-bold flex items-center justify-between">
+            <span>${escapeHtml(s.name_bn)}</span>
+            <span class="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full font-bold">ভেরিফাইড শিক্ষার্থী</span>
+          </div>
+          <div class="text-[11px] text-slate-600 mt-0.5">জামাত: <b>${escapeHtml(s.class_name)}</b> | রোল: <b>${s.roll_no}</b> | দাখেলা: <b>${escapeHtml(s.admission_no)}</b></div>
+        `;
+        if (amountInput && (!amountInput.value || amountInput.value == '1500')) {
+          amountInput.value = s.monthly_fee || 1500;
+        }
+      } else {
+        infoBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'border-emerald-200');
+        infoBox.classList.add('bg-rose-50', 'text-rose-900', 'border-rose-200');
+        infoBox.innerHTML = `<span class="font-bold">❌ কোনো শিক্ষার্থী পাওয়া যায়নি!</span> দাখেলা নম্বর (যেমন DAKH-101) বা রোল সঠিক লিখুন।`;
+      }
+    } catch (e) {
+    } finally {
+      if (loader) loader.classList.add('hidden');
+    }
+  }, 350);
+}
+
+async function submitQuickFeePayment(e) {
+  e.preventDefault();
+  const admission_no = document.getElementById('payStudentId')?.value?.trim();
+  const amount = document.getElementById('payAmount')?.value;
+  const payment_method = document.querySelector('input[name="payGateway"]:checked')?.value || 'bKash';
+  const trx_id = document.getElementById('payTrxId')?.value?.trim();
+
+  if (!admission_no || !amount || !trx_id) {
+    alert('অনুগ্রহ করে শিক্ষার্থীর দাখেলা নম্বর, ফি এর পরিমাণ এবং ট্রানজ্যাকশন আইডি প্রদান করুন।');
+    return;
+  }
+
+  const btn = document.getElementById('paySubmitBtn');
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ফি ভেরিফিকেশন চলছে...';
+
+  try {
+    const res = await _origFetch('/api/public/pay-fee', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ admission_no, amount, payment_method, trx_id })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      alert(`আলহামদুলিল্লাহ!\n\n${data.message}\nভাউচার নং: ${data.voucherNo}\n\nশিক্ষার্থীর ফি সফলভাবে মাদ্রাসার ফান্ডে জমা হয়েছে।`);
+      closeModal('quickPaymentModal');
+      e.target.reset();
+      const infoBox = document.getElementById('payStudentInfo');
+      if (infoBox) {
+        infoBox.classList.add('hidden');
+        infoBox.innerHTML = '';
+      }
+      if (typeof loadAccounts === 'function') loadAccounts();
+      if (typeof loadDashboard === 'function') loadDashboard();
+    } else {
+      alert('ফি পরিশোধ ব্যর্থ হয়েছে: ' + (data.error || 'পুনরায় চেষ্টা করুন'));
+    }
+  } catch (err) {
+    alert('সার্ভার সংযোগে ত্রুটি: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
+// ==========================================
+// অনুপস্থিত শিক্ষার্থীদের হোয়াটসঅ্যাপ নোটিফিকেশন ইঞ্জিন
+// ==========================================
+async function dispatchAbsenceNotifications() {
+  try {
+    const res = await fetch('/api/attendance');
+    const data = await res.json();
+    if (!data.success) {
+      alert('হাজিরা তথ্য লোড করা যায়নি!');
+      return;
+    }
+
+    const absentStudents = (data.attendance || []).filter(a => a.status === 'ABSENT');
+    if (absentStudents.length === 0) {
+      alert('মাশাল্লাহ! আজকের তারিখে সকল শিক্ষার্থী উপস্থিত আছেন। কোনো শিক্ষার্থী অনুপস্থিত নেই।');
+      return;
+    }
+
+    const firstAbsent = absentStudents[0];
+    const phoneInput = document.getElementById('waGuardianPhone');
+    const msgText = document.getElementById('waMessageText');
+    const templateSelect = document.getElementById('waTemplateSelect');
+
+    if (templateSelect) templateSelect.value = 'absence';
+    if (phoneInput) phoneInput.value = firstAbsent.guardian_phone || firstAbsent.phone || '01884636312';
+
+    const instName = document.getElementById('set-name-bn')?.value || 'মাদ্রাসার';
+    if (msgText) {
+      msgText.value = `আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহ। ${instName}-এর পক্ষ থেকে জানানো যাচ্ছে যে, আপনার সন্তান *${firstAbsent.name_bn}* (রোল: ${firstAbsent.roll_no}) অদ্য মাদরাসায় অনুপস্থিত রয়েছে। কোনো জরুরি ওযর বা অসুস্থতা থাকলে অনুগ্রহ করে মাদরাসা অফিসে অবগত করুন। জাযাকাল্লাহ খাইরান।`;
+    }
+
+    alert(`মোট ${absentStudents.length} জন শিক্ষার্থী আজ অনুপস্থিত। অভিভাবকের কাছে সরাসরি হোয়াটসঅ্যাপ নোটিশ পাঠানোর হাব ওপেন করা হচ্ছে।`);
+    openModal('whatsappMessengerModal');
+  } catch (err) {
+    alert('অনুপস্থিতি বার্তা প্রেরণে সমস্যা: ' + err.message);
+  }
 }
 
 // ৩. করজে হাসানা ও ঋণ খাতা লোডার
@@ -2810,7 +3032,8 @@ function sendGatepassWhatsApp() {
   if (!currentViewingGp) return;
   const p = currentViewingGp;
   const phone = p.guardian_phone || '01884636312';
-  const text = `আসসালামু আলাইকুম। মারকাযুল কুরআন মাদরাসার পক্ষ থেকে জানানো যাচ্ছে যে, আপনার সন্তান *${p.student_name}* (${p.class_name}) [${p.leave_reason}] বাবদ অদ্য ${p.departure_time} মাদরাসা থেকে অনুমোদিত ছুটিতে বের হয়েছে। প্রত্যাশিত ফেরার সময়: ${p.expected_return}। (গেটপাস নং: ${p.pass_no})`;
+  const instName = document.getElementById('set-name-bn')?.value || 'মাদ্রাসার';
+  const text = `আসসালামু আলাইকুম। ${instName}-এর পক্ষ থেকে জানানো যাচ্ছে যে, আপনার সন্তান *${p.student_name}* (${p.class_name}) [${p.leave_reason}] বাবদ অদ্য ${p.departure_time} মাদরাসা থেকে অনুমোদিত ছুটিতে বের হয়েছে। প্রত্যাশিত ফেরার সময়: ${p.expected_return}। (গেটপাস নং: ${p.pass_no})`;
   window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
 }
 
@@ -3094,12 +3317,13 @@ function changeWhatsAppTemplate(studentName = 'মুহাম্মদ আব�
   const textarea = document.getElementById('waMessageText');
   if (!textarea) return;
 
+  const instName = document.getElementById('set-name-bn')?.value || 'মাদ্রাসার';
   const templates = {
-    absence: `আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহ। মারকাযুল কুরআন মাদরাসার পক্ষ থেকে জানানো যাচ্ছে যে, আপনার সন্তান *${studentName}* অদ্য মাদরাসায় উপস্থিত হয়নি। কোনো জরুরি ওযর বা অসুস্থতা থাকলে অনুগ্রহ করে মাদরাসা অফিসে অবগত করুন। জাযাকাল্লাহ খাইরান।`,
+    absence: `আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহ। ${instName}-এর পক্ষ থেকে জানানো যাচ্ছে যে, আপনার সন্তান *${studentName}* অদ্য মাদরাসায় উপস্থিত হয়নি। কোনো জরুরি ওযর বা অসুস্থতা থাকলে অনুগ্রহ করে মাদরাসা অফিসে অবগত করুন। জাযাকাল্লাহ খাইরান।`,
     fee: `আসসালামু আলাইকুম। মুহতারাম অভিভাবক, আপনার সন্তান *${studentName}*-এর চলতি মাসের বেতন ও মেস ফি বাবদ বকেয়া রয়েছে। নির্ধারিত সময়ের মধ্যে মাদরাসা অফিসে বা বিকাশ নম্বরে পরিশোধের অনুরোধ করা যাচ্ছে।`,
-    hifz: `মাশাল্লাহ! মারকাযুল কুরআন মাদরাসার হিফজ বিভাগ থেকে জানাচ্ছি যে, আপনার সন্তান *${studentName}* অদ্য অত্যন্ত সুন্দরভাবে সবক ও আমোখতা তিলাওয়াত সম্পন্ন করেছে। তার ধারাবাহিক অগ্রগতির জন্য বিশেষ দোয়া প্রার্থী।`,
+    hifz: `মাশাল্লাহ! ${instName}-এর হিফজ বিভাগ থেকে জানাচ্ছি যে, আপনার সন্তান *${studentName}* অদ্য অত্যন্ত সুন্দরভাবে সবক ও আমোখতা তিলাওয়াত সম্পন্ন করেছে। তার ধারাবাহিক অগ্রগতির জন্য বিশেষ দোয়া প্রার্থী।`,
     khuruj: `আসসালামু আলাইকুম। আপনার সন্তান *${studentName}* মাদরাসা থেকে অনুমোদিত ছুটিতে বাড়ির উদ্দেশ্যে রওনা হয়েছে। অনুগ্রহ করে সন্তান বাড়ি পৌঁছালে মাদরাসা কর্তৃপক্ষকে ফোনে নিশ্চিত করবেন।`,
-    general: `আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহ। মারকাযুল কুরআন মাদরাসার সকল সম্মানিত অভিভাবকবৃন্দের সদয় অবগতির জন্য জানানো যাচ্ছে যে, আগামী বৃহস্পতিবার মাদরাসায় বিশেষ অভিভাবক সমাবেশ ও দোয়া মাহফিল অনুষ্ঠিত হবে। আপনার উপস্থিতি একান্ত কাম্য।`
+    general: `আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহ। ${instName}-এর সকল সম্মানিত অভিভাবকবৃন্দের সদয় অবগতির জন্য জানানো যাচ্ছে যে, আগামী বৃহস্পতিবার মাদরাসায় বিশেষ অভিভাবক সমাবেশ ও দোয়া মাহফিল অনুষ্ঠিত হবে। আপনার উপস্থিতি একান্ত কাম্য।`
   };
 
   textarea.value = templates[type] || templates.absence;

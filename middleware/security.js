@@ -91,6 +91,8 @@ function isPublicRoute(req) {
     if (path === '/admissions/apply' || path.endsWith('/admissions/apply')) return true;
     if (path === '/contact' || path.endsWith('/contact')) return true;
     if (path === '/leads/demo' || path.endsWith('/leads/demo')) return true;
+    if (path === '/donors/public-donate' || path.endsWith('/donors/public-donate')) return true;
+    if (path === '/public/pay-fee' || path.endsWith('/public/pay-fee')) return true;
     return false;
   }
 
@@ -100,6 +102,7 @@ function isPublicRoute(req) {
     if (path === '/notices' || path.endsWith('/notices')) return true;
     if (path === '/institution/public' || path.endsWith('/institution/public')) return true;
     if (path === '/public/results' || path.endsWith('/public/results')) return true;
+    if (path === '/public/student-lookup' || path.endsWith('/public/student-lookup')) return true;
     return false;
   }
 

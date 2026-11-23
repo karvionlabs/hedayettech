@@ -212,6 +212,61 @@ router.post('/donors/contribute', (req, res) => {
   }
 });
 
+// ৮.১ সর্বজনীন অনলাইন দান ও যাকাত ফান্ড গ্রহণ (Public Endpoint - Rate Limited)
+router.post('/donors/public-donate', strictLeadLimiter, (req, res) => {
+  try {
+    const { name, phone, amount, category, trx_id } = req.body;
+    if (!name || !name.trim() || !phone || !phone.trim() || !amount) {
+      return res.status(400).json({ success: false, error: 'অনুগ্রহ করে নাম, মোবাইল নম্বর এবং অনুদানের পরিমাণ সঠিকভাবে প্রদান করুন।' });
+    }
+
+    const cleanName = sanitizeInput(name, 100);
+    const cleanPhone = normalizeBanglaToEng(phone || '').replace(/\D/g, '');
+    const donAmount = parseFloat(amount);
+
+    if (isNaN(donAmount) || donAmount <= 0) {
+      return res.status(400).json({ success: false, error: 'অনুদানের পরিমাণ সঠিক নয়।' });
+    }
+
+    // দাতা খুঁজুন বা নতুন তৈরি করুন
+    let donor = db.prepare('SELECT id FROM donors WHERE phone = ? LIMIT 1').get(cleanPhone);
+    let donorId;
+    if (donor) {
+      donorId = donor.id;
+    } else {
+      const insDonor = db.prepare('INSERT INTO donors (name, phone, address, member_type) VALUES (?, ?, ?, ?)').run(cleanName, cleanPhone, 'অনলাইন অনুদান', 'অনলাইন শুভাকাঙ্ক্ষী');
+      donorId = insDonor.lastInsertRowid;
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    const count = db.prepare('SELECT count(*) as count FROM donor_contributions').get().count + 1;
+    const receiptNo = `DON-ONL-${String(count).padStart(4, '0')}`;
+    const cleanTrx = trx_id ? sanitizeInput(trx_id, 50) : 'নগদ/অনলাইন';
+    const donCategory = category || 'লিল্লাহ বোর্ডিং দান';
+
+    db.prepare(`
+      INSERT INTO donor_contributions (donor_id, date, amount, payment_method, receipt_no, remarks, received_by)
+      VALUES (?, ?, ?, 'ONLINE', ?, ?, 'অনলাইন গেটওয়ে')
+    `).run(donorId, today, donAmount, receiptNo, `${donCategory} (TrxID: ${cleanTrx})`);
+
+    const vCount = db.prepare('SELECT count(*) as count FROM transactions').get().count + 1;
+    const voucherNo = `V-${1000 + vCount}`;
+    db.prepare(`
+      INSERT INTO transactions (voucher_no, date, type, category, amount, payment_method, description, received_by)
+      VALUES (?, ?, 'INCOME', ?, ?, 'ONLINE', ?, 'অনলাইন অনুদান গেটওয়ে')
+    `).run(voucherNo, today, donAmount, donCategory, `অনলাইন দান (${cleanName}, রসিদ: ${receiptNo}, Trx: ${cleanTrx})`);
+
+    res.json({
+      success: true,
+      receiptNo,
+      voucherNo,
+      message: `জাযাকাল্লাহ খাইরান! ${cleanName} সাহেব, আপনার ৳ ${donAmount.toLocaleString('bn-BD')} অনুদান সফলভাবে মাদ্রাসার ফান্ডে গৃহীত হয়েছে।`
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'অনুদান সংরক্ষণে ত্রুটি ঘটেছে: ' + err.message });
+  }
+});
+
 // ৯. নোটিশ বোর্ড
 router.get('/notices', (req, res) => {
   try {

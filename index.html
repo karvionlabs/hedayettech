@@ -519,12 +519,22 @@
           <a href="#contact-section" onclick="scrollToSection('contact-section'); return false;" data-i18n="nav_contact" class="hover:text-hedayet-800 transition">যোগাযোগ</a>
         </nav>
 
-        <!-- ডানপাশের বাটন: অনলাইন ভর্তি ও ফ্রি ডেমো -->
-        <div class="flex items-center gap-3">
-          <button onclick="openModal('onlineAdmissionModal')" class="px-5 py-2 text-sm font-bold text-emerald-800 border-2 border-emerald-600 hover:bg-emerald-50 rounded-full transition shadow-sm flex items-center gap-1.5">
+        <!-- ডানপাশের বাটন: বাংলা / EN সুইচ, অনলাইন ভর্তি ও ফ্রি ডেমো -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- নেভবার বাংলা / EN সেগমেন্টেড পিল সুইচ -->
+          <div class="inline-flex items-center p-0.5 rounded-full bg-slate-100 border border-slate-300 text-xs font-bold shadow-2xs" id="navLangSwitchContainer">
+            <button id="navLangBtnBn" onclick="switchLanguage('bn')" class="px-2.5 py-1 rounded-full transition-all duration-200 bg-emerald-800 text-white font-extrabold shadow-2xs" title="বাংলা ভাষা">
+              <span>বাং</span>
+            </button>
+            <button id="navLangBtnEn" onclick="switchLanguage('en')" class="px-2.5 py-1 rounded-full transition-all duration-200 text-slate-600 hover:text-emerald-800 font-bold" title="English Language">
+              <span>EN</span>
+            </button>
+          </div>
+
+          <button onclick="openModal('onlineAdmissionModal')" class="px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold text-emerald-800 border-2 border-emerald-600 hover:bg-emerald-50 rounded-full transition shadow-sm flex items-center gap-1.5 flex-shrink-0">
             <i class="fa-solid fa-graduation-cap"></i> <span data-i18n="nav_admission">অনলাইন ভর্তি</span>
           </button>
-          <button onclick="openModal('bookDemoModal')" class="px-5 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-hedayet-900 to-hedayet-700 hover:from-hedayet-800 hover:to-hedayet-600 rounded-full transition shadow-md flex items-center gap-2">
+          <button onclick="openModal('bookDemoModal')" class="px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-hedayet-900 to-hedayet-700 hover:from-hedayet-800 hover:to-hedayet-600 rounded-full transition shadow-md flex items-center gap-2 flex-shrink-0">
             <span data-i18n="nav_demo">ফ্রি ডেমো বুক করুন</span>
           </button>
           <!-- মোবাইল মেনু টগল বাটন -->
@@ -1348,96 +1358,140 @@
       </div>
     </section>
 
-    <!-- ১১. যোগাযোগ ও অফিসিয়াল ফুটার সেকশন -->
-    <section id="contact-section" class="bg-[#0b2b1a] text-white py-14 border-t border-emerald-900/60">
+        <!-- ১১. ডেডিকেটেড যোগাযোগ সেকশন (Light Clean Section) -->
+    <section id="contact-section" class="bg-[#F8FAFC] py-16 sm:py-20 border-t border-slate-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        
+        <!-- সেকশন হেডার -->
+        <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold border border-emerald-300 shadow-2xs mb-3">
+            <i class="fa-solid fa-headset text-emerald-700"></i>
+            <span>সরাসরি যোগাযোগ ও সহায়তা</span>
+          </div>
+          <h2 class="font-heading font-extrabold text-2xl sm:text-4xl text-slate-900 tracking-tight mb-3">
+            যেকোনো পরামর্শ, ডেমো বা সফটওয়্যারের তথ্যের জন্য যোগাযোগ করুন
+          </h2>
+          <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+            মাদ্রাসা পরিচালনা সহজ ও স্বয়ংক্রিয় করতে Hedayet Tech টিম আপনার পাশে আছে সার্বক্ষণিক।
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
-          <!-- বাম পাশ: হেড অফিস ও যোগাযোগ বিবরণ (৬ কলাম) -->
-          <div class="md:col-span-6 space-y-5">
-            <div class="flex items-center gap-3">
-              <img src="assets/hedayet_icon.png" alt="Hedayet Tech" class="w-11 h-11 object-contain drop-shadow-md">
-              <div>
-                <h3 class="text-xl font-black text-white">Hedayet Tech</h3>
-                <p class="text-xs text-emerald-300">অ্যাপ্লিকেশন ম্যানেজমেন্ট সফটওয়্যার</p>
+          <!-- বাম পাশ: ৪টি যোগাযোগ কার্ড (৫ কলাম) -->
+          <div class="lg:col-span-5 space-y-4">
+            
+            <!-- কার্ড ১: সরাসরি ফোন কল -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-emerald-500 transition-all group flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl flex-shrink-0 border border-emerald-200 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-phone"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-xs font-semibold text-slate-500 block mb-0.5">সরাসরি কল (সকাল ৯টা - রাত ১০টা)</span>
+                <a href="tel:+8801884636312" class="font-mono font-bold text-slate-900 hover:text-emerald-700 text-base sm:text-lg transition block">
+                  +880 1884-636312
+                </a>
               </div>
             </div>
 
-            <p class="text-xs text-emerald-100/80 leading-relaxed max-w-md">
-              মাদ্রাসা, স্কুল ও ক্যাডেট একাডেমির সর্বাধুনিক ক্লাউড ও লোকাল সফটওয়্যার সমাধান। খাতা-কলম মুক্ত পূর্ণাঙ্গ ডিজিটাল ক্যাম্পাসের নিশ্চয়তা।
-            </p>
-
-            <div class="space-y-3 text-xs text-emerald-100">
-              <div class="flex items-center gap-3">
-                <i class="fa-solid fa-phone text-gold-400 text-sm w-4"></i>
-                <span>সরাসরি কল: <a href="tel:+8801884636312" class="font-mono font-bold text-white hover:text-gold-400 transition">+880 1884-636312</a></span>
+            <!-- কার্ড ২: অফিসিয়াল হোয়াটসঅ্যাপ -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-emerald-500 transition-all group flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-[#25D366] flex items-center justify-center text-2xl flex-shrink-0 border border-emerald-200 group-hover:scale-105 transition-transform">
+                <i class="fa-brands fa-whatsapp"></i>
               </div>
-              <div class="flex items-center gap-3">
-                <i class="fa-brands fa-whatsapp text-emerald-400 text-sm w-4"></i>
-                <span>হোয়াটসঅ্যাপ: <a href="https://wa.me/8801884636312" target="_blank" class="font-mono font-bold text-white hover:text-gold-400 transition">+880 1884-636312</a></span>
-              </div>
-              <div class="flex items-center gap-3">
-                <i class="fa-solid fa-envelope text-gold-400 text-sm w-4"></i>
-                <span>ইমেইল: <a href="mailto:hello@hedayettech.com" class="font-mono text-white hover:text-gold-400 transition">hello@hedayettech.com</a></span>
-              </div>
-              <div class="flex items-center gap-3">
-                <i class="fa-solid fa-location-dot text-gold-400 text-sm w-4"></i>
-                <span>ঠিকানা: লেভেল-৪, তিতাস টুইন টাওয়ার / চান্দগাঁও, চট্টগ্রাম, বাংলাদেশ</span>
+              <div class="flex-1 min-w-0">
+                <span class="text-xs font-semibold text-slate-500 block mb-0.5">অফিসিয়াল হোয়াটসঅ্যাপ সাপোর্ট</span>
+                <a href="https://wa.me/8801884636312" target="_blank" class="font-mono font-bold text-slate-900 hover:text-emerald-700 text-base sm:text-lg transition block">
+                  +880 1884-636312
+                </a>
               </div>
             </div>
+
+            <!-- কার্ড ৩: অফিশিয়াল ইমেইল -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-indigo-500 transition-all group flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-xl flex-shrink-0 border border-indigo-200 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-envelope"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-xs font-semibold text-slate-500 block mb-0.5">কোটেশন ও সাধারণ তথ্য</span>
+                <a href="mailto:hello@hedayettech.com" class="font-mono font-bold text-slate-900 hover:text-indigo-700 text-sm sm:text-base transition block truncate">
+                  hello@hedayettech.com
+                </a>
+              </div>
+            </div>
+
+            <!-- কার্ড ৪: হেড অফিস চট্টগ্রাম -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-rose-500 transition-all group flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl flex-shrink-0 border border-rose-200 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-xs font-semibold text-slate-500 block mb-0.5">টেক সেন্টার ও হেড অফিস</span>
+                <p class="font-bold text-slate-800 text-xs sm:text-sm leading-relaxed">
+                  লেভেল-৪, তিতাস টুইন টাওয়ার, খাজার রোড, চান্দগাঁও, চট্টগ্রাম, বাংলাদেশ
+                </p>
+              </div>
+            </div>
+
           </div>
 
-          <!-- ডান পাশ: সরাসরি মেসেজ পাঠানোর কন্টাক্ট ফরম (৬ কলাম) -->
-          <div class="md:col-span-6 bg-white text-slate-900 rounded-3xl p-6 sm:p-7 shadow-2xl border border-emerald-800">
-            <h4 class="text-base font-extrabold text-slate-900 mb-1">আমাদের কাছে আপনার বার্তা পাঠান</h4>
-            <p class="text-xs text-slate-500 mb-3">যেকোনো প্রশ্ন, কাস্টমাইজেশন বা ডেমোর জন্য লিখুন</p>
+          <!-- ডান পাশ: সরাসরি বার্তা পাঠানোর ফর্ম (৭ কলাম) -->
+          <div class="lg:col-span-7 bg-white text-slate-900 rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/90">
+            <div class="mb-5">
+              <h3 class="font-heading font-extrabold text-lg sm:text-xl text-slate-900 mb-1">
+                আমাদের কাছে আপনার বার্তা পাঠান
+              </h3>
+              <p class="text-xs text-slate-500">
+                যেকোনো প্রশ্ন, কাস্টমাইজেশন বা ডেমোর জন্য নিচের তথ্য পূরণ করে পাঠান
+              </p>
+            </div>
 
-            <!-- প্রাইভেসি সিকিউরিটি নোটিশ -->
-            <div class="bg-emerald-50 text-emerald-950 border border-emerald-200 rounded-xl p-2.5 text-[11px] mb-3 flex items-center gap-2 font-medium">
-              <i class="fa-solid fa-lock text-emerald-700 text-xs"></i>
-              <span>শতভাগ সুরক্ষিত ও গোপনীয় টেক্সট বার — বার্তাটি সরাসরি মালিকের জিমেইলে পৌঁছাবে।</span>
+            <!-- প্রাইভেসি সিকিউরিটি নোটিশ (ইমোজি ছাড়া প্রফেশনাল ভেক্টর আইকন) -->
+            <div class="bg-emerald-50 text-emerald-950 border border-emerald-200 rounded-xl p-3 text-xs mb-4 flex items-center gap-2 font-medium">
+              <i class="fa-solid fa-shield-halved text-emerald-700 text-sm flex-shrink-0"></i>
+              <span>এনক্রিপ্টেড ও সম্পূর্ণ সুরক্ষিত বার্তা প্রেরণ — আপনার জিজ্ঞাসা সরাসরি ম্যানেজমেন্টের কাছে পৌঁছাবে।</span>
             </div>
 
             <!-- অ্যালার্ট মেসেজ ব্যানার -->
-            <div id="contactAlertBanner" class="hidden text-xs p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 font-semibold mb-3 flex items-center gap-2">
+            <div id="contactAlertBanner" class="hidden text-xs p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 font-semibold mb-4 flex items-center gap-2">
               <i class="fa-solid fa-circle-exclamation text-rose-600 flex-shrink-0"></i>
               <span id="contactAlertText"></span>
             </div>
 
-            <form id="publicContactForm" onsubmit="handleContactSubmit(event)" class="space-y-3 text-xs">
+            <form id="publicContactForm" onsubmit="handleContactSubmit(event)" class="space-y-4 text-xs">
               <div>
                 <label class="font-bold text-slate-700 block mb-1">আপনার নাম <span class="text-rose-600 font-extrabold">*</span></label>
-                <input type="text" id="contactMsgName" required minlength="2" maxlength="100" placeholder="মুহতামিম / প্রধান শিক্ষক" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
+                <input type="text" id="contactMsgName" required maxlength="100" placeholder="যেমন: মাও. আব্দুস সালাম..." class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
               </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
                   <div class="flex items-center justify-between mb-1">
                     <label class="font-bold text-slate-700 block">মোবাইল নম্বর <span class="text-rose-600 font-extrabold">*</span></label>
                     <span id="contactPhoneCounter" class="text-[10px] font-mono text-slate-500 font-semibold bg-slate-100 px-1.5 py-0.5 rounded-full">০/১১</span>
                   </div>
-                  <input type="tel" id="contactMsgPhone" required maxlength="11" placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
+                  <input type="tel" id="contactMsgPhone" required maxlength="11" placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
                 </div>
                 <div>
                   <div class="flex items-center justify-between mb-1">
-                    <label class="font-bold text-slate-700 block">আপনার ইমেইল / জিমেইল <span class="text-rose-600 font-extrabold">*</span></label>
+                    <label class="font-bold text-slate-700 block">আপনার ইমেইল <span class="text-rose-600 font-extrabold">*</span></label>
                     <span id="contactEmailStatus" class="text-[10px] text-slate-400 font-medium">@gmail.com</span>
                   </div>
-                  <input type="email" id="contactMsgEmail" required placeholder="example@gmail.com" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
+                  <input type="email" id="contactMsgEmail" required placeholder="example@gmail.com" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
                 </div>
               </div>
 
               <div>
                 <label class="font-bold text-slate-700 block mb-1">প্রতিষ্ঠানের নাম</label>
-                <input type="text" id="contactMsgInst" maxlength="150" placeholder="মাদ্রাসা বা স্কুলের নাম..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
+                <input type="text" id="contactMsgInst" maxlength="150" placeholder="মাদ্রাসা বা স্কুলের নাম..." class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
               </div>
 
               <div>
                 <label class="font-bold text-slate-700 block mb-1">আপনার বার্তা / জিজ্ঞাসা <span class="text-rose-600 font-extrabold">*</span></label>
-                <textarea id="contactMsgText" required rows="3" minlength="3" maxlength="1500" placeholder="সফটওয়্যার সম্পর্কে বিস্তারিত জানতে চাই..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition"></textarea>
+                <textarea id="contactMsgText" required rows="3" minlength="3" maxlength="1500" placeholder="সফটওয়্যার সম্পর্কে বিস্তারিত জানতে চাই..." class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition"></textarea>
               </div>
 
-              <button type="submit" id="contactSubmitBtn" class="w-full bg-[#165333] hover:bg-[#114027] text-white font-bold py-2.5 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2 cursor-pointer">
+              <button type="submit" id="contactSubmitBtn" class="w-full bg-[#165333] hover:bg-[#114027] text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center justify-center gap-2 cursor-pointer">
                 <i class="fa-solid fa-paper-plane"></i>
                 <span id="contactSubmitBtnText">বার্তা পাঠান</span>
               </button>
@@ -1446,27 +1500,121 @@
 
         </div>
 
-        <div class="mt-10 pt-6 border-t border-emerald-900/80 flex flex-wrap items-center justify-between text-xs text-emerald-300/80 gap-3">
-          <div id="stealthHedayetBrand" onclick="handleStealthAdminClick(event)" class="cursor-pointer select-none hover:text-emerald-200 transition" title="Hedayet Tech Engineering">© ২০২৬ Hedayet Tech. সর্বস্বত্ব সংরক্ষিত।</div>
-          <div class="flex items-center gap-4">
-            <a href="https://wa.me/8801884636312" target="_blank" class="hover:text-gold-400">হোয়াটসঅ্যাপ সাপোর্ট</a>
-            <span>|</span>
-            <a href="mailto:hello@hedayettech.com" class="hover:text-gold-400">হেল্পডেস্ক</a>
-            <span>|</span>
-            <a href="#about-section" onclick="scrollToSection('about-section'); return false;" class="hover:text-gold-400">মাদ্রাসার পরিচিতি</a>
-          </div>
-        </div>
       </div>
     </section>
 
-    <!-- ফ্লোটিং হোয়াটসঅ্যাপ বাটন (বটম রাইট) -->
-    <a href="https://wa.me/8801884636312?text=আসসালামু%20আলাইকুম,%20হেদায়েত%20টেক%20মাদ্রাসা%20সফটওয়্যার%20সম্পর্কে%20জানতে%20চাই" target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1EBE5D] text-white px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2.5 z-40 text-xs sm:text-sm font-bold transition transform hover:scale-105">
-      <span>হোয়াটসঅ্যাপ কল বা মেসেজ দিন</span>
-      <i class="fa-brands fa-whatsapp text-xl"></i>
+    <!-- ১২. গাঢ় সবুজ মিনিমাল ফুটার (Minimal Dark Green Footer) -->
+    <footer class="bg-[#071f12] text-white pt-14 pb-28 border-t border-emerald-950">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 pb-10 border-b border-emerald-900/60">
+          
+          <!-- কলাম ১: ব্র্যান্ড ও পরিচিতি -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <img src="assets/hedayet_icon.png" alt="Hedayet Tech" class="w-10 h-10 object-contain drop-shadow-md">
+              <div>
+                <h3 class="text-xl font-black text-white">Hedayet Tech</h3>
+                <p class="text-[11px] text-emerald-300">অ্যাপ্লিকেশন ম্যানেজমেন্ট সফটওয়্যার</p>
+              </div>
+            </div>
+            <p class="text-xs text-emerald-100/80 leading-relaxed">
+              মাদ্রাসা, স্কুল ও ক্যাডেট একাডেমির সর্বাধুনিক ক্লাউড ও লোকাল সফটওয়্যার সমাধান। খাতা-কলম মুক্ত পূর্ণাঙ্গ স্মার্ট ডিজিটাল ক্যাম্পাসের নিশ্চয়তা।
+            </p>
+            <div class="flex items-center gap-3 pt-1">
+              <a href="https://wa.me/8801884636312" target="_blank" class="w-9 h-9 rounded-xl bg-emerald-900/80 hover:bg-[#25D366] text-white flex items-center justify-center text-sm transition shadow-xs" title="WhatsApp">
+                <i class="fa-brands fa-whatsapp"></i>
+              </a>
+              <a href="https://facebook.com" target="_blank" class="w-9 h-9 rounded-xl bg-emerald-900/80 hover:bg-blue-600 text-white flex items-center justify-center text-sm transition shadow-xs" title="Facebook">
+                <i class="fa-brands fa-facebook-f"></i>
+              </a>
+              <a href="mailto:hello@hedayettech.com" class="w-9 h-9 rounded-xl bg-emerald-900/80 hover:bg-gold-500 hover:text-slate-900 text-white flex items-center justify-center text-sm transition shadow-xs" title="Email">
+                <i class="fa-solid fa-envelope"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- কলাম ২: কুইক লিংকস -->
+          <div>
+            <h4 class="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-4">কুইক লিংকস</h4>
+            <ul class="space-y-2.5 text-xs text-emerald-100/80">
+              <li><button onclick="openModal('onlineAdmissionModal')" class="hover:text-gold-400 transition text-left">🎓 অনলাইন ভর্তি আবেদন</button></li>
+              <li><button onclick="openModal('onlineResultModal')" class="hover:text-gold-400 transition text-left">📊 অনলাইন ফলাফল যাচাই</button></li>
+              <li><button onclick="openModal('onlineDonationModal')" class="hover:text-gold-400 transition text-left">🤝 দান ও যাকাত ফান্ড</button></li>
+              <li><button onclick="openModal('quickPaymentModal')" class="hover:text-gold-400 transition text-left">💳 দ্রুত ফি পেমেন্ট গেটওয়ে</button></li>
+              <li><button onclick="openModal('bookDemoModal')" class="hover:text-gold-400 transition text-left">🖥️ লাইভ ডেমো বুকিং</button></li>
+            </ul>
+          </div>
+
+          <!-- কলাম ৩: সফটওয়্যার ফিচারসমূহ -->
+          <div>
+            <h4 class="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-4">সফটওয়্যার ফিচার</h4>
+            <ul class="space-y-2.5 text-xs text-emerald-100/80">
+              <li><a href="#hifz-section" onclick="scrollToSection('hifz-section'); return false;" class="hover:text-gold-400 transition">হিফজখানা ও সবক ট্র্যাকিং</a></li>
+              <li><a href="#exam-section" onclick="scrollToSection('exam-section'); return false;" class="hover:text-gold-400 transition">পরীক্ষা ও রেজাল্ট প্রসেসিং</a></li>
+              <li><a href="#fees-section" onclick="scrollToSection('fees-section'); return false;" class="hover:text-gold-400 transition">ফি কালেকশন ও ভাউচার</a></li>
+              <li><a href="#mess-section" onclick="scrollToSection('mess-section'); return false;" class="hover:text-gold-400 transition">মেস ও বোর্ডিং মিল ক্যালকুলেশন</a></li>
+              <li><a href="#about-section" onclick="scrollToSection('about-section'); return false;" class="hover:text-gold-400 transition">ডিজিটাল আইডি ও এডমিট কার্ড</a></li>
+            </ul>
+          </div>
+
+          <!-- কলাম ৪: যোগাযোগ বিবরণ -->
+          <div>
+            <h4 class="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-4">যোগাযোগ ও হেল্পডেস্ক</h4>
+            <div class="space-y-3 text-xs text-emerald-100/90">
+              <div class="flex items-start gap-2.5">
+                <i class="fa-solid fa-phone text-gold-400 text-xs mt-0.5"></i>
+                <a href="tel:+8801884636312" class="font-mono hover:text-gold-400 transition">+880 1884-636312</a>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <i class="fa-brands fa-whatsapp text-emerald-400 text-sm mt-0.5"></i>
+                <a href="https://wa.me/8801884636312" target="_blank" class="font-mono hover:text-gold-400 transition">+880 1884-636312</a>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <i class="fa-solid fa-envelope text-gold-400 text-xs mt-0.5"></i>
+                <a href="mailto:hello@hedayettech.com" class="font-mono hover:text-gold-400 transition">hello@hedayettech.com</a>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <i class="fa-solid fa-location-dot text-gold-400 text-xs mt-0.5"></i>
+                <span>খাজার রোড, চান্দগাঁও, চট্টগ্রাম</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- কপিরাইট ও স্টেলথ অ্যাডমিন লিংক বার -->
+        <div class="pt-6 flex flex-wrap items-center justify-between text-xs text-emerald-300/80 gap-3">
+          <div id="stealthHedayetBrand" onclick="handleStealthAdminClick(event)" class="cursor-pointer select-none hover:text-emerald-200 transition font-medium" title="Hedayet Tech Engineering">
+            © ২০২৬ Hedayet Tech. সর্বস্বত্ব সংরক্ষিত।
+          </div>
+          <div class="flex items-center gap-4 text-emerald-400/80 text-[11px]">
+            <span>গোপনীয়তা নীতি</span>
+            <span>•</span>
+            <span>ব্যবহারের শর্তাবলী</span>
+            <span>•</span>
+            <span class="inline-flex items-center gap-1 text-emerald-300 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              সিস্টেম সচল
+            </span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ফ্লোটিং হোয়াটসঅ্যাপ বাটন (কম্প্যাক্ট রাউন্ড আইকন উইথ নো-ওভারল্যাপ) -->
+    <a href="https://wa.me/8801884636312?text=আসসালামু%20আলাইকুম,%20হেদায়েত%20টেক%20মাদ্রাসা%20সফটওয়্যার%20সম্পর্কে%20জানতে%20চাই" target="_blank" class="fixed bottom-6 right-6 w-14 h-14 bg-[#25D366] hover:bg-[#1EBE5D] text-white rounded-full shadow-2xl flex items-center justify-center z-40 transition-all duration-300 transform hover:scale-110 group" title="হোয়াটসঅ্যাপে চ্যাট করুন">
+      <i class="fa-brands fa-whatsapp text-3xl"></i>
+      <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-white"></span>
+      </span>
+      <span class="absolute right-16 px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold whitespace-nowrap shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+        হোয়াটসঅ্যাপে চ্যাট করুন
+      </span>
     </a>
   </div>
 
-  <!-- ============================================================== -->
+<!-- ============================================================== -->
   <!-- VIEW ২: অ্যাডমিন কনসোল ও ১০টি রিলিজ মডিউল (MADRASA OS CONSOLE) -->
   <!-- ============================================================== -->
   <div id="admin-console" class="hidden h-screen flex overflow-hidden">
@@ -2219,7 +2367,7 @@
                 </div>
               </div>
               <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-1 rounded-full border border-emerald-300">
-                🔒 এনক্রিপ্টেড লক সক্রিয়
+                <i class="fa-solid fa-shield-halved mr-1 text-emerald-600"></i> এনক্রিপ্টেড লক সক্রিয়
               </span>
             </div>
 
@@ -2977,7 +3125,7 @@
       <form onsubmit="handleContactSubmit(event)" class="space-y-3 text-xs pt-1 border-t border-slate-100">
         <h4 class="font-bold text-slate-800 flex items-center justify-between">
           <span>সরাসরি বার্তা পাঠান:</span>
-          <span class="text-[10px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">🔒 সরাসরি মালিকের ইনবক্সে</span>
+          <span class="text-[10px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 inline-flex items-center gap-1"><i class="fa-solid fa-shield-halved text-emerald-600 text-[10px]"></i> সরাসরি মালিকের ইনবক্সে</span>
         </h4>
 
         <!-- অ্যালার্ট মেসেজ ব্যানার -->

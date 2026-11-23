@@ -472,6 +472,8 @@ function switchLanguage(lang) {
   // ১. বাটন অ্যাক্টিভ স্টাইল ও সেটিং ড্রপডাউন আপডেট
   const btnBn = document.getElementById('langBtnBn');
   const btnEn = document.getElementById('langBtnEn');
+  const navBtnBn = document.getElementById('navLangBtnBn');
+  const navBtnEn = document.getElementById('navLangBtnEn');
   const setLangSelect = document.getElementById('set-system-lang');
   if (setLangSelect) setLangSelect.value = lang;
 
@@ -481,6 +483,12 @@ function switchLanguage(lang) {
     }
     if (btnEn) {
       btnEn.className = 'px-2.5 py-0.5 rounded-full transition-all duration-200 text-emerald-300 hover:text-white font-bold flex items-center gap-1';
+    }
+    if (navBtnBn) {
+      navBtnBn.className = 'px-2.5 py-1 rounded-full transition-all duration-200 bg-emerald-800 text-white font-extrabold shadow-2xs';
+    }
+    if (navBtnEn) {
+      navBtnEn.className = 'px-2.5 py-1 rounded-full transition-all duration-200 text-slate-600 hover:text-emerald-800 font-bold';
     }
     document.documentElement.lang = 'bn';
     document.body.style.fontFamily = "'Hind Siliguri', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif";
@@ -493,6 +501,12 @@ function switchLanguage(lang) {
     }
     if (btnBn) {
       btnBn.className = 'px-2.5 py-0.5 rounded-full transition-all duration-200 text-emerald-300 hover:text-white font-bold flex items-center gap-1';
+    }
+    if (navBtnEn) {
+      navBtnEn.className = 'px-2.5 py-1 rounded-full transition-all duration-200 bg-emerald-800 text-white font-extrabold shadow-2xs';
+    }
+    if (navBtnBn) {
+      navBtnBn.className = 'px-2.5 py-1 rounded-full transition-all duration-200 text-slate-600 hover:text-emerald-800 font-bold';
     }
     document.documentElement.lang = 'en';
     document.body.style.fontFamily = "'Inter', system-ui, -apple-system, sans-serif";

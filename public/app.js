@@ -1424,7 +1424,7 @@ function printIdCard(target, admissionNo, roll, className) {
 }
 
 function exportBackup() {
-  const pin = prompt('অনুগ্রহ করে অ্যাডমিন ভল্ট সিকিউরিটি কি (Vault Key / PIN) দিন:', '2026');
+  const pin = prompt('অনুগ্রহ করে অ্যাডমিন ভল্ট সিকিউরিটি কি (Vault Key / PIN) দিন:');
   if (!pin) return;
   window.location.href = `/api/backup?token=${encodeURIComponent(pin.trim())}`;
 }

@@ -44,6 +44,19 @@ const strictLeadLimiter = rateLimit({
   }
 });
 
+// ৩.১ অ্যাডমিন পিন ব্রুট-ফোর্স প্রতিরোধক লিমিটার (১৫ মিনিটে সর্বোচ্চ ১০টি ভুল চেষ্টা)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
+  message: {
+    success: false,
+    error: 'অতিরিক্ত ভুল পিন বা লগইন চেষ্টা করা হয়েছে। নিরাপত্তার স্বার্থে ১৫ মিনিট পর পুনরায় চেষ্টা করুন।'
+  }
+});
+
 // ৪. ডাটাবেস ব্যাকআপ ভল্ট সিকিউরিটি গার্ড (Stricx Token Guard)
 const BACKUP_SECRET_KEY = process.env.BACKUP_KEY || 'HedayetTech_Vault_2026_Secure';
 
@@ -148,6 +161,7 @@ module.exports = {
   securityHeaders,
   globalApiLimiter,
   strictLeadLimiter,
+  authLimiter,
   requireVaultKey,
   requireAdminAuth,
   getActiveAdminPin,

@@ -1,19 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
-const { getActiveAdminPin, BACKUP_SECRET_KEY, requireAdminAuth } = require('../middleware/security');
+const { getActiveAdminPin, BACKUP_SECRET_KEY, requireAdminAuth, authLimiter } = require('../middleware/security');
+const { validateBody, schemas } = require('../middleware/validation');
 
-// ১. অ্যাডমিন পিন ভেরিফিকেশন এপিআই (Stricx Auth Gateway)
-router.post('/auth/verify', (req, res) => {
+// ১. অ্যাডমিন পিন ভেরিফিকেশন এপিআই (Stricx Auth Gateway - Zod Validated & Brute-Force Guarded)
+router.post('/auth/verify', authLimiter, validateBody(schemas.verifyPin), (req, res) => {
   try {
     const { pin } = req.body;
-    if (!pin) {
-      return res.status(400).json({
-        success: false,
-        error: 'অনুগ্রহ করে অ্যাডমিন সিকিউরিটি পিন দিন।'
-      });
-    }
-
     const cleanPin = String(pin).trim();
     const activePin = getActiveAdminPin();
 
@@ -34,8 +28,8 @@ router.post('/auth/verify', (req, res) => {
   }
 });
 
-// ২. কাস্টমাইজেশন: অ্যাডমিন সিকিউরিটি পিন পরিবর্তন (Self-Service PIN Update)
-router.post('/auth/change-pin', requireAdminAuth, (req, res) => {
+// ২. কাস্টমাইজেশন: অ্যাডমিন সিকিউরিটি পিন পরিবর্তন (Self-Service PIN Update - Zod Validated)
+router.post('/auth/change-pin', requireAdminAuth, validateBody(schemas.changePin), (req, res) => {
   try {
     const { current_pin, new_pin } = req.body;
     if (!current_pin || !new_pin) {

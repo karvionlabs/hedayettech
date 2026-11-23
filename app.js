@@ -49,6 +49,7 @@ const i18nTranslations = {
     topbar_phone: '+880 1884-636312',
     topbar_email: 'hello@hedayettech.com',
     wa_label: 'হোয়াটসঅ্যাপ',
+    brand_subtitle: 'অ্যাপ্লিকেশন ম্যানেজমেন্ট সফটওয়্যার',
     
     // Navbar
     nav_services: 'আমাদের সেবা',
@@ -100,16 +101,164 @@ const i18nTranslations = {
     trust_badge_3: '২৪/৭ কাস্টমার সাপোর্ট',
     trust_badge_4: 'সহজে ব্যবহার উপযোগী',
 
+    // Features Section
+    feat_badge: 'অল-ইন-ওয়ান ফিচার প্যাক',
+    feat_title: 'একটি সফটওয়্যারেই মাদ্রাসার সব কিছু হাতের মুঠোয়',
+    feat_subtitle: 'কওমি, আলিয়া ও আধুনিক ইসলামিক শিক্ষা প্রতিষ্ঠানের জন্য নিখুঁতভাবে তৈরি',
+    feat_card1_title: 'শিক্ষার্থী ভর্তি ও কিউআর আইডি কার্ড',
+    feat_card1_desc: 'স্বয়ংক্রিয় দাখেলা নম্বর তৈরি, পিতা-মাতার সম্পূর্ণ ডাটাবেজ ও রঙিন আইডি কার্ড প্রিন্ট।',
+    feat_card2_title: 'হিফজ তথ্য খাতা ও দৈনিক সবক ডায়েরি',
+    feat_card2_desc: 'প্রতিদিনের সবক, সাত সবক ও আমোখতা রিভিশন, ভুলের সংখ্যা ও উস্তাদের মন্তব্য ট্র্যাকার।',
+    feat_card3_title: 'লিল্লাহ বোর্ডিং ও মেস বাজার খাতা',
+    feat_card3_desc: 'চাল, ডাল, তেল ও মাছ-মাংসের দৈনিক কাঁচা বাজার হিসাব, মিল ট্র্যাকিং ও ক্যাশ সমন্বয়।',
+
+    // Pricing Section
+    pricing_badge: 'স্বচ্ছ ও সাশ্রয়ী মূল্য তালিকা',
+    pricing_title: 'আপনার মাদ্রাসার জন্য সেরা প্যাকেজ বেছে নিন',
+    pricing_subtitle: 'কোনো লুকানো খরচ নেই। সব প্যাকেজেই মূল সফটওয়্যারের সম্পূর্ণ সুবিধা অন্তর্ভুক্ত।',
+    pkg1_badge: 'মাসিক প্যাকেজ',
+    pkg1_price: '৫০০ ৳',
+    pkg1_period: '/ প্রতি মাস',
+    pkg1_desc: 'স্বল্প বাজেটের মাদ্রাসা ও নূরানি মক্তবের জন্য আদর্শ। প্রতি মাসে নবায়নের সুবিধা।',
+    pkg1_f1: 'ভর্তি, হাজিরা ও আইডি কার্ড জেনারেশন',
+    pkg1_f2: 'ফি কালেকশন ও রসিদ প্রিন্ট',
+    pkg1_f3: 'হিফজ তথ্য খাতা ও দৈনিক সবক ডায়েরি',
+    pkg1_f4: 'পরীক্ষা, ফলাফল ও মার্কশিট',
+    pkg1_f5: 'ফোন ও হোয়াটসঅ্যাপ কাস্টমার সাপোর্ট',
+    pkg1_btn: 'মাসিক প্যাকেজে শুরু করুন',
+    pkg2_ribbon: 'সবচেয়ে জনপ্রিয় (২ মাস সম্পূর্ণ ফ্রি!)',
+    pkg2_badge: 'বাৎসরিক প্যাকেজ',
+    pkg2_price: '৫,০০০ ৳',
+    pkg2_period: '/ ১ বছর (১২ মাস)',
+    pkg2_desc: 'সারা বছরের ঝামেলামুক্ত সেবা। ১,০০০ টাকা সাশ্রয় এবং অগ্রাধিকার ভিত্তিক ডেডিকেটেড সাপোর্ট।',
+    pkg2_f1: 'সফটওয়্যারের মূল সব ফিচার আনলিমিটেড',
+    pkg2_f2: '২ মাস সাবস্ক্রিপশন সম্পূর্ণ ফ্রি',
+    pkg2_f3: 'ফ্রি সাব-ডোমেন ও ক্লাউড হোস্টিং ব্যাকআপ',
+    pkg2_f4: '১২টি এডমিট কার্ড ও ৩-কপি মানি রসিদ',
+    pkg2_f5: '২৪/৭ ভিআইপি রিমোট সাপোর্ট (AnyDesk)',
+    pkg2_btn: 'বাৎসরিক প্যাকেজ বুক করুন',
+    pkg3_badge: 'এককালীন (লাইফটাইম)',
+    pkg3_price: '২০,০০০ ৳',
+    pkg3_period: '/ আজীবন এককালীন',
+    pkg3_desc: 'প্রতিষ্ঠানের স্থায়ী লাইসেন্স। ভবিষ্যতে আর কোনো মাসিক বা বার্ষিক রিনিউয়াল ফি লাগবে না।',
+    pkg3_f1: 'আজীবন আনলিমিটেড ব্যবহার',
+    pkg3_f2: 'কোনো মাসিক বা বাৎসরিক ফি নেই',
+    pkg3_f3: 'ডাটাবেজ ফুল ব্যাকআপ ডাউনলোড সুবিধা',
+    pkg3_f4: 'ভবিষ্যতের সব সফটওয়্যার আপডেট অন্তর্ভুক্ত',
+    pkg3_f5: 'বিশেষজ্ঞ দ্বারা সম্পূর্ণ সেটআপ',
+    pkg3_btn: 'এককালীন প্যাকেজ বুক করুন',
+    install_note: 'এককালীন ইনস্টলেশন ও ডাটা এন্ট্রি চার্জ: ২০০ জনের কম শিক্ষার্থী হলে ২,০০০ টাকা এবং ২০০ জনের বেশি হলে ৫,০০০ টাকা (শুধুমাত্র প্রথমবার)।',
+    install_calc_link: 'খরচ ক্যালকুলেটরে দেখুন →',
+
+    // Cost Calculator Section
+    calc_badge: 'ইন্টারেক্টিভ খরচ ক্যালকুলেটর',
+    calc_title: 'আপনার মাদ্রাসায় সফটওয়্যার পরিচালনায় কত খরচ হবে?',
+    calc_subtitle: 'ছাত্র সংখ্যা ও প্যাকেজ নির্বাচন করে মোট প্রাথমিক ও মাসিক খরচ তাৎক্ষণিক দেখুন',
+    calc_label_students: 'মোট শিক্ষার্থী সংখ্যা:',
+    calc_label_package: 'প্যাকেজ নির্বাচন করুন:',
+    calc_opt_yearly: 'বাৎসরিক',
+    calc_opt_monthly: 'মাসিক',
+    calc_opt_lifetime: 'এককালীন',
+    calc_chk_card: 'ডিজিটাল RFID আইডি কার্ড ও ফিতা নিতে চাই',
+    calc_chk_sms: '৫,০০০ এসএমএস বান্ডিল অন্তর্ভুক্ত করুন',
+    calc_summary_title: 'আনুমানিক খরচের সারসংক্ষেপ',
+    calc_summary_sub: 'কোনো লুকানো খরচ নেই, শতভাগ স্বচ্ছ',
+    calc_row_license: 'সফটওয়্যার লাইসেন্স:',
+    calc_row_install: 'ইনস্টলেশন ও কনফিগারেশন:',
+    calc_row_card: 'RFID আইডি কার্ড খরচ:',
+    calc_row_sms: 'এসএমএস প্যাক:',
+    calc_total_label: 'মোট প্রাথমিক বিনিয়োগ:',
+    calc_btn_demo: 'এই হিসাব অনুযায়ী ডেমো বুক করুন',
+
+    // Print Documentation Section
+    print_badge: 'প্রিন্ট ডকুমেন্টেশন সেন্টার',
+    print_title: '১ ক্লিকে মাদ্রাসার যাবতীয় কাগজপত্র স্বয়ংক্রিয় প্রিন্ট',
+    print_subtitle: '১২টি এডমিট কার্ড, ৩ কপি মানি রসিদ, ফলাফল শিট ও চারিত্রিক প্রশংসাপত্র প্রস্তুত',
+    print_doc1_title: '১২টি ভিন্ন এডমিট কার্ড ডিজাইন',
+    print_doc1_desc: 'Academic, Islamic, Kufi, Mihrab, Modern সহ ১২টি আকর্ষণীয় কালারফুল প্রবেশপত্র প্রিন্ট।',
+    print_doc2_title: '৩ কপি কার্বনলেস মানি রসিদ',
+    print_doc2_desc: 'এক পাতায় ছাত্র কপি, অফিস কপি ও ক্যাশিয়ার কপি। ফি কালেকশন করার সাথে সাথে অটো জেনারেট।',
+    print_doc3_title: 'ট্যাবুল্যাশন শিট ও প্রগ্রেস কার্ড',
+    print_doc3_desc: 'বেফাক গ্রেডিং ও সাধারণ গ্রেডিং অনুযায়ী পূর্ণাঙ্গ ক্লাস ফলাফল শিট এবং ব্যক্তিগত নম্বরপত্র।',
+    print_doc4_title: 'ডিজিটাল পিভিসি আইডি কার্ড (৮ স্টাইল)',
+    print_doc4_desc: 'ছাত্র ও শিক্ষকদের জন্য কিউআর কোড এবং বারকোডযুক্ত ভার্টিক্যাল ও হরিজন্টাল আইডি কার্ড।',
+    print_doc5_title: 'সিট প্ল্যান ও বেঞ্চ স্টিকার',
+    print_doc5_desc: 'পরীক্ষা হলের বেঞ্চে রোল নম্বরসহ লাগানোর স্টিকার এবং হল গেটের সিট প্ল্যান তালিকা।',
+    print_doc6_title: 'চারিত্রিক সনদ ও ছাড়পত্র (TC)',
+    print_doc6_desc: 'মাদ্রাসার প্যাডে আরবি ও বাংলা লিপিতে প্রশংসাপত্র, প্রত্যয়নপত্র ও কওমি দস্তারবন্দী সনদ।',
+    print_preview_btn: 'নমুনা দেখুন',
+
+    // FAQ Section
+    faq_title: 'সচরাচর জানতে চাওয়া প্রশ্ন (FAQ)',
+    faq_subtitle: 'মাদ্রাসা পরিচালনার প্রযুক্তিগত সুবিধা সম্পর্কে বিস্তারিত',
+    faq1_q: '১. মাদ্রাসার তথ্য কি সম্পূর্ণ নিরাপদ থাকবে? ব্যাকআপ কীভাবে পাবো?',
+    faq1_a: 'জি, শতভাগ নিরাপদ। আমাদের সার্ভার ২৫৬-বিট এনক্রিপ্টেড এবং প্রতিদিন স্বয়ংক্রিয় ব্যাকআপ তৈরি হয়। এছাড়াও ড্যাশবোর্ড থেকে ১ ক্লিকে যেকোনো সময় আপনার কম্পিউটারে সম্পূর্ণ ডাটাবেজ ব্যাকআপ ফাইল ডাউনলোড করে রাখতে পারবেন।',
+    faq2_q: '২. বিদ্যুৎ বা ইন্টারনেট না থাকলে কি সফটওয়্যার চলবে?',
+    faq2_a: 'আমাদের সফটওয়্যারটি লোকাল নেটওয়ার্কেও স্থাপন করা যায়। এছাড়া মোবাইল ব্রাউজারে বা অ্যাপে অফলাইন ক্যাশিং সক্রিয় থাকে, ফলে নেট সাময়িক বন্ধ থাকলেও আগের তথ্য দেখা যায় এবং নেট এলে স্বয়ংক্রিয়ভাবে সিঙ্ক হয়ে যায়।',
+    faq3_q: '৩. হিফজখানার দৈনিক পড়া কি অভিভাবকরা দেখতে পারবেন?',
+    faq3_a: 'অবশ্যই। প্রতিদিনের সবক, সাত সবক ও আমোখতা এন্ট্রি নেওয়ার সাথে সাথেই অভিভাবকের কাছে এসএমএস বা অ্যাপের মাধ্যমে দৈনিক রিপোর্ট পৌঁছে যায়।',
+    faq4_q: '৪. লিল্লাহ বোর্ডিং ও মেসের কাঁচা বাজার কীভাবে সমন্বয় হয়?',
+    faq4_a: 'বাবুর্চির দৈনিক কেনাকাটার রসিদ সফটওয়্যারে তোলার সাথে সাথে প্রধান ক্যাশ খাতার ব্যয় ভাউচারে জমা হয় এবং মাসিক মিলের সংখ্যা অনুযায়ী প্রতি মিলের গড় খরচ নিজে থেকেই তৈরি হয়।',
+
     // Testimonials
     clients_badge: '৭৫০+ শিক্ষা প্রতিষ্ঠানের আস্থা',
     clients_title: 'দেশজুড়ে শীর্ষ মাদ্রাসাসমূহ পরিচালিত হচ্ছে হেদায়েত টেক-এ',
-    clients_subtitle: 'কওমি, আলিয়া ও হিফজখানা পরিচালনায় ৬৪ জেলার নির্ভরযোগ্য ইসলামিক ইআরপি'
+    clients_subtitle: 'কওমি, আলিয়া ও হিফজখানা পরিচালনায় ৬৪ জেলার নির্ভরযোগ্য ইসলামিক ইআরপি',
+    review1_name: 'মক্কাতুল মুকাররমা মাদ্রাসা',
+    review1_address: 'খাজার রোড, চান্দগাঁও, চট্টগ্রাম',
+    review1_badge: 'ভেরিফাইড প্রতিষ্ঠান • ১২০০+ শিক্ষার্থী',
+    review1_quote: '"হিফজখানার দৈনিক সবক ট্র্যাকিং এবং ফি কালেকশনে খাতা-কলমের ঝামেলা চিরতরে দূর হয়েছে। প্রতি মাসের স্বয়ংক্রিয় হিসাব এখন এক ক্লিকেই পাচ্ছি।"',
+    review1_author: 'মুহতামিম মুফতি আব্দুর রহিম',
+    review2_name: 'সানাউল্লাহ মুন্সিবাড়ি মাদ্রাসা',
+    review2_address: 'সাতকানিয়া, চট্টগ্রাম',
+    review2_badge: 'প্রিমিয়াম ক্লায়েন্ট • ৬৫০+ শিক্ষার্থী',
+    review2_quote: '"অভিভাবকদের মোবাইলে স্বয়ংক্রিয় এসএমএস এবং অনলাইন থেকে পরীক্ষার পূর্ণাঙ্গ ফলাফল দেখার সুবিধাটি আমাদের মাদ্রাসার সুনাম বহুগুণ বাড়িয়ে দিয়েছে।"',
+    review2_author: 'হাফেজ মাওলানা জহিরুল ইসলাম',
+    review3_name: 'দারুচ্ছালাম আলিয়া কামিল মাদরাসা',
+    review3_address: 'বরিশাল সদর',
+    review3_badge: 'শীর্ষ কামিল প্রতিষ্ঠান • ৮৫০+ শিক্ষার্থী',
+    review3_quote: '"লিল্লাহ বোর্ডিং ও মেসের দৈনিক বাজার খরচের পর স্বয়ংক্রিয় মিল রেট ক্যালকুলেশন এবং শিক্ষকদের বেতন ভাউচার ফিচারটি এককথায় অসাধারণ।"',
+    review3_author: 'অধ্যক্ষ ড. মো: নুরুল ইসলাম',
+
+    // Contact & Footer
+    footer_tagline: 'মাদ্রাসা, স্কুল ও ক্যাডেট একাডেমির সর্বাধুনিক ক্লাউড ও লোকাল সফটওয়্যার সমাধান। খাতা-কলম মুক্ত পূর্ণাঙ্গ ডিজিটাল ক্যাম্পাসের নিশ্চয়তা।',
+    footer_call: 'সরাসরি কল:',
+    footer_wa: 'হোয়াটসঅ্যাপ:',
+    footer_email: 'ইমেইল:',
+    footer_address: 'ঠিকানা: লেভেল-৪, তিতাস টুইন টাওয়ার / চান্দগাঁও, চট্টগ্রাম, বাংলাদেশ',
+    contact_form_title: 'আমাদের কাছে আপনার বার্তা পাঠান',
+    contact_form_sub: 'যেকোনো প্রশ্ন, কাস্টমাইজেশন বা ডেমোর জন্য লিখুন',
+    contact_privacy_note: 'শতভাগ সুরক্ষিত ও গোপনীয় টেক্সট বার — বার্তাটি সরাসরি মালিকের জিমেইলে পৌঁছাবে।',
+    contact_lbl_name: 'আপনার নাম',
+    contact_lbl_phone: 'মোবাইল নম্বর',
+    contact_lbl_email: 'আপনার ইমেইল / জিমেইল',
+    contact_lbl_inst: 'প্রতিষ্ঠানের নাম',
+    contact_lbl_msg: 'আপনার বার্তা / জিজ্ঞাসা',
+    contact_btn_send: 'বার্তা পাঠান',
+    footer_rights: '© ২০২৬ Hedayet Tech. সর্বস্বত্ব সংরক্ষিত।',
+    footer_wa_support: 'হোয়াটসঅ্যাপ সাপোর্ট',
+    footer_helpdesk: 'হেল্পডেস্ক',
+    footer_about_link: 'মাদ্রাসার পরিচিতি',
+    floating_wa: 'হোয়াটসঅ্যাপ কল বা মেসেজ দিন',
+
+    // Settings Tab in Admin Console
+    set_title: 'প্রতিষ্ঠান ও লাইসেন্স তথ্য',
+    set_lang_lbl: 'সিস্টেমের ভাষা (Language):',
+    set_name_bn_lbl: 'মাদ্রাসার নাম (বাংলা)',
+    set_name_ar_lbl: 'মাদ্রাসার নাম (আরবি)',
+    set_muhtamim_lbl: 'মুহতামিম সাহেব',
+    set_phone_lbl: 'হেল্পলাইন / মোবাইল',
+    set_address_lbl: 'ঠিকানা',
+    set_license_lbl: 'লাইসেন্স মেয়াদ',
+    set_db_lbl: 'ডাটাবেজ ইঞ্জিন',
+    set_backup_btn: '১-ক্লিকে ফুল ডাটাবেজ ব্যাকআপ নিন'
   },
   en: {
     // Topbar
     topbar_phone: '+880 1884-636312',
     topbar_email: 'hello@hedayettech.com',
     wa_label: 'WhatsApp',
+    brand_subtitle: 'Application Management Software',
     
     // Navbar
     nav_services: 'Services',
@@ -161,10 +310,157 @@ const i18nTranslations = {
     trust_badge_3: '24/7 Live Support',
     trust_badge_4: 'Effortless to Use',
 
+    // Features Section
+    feat_badge: 'All-In-One Feature Pack',
+    feat_title: 'Everything Your Madrasa Needs in One Smart Software',
+    feat_subtitle: 'Engineered for Qawmi, Alia, and Modern Islamic Institutions',
+    feat_card1_title: 'Student Admission & QR ID Card',
+    feat_card1_desc: 'Auto admission numbering, complete parent database, and colorful ID card printing.',
+    feat_card2_title: 'Hifz Tracker & Daily Sabak Diary',
+    feat_card2_desc: 'Daily Sabak, Saat Sabak, and Amokhta revision with mistake counter and teacher remarks.',
+    feat_card3_title: 'Lillah Boarding & Mess Accounts',
+    feat_card3_desc: 'Daily raw market grocery expenses, meal tracking, and auto cash reconciliation.',
+
+    // Pricing Section
+    pricing_badge: 'Transparent & Affordable Pricing',
+    pricing_title: 'Choose the Best Plan for Your Madrasa',
+    pricing_subtitle: 'No hidden charges. All plans include full core software access.',
+    pkg1_badge: 'Monthly Plan',
+    pkg1_price: '৳ 500',
+    pkg1_period: '/ per month',
+    pkg1_desc: 'Ideal for small budget madrasas and Nurani maktabs. Renewable monthly.',
+    pkg1_f1: 'Admission, attendance & ID card generator',
+    pkg1_f2: 'Fee collection & receipt printing',
+    pkg1_f3: 'Hifz ledger & daily sabak diary',
+    pkg1_f4: 'Exams, results & marksheet generation',
+    pkg1_f5: 'Phone & WhatsApp customer support',
+    pkg1_btn: 'Get Started with Monthly',
+    pkg2_ribbon: 'Most Popular (2 Months Completely Free!)',
+    pkg2_badge: 'Annual Package',
+    pkg2_price: '৳ 5,000',
+    pkg2_period: '/ 1 Year (12 Months)',
+    pkg2_desc: 'Hassle-free whole year service. Save ৳ 1,000 with dedicated priority support.',
+    pkg2_f1: 'Unlimited access to all software features',
+    pkg2_f2: '2 months subscription completely free',
+    pkg2_f3: 'Free sub-domain & cloud backup storage',
+    pkg2_f4: '12 Admit card styles & 3-copy money receipt',
+    pkg2_f5: '24/7 VIP remote desktop support (AnyDesk)',
+    pkg2_btn: 'Book Annual Plan Now',
+    pkg3_badge: 'Lifetime One-Time',
+    pkg3_price: '৳ 20,000',
+    pkg3_period: '/ Lifetime One-Time',
+    pkg3_desc: 'Permanent institutional license. No future renewal fees ever.',
+    pkg3_f1: 'Lifetime unlimited usage',
+    pkg3_f2: 'Zero monthly or annual fees',
+    pkg3_f3: '1-click full SQLite database backup download',
+    pkg3_f4: 'All future software updates included',
+    pkg3_f5: 'Complete expert setup & training',
+    pkg3_btn: 'Book Lifetime Plan',
+    install_note: 'One-time setup & data entry charge: ৳ 2,000 for under 200 students, ৳ 5,000 for over 200 students (first time only).',
+    install_calc_link: 'View in Cost Calculator →',
+
+    // Cost Calculator Section
+    calc_badge: 'Interactive Cost Calculator',
+    calc_title: 'How Much Will It Cost to Run Software in Your Madrasa?',
+    calc_subtitle: 'Select student count & plan to view instant initial and monthly estimates',
+    calc_label_students: 'Total Student Count:',
+    calc_label_package: 'Select Package Plan:',
+    calc_opt_yearly: 'Annual',
+    calc_opt_monthly: 'Monthly',
+    calc_opt_lifetime: 'Lifetime',
+    calc_chk_card: 'Include Digital RFID ID Cards & Lanyards',
+    calc_chk_sms: 'Include 5,000 SMS Bundle',
+    calc_summary_title: 'Estimated Cost Breakdown',
+    calc_summary_sub: '100% Transparent, No Hidden Fees',
+    calc_row_license: 'Software License:',
+    calc_row_install: 'Setup & Configuration:',
+    calc_row_card: 'RFID ID Card Cost:',
+    calc_row_sms: 'SMS Pack:',
+    calc_total_label: 'Total Initial Investment:',
+    calc_btn_demo: 'Book Demo Based on This Estimate',
+
+    // Print Documentation Section
+    print_badge: 'Print Documentation Center',
+    print_title: 'Auto-Print All Madrasa Documents in 1-Click',
+    print_subtitle: '12 Admit card styles, 3-part money receipts, result sheets & certificates ready',
+    print_doc1_title: '12 Unique Admit Card Designs',
+    print_doc1_desc: 'Print Academic, Islamic, Kufi, Mihrab, and Modern styled exam admit cards.',
+    print_doc2_title: '3-Part Carbonless Money Receipts',
+    print_doc2_desc: 'Student copy, office copy, and cashier slip in one sheet. Auto-generated on fee collection.',
+    print_doc3_title: 'Tabulation Sheets & Progress Cards',
+    print_doc3_desc: 'Befaq & general grading compliant tabulation sheets and student progress cards.',
+    print_doc4_title: 'Digital PVC ID Cards (8 Styles)',
+    print_doc4_desc: 'Vertical & horizontal ID cards with QR codes and barcodes for students and staff.',
+    print_doc5_title: 'Exam Seat Plan & Bench Stickers',
+    print_doc5_desc: 'Roll-numbered bench stickers and exam hall gate entrance seat planning sheets.',
+    print_doc6_title: 'Character Certificate & Transfer (TC)',
+    print_doc6_desc: 'Official Arabic & Bengali certificates, testimonials, and Qawmi graduation sanads.',
+    print_preview_btn: 'View Sample',
+
+    // FAQ Section
+    faq_title: 'Frequently Asked Questions (FAQ)',
+    faq_subtitle: 'Detailed insights on technical capabilities for your institution',
+    faq1_q: '1. Will institution data stay completely secure? How to get backups?',
+    faq1_a: 'Yes, 100% secure. Our servers use 256-bit encryption with automated daily backups. You can also download full database backups directly to your PC in 1 click at any time.',
+    faq2_q: '2. Does the software work without electricity or internet?',
+    faq2_a: 'Yes, our software can be deployed in local offline mode. Mobile apps and browsers cache data so it functions seamlessly even during internet outages, auto-syncing when restored.',
+    faq3_q: '3. Can parents monitor daily Hifz memorization progress?',
+    faq3_a: 'Absolutely. As soon as daily Sabak, Saat Sabak, and Amokhta are logged, instant WhatsApp/SMS reports can be dispatched directly to guardians.',
+    faq4_q: '4. How are Lillah boarding and mess grocery market expenses balanced?',
+    faq4_a: 'Daily grocery receipts automatically feed into the cash expense ledger, computing accurate real-time per-meal rates based on monthly student consumption.',
+
     // Testimonials
     clients_badge: 'Trusted by 750+ Educational Institutions',
     clients_title: 'Top Institutions Nationwide Run on Hedayet Tech',
-    clients_subtitle: 'The trusted Islamic ERP across 64 districts for managing Qawmi, Alia, and Hifz madrasas'
+    clients_subtitle: 'The trusted Islamic ERP across 64 districts for managing Qawmi, Alia, and Hifz madrasas',
+    review1_name: 'Makkatul Mukarramah Madrasa',
+    review1_address: 'Khaja Road, Chandgaon, Chittagong',
+    review1_badge: 'Verified Institution • 1200+ Students',
+    review1_quote: '"Daily Hifz Sabak tracking and fee collection eliminated our ledger hassles forever. Automated monthly balance sheets are now generated in 1 click."',
+    review1_author: 'Muhtamim Mufti Abdur Rahim',
+    review2_name: 'Sanaullah Munshibari Madrasa',
+    review2_address: 'Satkania, Chittagong',
+    review2_badge: 'Premium Client • 650+ Students',
+    review2_quote: '"Automated SMS to guardians and online result marksheets have exponentially enhanced our madrasa reputation among parents."',
+    review2_author: 'Hafez Maulana Zahirul Islam',
+    review3_name: 'Darussalam Alia Kamil Madrasa',
+    review3_address: 'Barisal Sadar',
+    review3_badge: 'Top Kamil Institution • 850+ Students',
+    review3_quote: '"Automated meal rate calculation after daily bazaar expenses and staff salary vouchers are simply outstanding features."',
+    review3_author: 'Principal Dr. Md. Nurul Islam',
+
+    // Contact & Footer
+    footer_tagline: 'State-of-the-art cloud & local software for Madrasas, Schools, and Cadet Academies. Guaranteeing a 100% paperless digital campus.',
+    footer_call: 'Direct Call:',
+    footer_wa: 'WhatsApp:',
+    footer_email: 'Email:',
+    footer_address: 'Address: Level-4, Titas Twin Tower, Chandgaon, Chittagong, Bangladesh',
+    contact_form_title: 'Send Us a Message',
+    contact_form_sub: 'Write to us for any questions, customizations, or live demos',
+    contact_privacy_note: '100% Secure & Confidential — Dispatched directly to management inbox.',
+    contact_lbl_name: 'Your Full Name',
+    contact_lbl_phone: 'Phone Number',
+    contact_lbl_email: 'Email Address',
+    contact_lbl_inst: 'Institution Name',
+    contact_lbl_msg: 'Your Message / Inquiry',
+    contact_btn_send: 'Send Message',
+    footer_rights: '© 2026 Hedayet Tech. All rights reserved.',
+    footer_wa_support: 'WhatsApp Support',
+    footer_helpdesk: 'Helpdesk',
+    footer_about_link: 'About Software',
+    floating_wa: 'Call or Message on WhatsApp',
+
+    // Settings Tab in Admin Console
+    set_title: 'Institution & License Information',
+    set_lang_lbl: 'System Language (ভাষা):',
+    set_name_bn_lbl: 'Institution Name (Bangla)',
+    set_name_ar_lbl: 'Institution Name (Arabic)',
+    set_muhtamim_lbl: 'Head / Principal',
+    set_phone_lbl: 'Helpline / Phone',
+    set_address_lbl: 'Address',
+    set_license_lbl: 'License Validity',
+    set_db_lbl: 'Database Engine',
+    set_backup_btn: '1-Click Full Database Backup'
   }
 };
 
@@ -173,9 +469,11 @@ function switchLanguage(lang) {
   localStorage.setItem('hedayet_tech_lang', lang);
   window.currentAppLang = lang;
 
-  // ১. বাটন অ্যাক্টিভ স্টাইল আপডেট
+  // ১. বাটন অ্যাক্টিভ স্টাইল ও সেটিং ড্রপডাউন আপডেট
   const btnBn = document.getElementById('langBtnBn');
   const btnEn = document.getElementById('langBtnEn');
+  const setLangSelect = document.getElementById('set-system-lang');
+  if (setLangSelect) setLangSelect.value = lang;
 
   if (lang === 'bn') {
     if (btnBn) {
@@ -3571,14 +3869,13 @@ function initSplashSequence() {
 
   if (percentEl) percentEl.textContent = '০%';
 
-  // ৩ থেকে ৪ সেকেন্ডের সুস্পষ্ট ও মনোরম সিনেমাটিক পেসিং
+  // ২.০ থেকে ২.৩ সেকেন্ডের দ্রুত ও মনোরম সিনেমাটিক পেসিং (২-৫ সেকেন্ডের মধ্যে পারফেক্ট লোডিং)
   const steps = [
-    { time: 200, val: 0 },
-    { time: 800, val: 20 },
-    { time: 1500, val: 45 },
-    { time: 2200, val: 70 },
-    { time: 2800, val: 90 },
-    { time: 3200, val: 100 }
+    { time: 100, val: 15 },
+    { time: 400, val: 40 },
+    { time: 800, val: 70 },
+    { time: 1300, val: 92 },
+    { time: 1700, val: 100 }
   ];
 
   splashIntervals.forEach(t => clearTimeout(t));
@@ -3591,11 +3888,11 @@ function initSplashSequence() {
     splashIntervals.push(tid);
   });
 
-  // ১০০% হওয়ার পর কিছুক্ষণ সম্পূর্ণ লোগো ও টাইটেল দেখার সুযোগ দিয়ে ৩.৮ সেকেন্ডে স্মুথ এক্সিট
+  // ১০০% হওয়ার পর ২.২ সেকেন্ডে স্মুথ ফেডআউট ও এক্সিট
   if (splashDismissTimeout) clearTimeout(splashDismissTimeout);
   splashDismissTimeout = setTimeout(() => {
     dismissSplashScreen();
-  }, 3800);
+  }, 2200);
 }
 
 // পেজ লোড হলে সবসময় সিনেমাটিক মোশন সক্রিয় রাখা (কোনো দ্রুত ডিসমিস ছাড়া)

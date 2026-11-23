@@ -40,7 +40,195 @@ let globalClasses = [];
 let globalStudents = [];
 let pendingAdminTargetTab = 'dashboard';
 
+// ==========================================
+// আন্তর্জাতিক ভাষা রূপান্তর হাব (i18n Multi-Language Engine)
+// ==========================================
+const i18nTranslations = {
+  bn: {
+    // Topbar
+    topbar_phone: '+880 1884-636312',
+    topbar_email: 'hello@hedayettech.com',
+    wa_label: 'হোয়াটসঅ্যাপ',
+    
+    // Navbar
+    nav_services: 'আমাদের সেবা',
+    nav_qawmi: 'কওমি মাদ্রাসা সফটওয়্যার',
+    nav_alia: 'আলিয়া মাদ্রাসা ইআরপি',
+    nav_hifz: 'হিফজখানা ডায়েরি ও ট্র্যাকার',
+    nav_school: 'স্কুল ও কলেজ ম্যানেজমেন্ট',
+    nav_features: 'সব ফিচার',
+    nav_pricing: 'দাম ও প্যাকেজ',
+    nav_clients: 'গ্রাহক',
+    nav_clients_full: 'গ্রাহক (৭৫০+ শীর্ষ মাদ্রাসা)',
+    nav_top_madrasas: 'শীর্ষ মাদ্রাসাসমূহ (৭৫০+)',
+    nav_testimonials: 'মুহতামিমদের প্রশংসাপত্র',
+    nav_client_list: 'সকল গ্রাহক তালিকা ও রেটিং',
+    nav_contact: 'যোগাযোগ',
+    nav_contact_full: 'যোগাযোগ ও হেল্পডেস্ক',
+    nav_admission: 'অনলাইন ভর্তি',
+    nav_demo: 'ফ্রি ডেমো বুক করুন',
+    mobile_smart_os: 'স্মার্ট ওএস',
+
+    // Search Bar
+    search_placeholder: 'আপনার মাদ্রাসা বা স্কুলের নাম কিংবা EIIN/ID দিয়ে খুঁজুন...',
+    search_button: 'খুঁজে দেখুন',
+
+    // Quick Access Bar
+    qa_label: 'কুইক এক্সেস:',
+    qa_results: 'অনলাইন ফলাফল',
+    qa_admission: 'অনলাইন ভর্তি ফরম',
+    qa_new_badge: 'নতুন',
+    qa_donation: 'দান ও যাকাত ফান্ড',
+    qa_payment: 'দ্রুত ফি পেমেন্ট',
+    qa_helpdesk: 'যোগাযোগ ও হেল্পডেস্ক',
+
+    // Notice Ticker
+    ticker_label: 'লাইভ নোটিশ',
+    ticker_content: '📢 আসন্ন দ্বিতীয় সাময়িক পরীক্ষা আগামী ১৫ ডিসেম্বর হতে অনুষ্ঠিত হবে ✦ পবিত্র রমজানুল মুবারকের ছুটি ২০ রমজান হতে শুরু হবে ✦ মাদ্রাসার বার্ষিক ওয়াজ ও পুরস্কার বিতরণী মাহফিল আগামী ২৮ জানুয়ারি।',
+
+    // Hero Section
+    hero_badge: 'হেদায়েত টেক — শিক্ষা প্রতিষ্ঠান ব্যবস্থাপনা সফটওয়্যার',
+    hero_h1_1: 'খাতা-কলমের দিন শেষ—',
+    hero_h1_2: 'স্মার্ট ম্যানেজমেন্টে এগিয়ে থাকুক আপনার প্রতিষ্ঠান বেশ!',
+    hero_desc: 'আলিয়া ও কওমি মাদ্রাসা, স্কুল ও কলেজের ফি কালেকশন, আইডি কার্ড, নোটিশ, রুটিন এবং পরীক্ষার ফলাফল এখন একটি সুরক্ষিত ডিজিটাল ড্যাশবোর্ডে।',
+    hero_btn_demo: 'ডেমো রিকোয়েস্ট করুন',
+    hero_btn_video: '২ মিনিটের ভিডিও',
+    hero_btn_admission: 'অনলাইন ভর্তি ফরম',
+    hero_call_label: 'সরাসরি কথা বলুন:',
+    trust_badge_1: '৭+ বছরের অভিজ্ঞতা',
+    trust_badge_2: '৬৪ জেলায় সেবা',
+    trust_badge_3: '২৪/৭ কাস্টমার সাপোর্ট',
+    trust_badge_4: 'সহজে ব্যবহার উপযোগী',
+
+    // Testimonials
+    clients_badge: '৭৫০+ শিক্ষা প্রতিষ্ঠানের আস্থা',
+    clients_title: 'দেশজুড়ে শীর্ষ মাদ্রাসাসমূহ পরিচালিত হচ্ছে হেদায়েত টেক-এ',
+    clients_subtitle: 'কওমি, আলিয়া ও হিফজখানা পরিচালনায় ৬৪ জেলার নির্ভরযোগ্য ইসলামিক ইআরপি'
+  },
+  en: {
+    // Topbar
+    topbar_phone: '+880 1884-636312',
+    topbar_email: 'hello@hedayettech.com',
+    wa_label: 'WhatsApp',
+    
+    // Navbar
+    nav_services: 'Services',
+    nav_qawmi: 'Qawmi Madrasa ERP',
+    nav_alia: 'Alia Madrasa ERP',
+    nav_hifz: 'Hifz Tracker & Diary',
+    nav_school: 'School & College OS',
+    nav_features: 'Features',
+    nav_pricing: 'Pricing',
+    nav_clients: 'Clients',
+    nav_clients_full: 'Clients (750+ Institutions)',
+    nav_top_madrasas: 'Top Madrasas (750+)',
+    nav_testimonials: 'Testimonials',
+    nav_client_list: 'All Client Directory & Ratings',
+    nav_contact: 'Contact',
+    nav_contact_full: 'Contact & Helpdesk',
+    nav_admission: 'Online Admission',
+    nav_demo: 'Book Free Demo',
+    mobile_smart_os: 'Smart OS',
+
+    // Search Bar
+    search_placeholder: 'Search by Madrasa/School name or EIIN/ID...',
+    search_button: 'Search',
+
+    // Quick Access Bar
+    qa_label: 'Quick Access:',
+    qa_results: 'Exam Results',
+    qa_admission: 'Admission Form',
+    qa_new_badge: 'NEW',
+    qa_donation: 'Donation & Zakat',
+    qa_payment: 'Quick Fee Pay',
+    qa_helpdesk: 'Helpdesk & Support',
+
+    // Notice Ticker
+    ticker_label: 'LIVE NOTICE',
+    ticker_content: '📢 Upcoming 2nd Term Examination starts 15th Dec ✦ Ramadan Vacation begins 20th Ramadan ✦ Annual Waj & Prize Distribution Ceremony on 28th Jan.',
+
+    // Hero Section
+    hero_badge: 'Hedayet Tech — Educational ERP Software',
+    hero_h1_1: 'No More Paper Hassle—',
+    hero_h1_2: 'Empower Your Institution with Smart Digital ERP!',
+    hero_desc: 'Comprehensive cloud software for Qawmi, Nurani, Hifz, Alia Madrasas, and Schools. Admissions, exam results, digital attendance, and automated accounting—all in one place.',
+    hero_btn_demo: 'Request Demo',
+    hero_btn_video: '2-Min Video Tour',
+    hero_btn_admission: 'Online Admission Form',
+    hero_call_label: 'Call Direct:',
+    trust_badge_1: '7+ Years Experience',
+    trust_badge_2: '64 Districts Covered',
+    trust_badge_3: '24/7 Live Support',
+    trust_badge_4: 'Effortless to Use',
+
+    // Testimonials
+    clients_badge: 'Trusted by 750+ Educational Institutions',
+    clients_title: 'Top Institutions Nationwide Run on Hedayet Tech',
+    clients_subtitle: 'The trusted Islamic ERP across 64 districts for managing Qawmi, Alia, and Hifz madrasas'
+  }
+};
+
+function switchLanguage(lang) {
+  if (lang !== 'bn' && lang !== 'en') lang = 'bn';
+  localStorage.setItem('hedayet_tech_lang', lang);
+  window.currentAppLang = lang;
+
+  // ১. বাটন অ্যাক্টিভ স্টাইল আপডেট
+  const btnBn = document.getElementById('langBtnBn');
+  const btnEn = document.getElementById('langBtnEn');
+
+  if (lang === 'bn') {
+    if (btnBn) {
+      btnBn.className = 'px-2.5 py-0.5 rounded-full transition-all duration-200 bg-emerald-500 text-white font-extrabold shadow-xs flex items-center gap-1';
+    }
+    if (btnEn) {
+      btnEn.className = 'px-2.5 py-0.5 rounded-full transition-all duration-200 text-emerald-300 hover:text-white font-bold flex items-center gap-1';
+    }
+    document.documentElement.lang = 'bn';
+    document.body.style.fontFamily = "'Hind Siliguri', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif";
+    document.querySelectorAll('h1, h2, h3, h4, .font-heading').forEach(el => {
+      el.style.fontFamily = "'Anek Bangla', 'Hind Siliguri', sans-serif";
+    });
+  } else {
+    if (btnEn) {
+      btnEn.className = 'px-2.5 py-0.5 rounded-full transition-all duration-200 bg-emerald-500 text-white font-extrabold shadow-xs flex items-center gap-1';
+    }
+    if (btnBn) {
+      btnBn.className = 'px-2.5 py-0.5 rounded-full transition-all duration-200 text-emerald-300 hover:text-white font-bold flex items-center gap-1';
+    }
+    document.documentElement.lang = 'en';
+    document.body.style.fontFamily = "'Inter', system-ui, -apple-system, sans-serif";
+    document.querySelectorAll('h1, h2, h3, h4, .font-heading').forEach(el => {
+      el.style.fontFamily = "'Inter', system-ui, -apple-system, sans-serif";
+    });
+  }
+
+  // ২. DOM এলিমেন্টগুলোর অনুবাদ তাৎক্ষণিক অ্যাপ্লাই
+  const dict = i18nTranslations[lang];
+  if (dict) {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key]) {
+        el.textContent = dict[key];
+      }
+    });
+
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (dict[key]) {
+        el.placeholder = dict[key];
+      }
+    });
+  }
+}
+
+function initLanguage() {
+  const savedLang = localStorage.getItem('hedayet_tech_lang') || 'bn';
+  switchLanguage(savedLang);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  initLanguage();
   initDateDisplay();
   loadClasses();
   checkStealthHashRoute();

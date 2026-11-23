@@ -728,7 +728,7 @@
               <!-- কার্ড হেডার টাইটেল -->
               <div class="flex items-center justify-center gap-2 pb-2 border-b border-emerald-700/40">
                 <img src="assets/hedayet_icon.png" alt="Hedayet Tech" class="w-4 h-4 object-contain">
-                <h4 class="text-sm font-bold text-emerald-100 tracking-wide">
+                <h4 class="text-sm font-bold text-emerald-100 tracking-wide" data-i18n="hero_card_title">
                   শিক্ষা প্রতিষ্ঠানের স্মার্ট পরিচালনায় হেদায়েত টেক
                 </h4>
               </div>
@@ -740,7 +740,7 @@
                 <!-- ডেমো বুকিং ওভারলে বোতাম -->
                 <button onclick="openModal('bookDemoModal')" class="absolute inset-0 bg-madrasa-950/40 hover:bg-madrasa-950/20 backdrop-blur-[1px] flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition duration-300">
                   <span class="bg-gold-500 text-slate-950 px-4 py-2 rounded-xl text-xs font-black shadow-lg flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-check"></i> ফ্রি ডেমো বুকিং করুন
+                    <i class="fa-solid fa-calendar-check"></i> <span data-i18n="hero_demo_overlay">ফ্রি ডেমো বুকিং করুন</span>
                   </span>
                 </button>
               </div>
@@ -748,13 +748,13 @@
               <!-- বটম ক্যাটাগরি বাটন ৩টি -->
               <div class="grid grid-cols-3 gap-2 text-center text-xs font-bold text-emerald-200">
                 <button onclick="filterHomeCategory('আলিয়া')" class="bg-emerald-900/80 hover:bg-emerald-700 border border-emerald-600/40 py-1.5 rounded-lg transition">
-                  আলিয়া মাদ্রাসা
+                  <span data-i18n="cat_alia">আলিয়া মাদ্রাসা</span>
                 </button>
                 <button onclick="filterHomeCategory('কওমি')" class="bg-emerald-900/80 hover:bg-emerald-700 border border-emerald-600/40 py-1.5 rounded-lg transition text-gold-400">
-                  কওমি মাদ্রাসা
+                  <span data-i18n="cat_qawmi">কওমি মাদ্রাসা</span>
                 </button>
                 <button onclick="filterHomeCategory('স্কুল')" class="bg-emerald-900/80 hover:bg-emerald-700 border border-emerald-600/40 py-1.5 rounded-lg transition">
-                  স্কুল ও কলেজ
+                  <span data-i18n="cat_school">স্কুল ও কলেজ</span>
                 </button>
               </div>
             </div>
@@ -952,7 +952,7 @@
             <div class="flex items-center justify-between mb-2">
               <label data-i18n="calc_label_students" class="text-xs sm:text-sm font-bold text-slate-800">মোট শিক্ষার্থী সংখ্যা:</label>
               <div class="bg-emerald-50 text-emerald-800 px-3 py-1 rounded-xl text-sm font-black border border-emerald-200">
-                <span id="calcStudentDisplay">১৫০</span> জন
+                <span id="calcStudentDisplay">১৫০</span> <span data-i18n="calc_unit_students">জন</span>
               </div>
             </div>
             <input type="range" id="calcStudentRange" min="20" max="1000" step="10" value="150" oninput="updateCostCalculator()" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-700">
@@ -991,13 +991,13 @@
             <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl hover:bg-slate-50 transition border border-slate-100">
               <input type="checkbox" id="calcIncludeCards" onchange="updateCostCalculator()" class="w-4 h-4 rounded text-emerald-700 accent-emerald-700">
               <span data-i18n="calc_chk_card" class="text-slate-800 font-bold">ডিজিটাল RFID আইডি কার্ড ও ফিতা নিতে চাই</span>
-              <span class="ml-auto text-emerald-800 font-bold">+১৫০ ৳/প্রতি কার্ড</span>
+              <span class="ml-auto text-emerald-800 font-bold" data-i18n="calc_card_rate">+১৫০ ৳/প্রতি কার্ড</span>
             </label>
 
             <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl hover:bg-slate-50 transition border border-slate-100">
               <input type="checkbox" id="calcIncludeSms" onchange="updateCostCalculator()" class="w-4 h-4 rounded text-emerald-700 accent-emerald-700">
               <span data-i18n="calc_chk_sms" class="text-slate-800 font-bold">৫,০০০ এসএমএস বান্ডিল অন্তর্ভুক্ত করুন</span>
-              <span class="ml-auto text-emerald-800 font-bold">+২,০০০ ৳</span>
+              <span class="ml-auto text-emerald-800 font-bold" data-i18n="calc_sms_rate">+২,০০০ ৳</span>
             </label>
           </div>
 
@@ -1050,15 +1050,9 @@
     <!-- ৮. প্রিন্ট ডকুমেন্টেশন সেন্টার ও ১২টি এডমিট কার্ড প্রিভিউ গ্যালারি -->
     <section id="print-gallery-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 border-t border-slate-200">
       <div class="text-center max-w-2xl mx-auto mb-10">
-        <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
-          প্রিন্ট ডকুমেন্টেশন সেন্টার
-        </span>
-        <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mt-3 tracking-tight">
-          ১ ক্লিকে মাদ্রাসার যাবতীয় কাগজপত্র স্বয়ংক্রিয় প্রিন্ট
-        </h3>
-        <p class="text-base text-slate-600 mt-2 leading-relaxed">
-          ১২টি এডমিট কার্ড, ৩ কপি মানি রসিদ, ফলাফল শিট ও চারিত্রিক প্রশংসাপত্র প্রস্তুত
-        </p>
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300" data-i18n="gallery_badge">প্রিন্ট ডকুমেন্টেশন সেন্টার</span>
+        <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mt-3 tracking-tight" data-i18n="gallery_title">১ ক্লিকে মাদ্রাসার যাবতীয় কাগজপত্র স্বয়ংক্রিয় প্রিন্ট</h3>
+        <p class="text-base text-slate-600 mt-2 leading-relaxed" data-i18n="gallery_desc">১২টি এডমিট কার্ড, ৩ কপি মানি রসিদ, ফলাফল শিট ও চারিত্রিক প্রশংসাপত্র প্রস্তুত</p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12">
@@ -1068,12 +1062,12 @@
           <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl mb-3 group-hover:bg-emerald-700 group-hover:text-white transition">
             <i class="fa-solid fa-address-card"></i>
           </div>
-          <h4 class="font-bold text-base text-slate-800">১২টি ভিন্ন এডমিট কার্ড ডিজাইন</h4>
-          <p class="text-xs text-slate-500 mt-1">Academic, Islamic, Kufi, Mihrab, Modern সহ ১২টি আকর্ষণীয় কালারফুল প্রবেশপত্র প্রিন্ট।</p>
+          <h4 class="font-bold text-base text-slate-800" data-i18n="doc1_title">১২টি ভিন্ন এডমিট কার্ড ডিজাইন</h4>
+          <p class="text-xs text-slate-500 mt-1" data-i18n="doc1_desc">Academic, Islamic, Kufi, Mihrab, Modern সহ ১২টি আকর্ষণীয় কালারফুল প্রবেশপত্র প্রিন্ট।</p>
           <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span class="text-emerald-700 font-bold">১২টি স্টাইল রেডি</span>
-            <button onclick="previewPrintDoc(\'admit-card\')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
-              <i class="fa-solid fa-eye text-xs"></i> <span>নমুনা দেখুন</span>
+            <span class="text-emerald-700 font-bold" data-i18n="doc1_tag">১২টি স্টাইল রেডি</span>
+            <button onclick="previewPrintDoc('admit-card')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
+              <i class="fa-solid fa-eye text-xs"></i> <span data-i18n="doc_view_sample">নমুনা দেখুন</span>
             </button>
           </div>
         </div>
@@ -1083,12 +1077,12 @@
           <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-600 flex items-center justify-center text-xl mb-3 group-hover:bg-gold-500 group-hover:text-slate-950 transition">
             <i class="fa-solid fa-receipt"></i>
           </div>
-          <h4 class="font-bold text-base text-slate-800">৩ কপি কার্বনলেস মানি রসিদ</h4>
-          <p class="text-xs text-slate-500 mt-1">এক পাতায় ছাত্র কপি, অফিস কপি ও ক্যাশিয়ার কপি। ফি কালেকশন করার সাথে সাথে অটো জেনারেট।</p>
+          <h4 class="font-bold text-base text-slate-800" data-i18n="doc2_title">৩ কপি কার্বনলেস মানি রসিদ</h4>
+          <p class="text-xs text-slate-500 mt-1" data-i18n="doc2_desc">এক পাতায় ছাত্র কপি, অফিস কপি ও ক্যাশিয়ার কপি। ফি কালেকশন করার সাথে সাথে অটো জেনারেট।</p>
           <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span class="text-emerald-700 font-bold">৩ পার্ট স্লিপ</span>
-            <button onclick="previewPrintDoc(\'money-receipt\')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
-              <i class="fa-solid fa-eye text-xs"></i> <span>নমুনা দেখুন</span>
+            <span class="text-emerald-700 font-bold" data-i18n="doc2_tag">৩ পার্ট স্লিপ</span>
+            <button onclick="previewPrintDoc('money-receipt')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
+              <i class="fa-solid fa-eye text-xs"></i> <span data-i18n="doc_view_sample">নমুনা দেখুন</span>
             </button>
           </div>
         </div>
@@ -1098,12 +1092,12 @@
           <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl mb-3 group-hover:bg-emerald-700 group-hover:text-white transition">
             <i class="fa-solid fa-file-invoice"></i>
           </div>
-          <h4 class="font-bold text-base text-slate-800">ট্যাবুল্যাশন শিট ও প্রগ্রেস কার্ড</h4>
-          <p class="text-xs text-slate-500 mt-1">বেফাক গ্রেডিং ও সাধারণ গ্রেডিং অনুযায়ী পূর্ণাঙ্গ ক্লাস ফলাফল শিট এবং ব্যক্তিগত নম্বরপত্র।</p>
+          <h4 class="font-bold text-base text-slate-800" data-i18n="doc3_title">ট্যাবুল্যাশন শিট ও প্রগ্রেস কার্ড</h4>
+          <p class="text-xs text-slate-500 mt-1" data-i18n="doc3_desc">বেফাক গ্রেডিং ও সাধারণ গ্রেডিং অনুযায়ী পূর্ণাঙ্গ ক্লাস ফলাফল শিট এবং ব্যক্তিগত নম্বরপত্র।</p>
           <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span class="text-emerald-700 font-bold">বেফাক ও জেনারেল গ্রেড</span>
-            <button onclick="previewPrintDoc(\'marksheet\')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
-              <i class="fa-solid fa-eye text-xs"></i> <span>নমুনা দেখুন</span>
+            <span class="text-emerald-700 font-bold" data-i18n="doc3_tag">বেফাক ও জেনারেল গ্রেড</span>
+            <button onclick="previewPrintDoc('marksheet')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
+              <i class="fa-solid fa-eye text-xs"></i> <span data-i18n="doc_view_sample">নমুনা দেখুন</span>
             </button>
           </div>
         </div>
@@ -1113,12 +1107,12 @@
           <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl mb-3 group-hover:bg-emerald-700 group-hover:text-white transition">
             <i class="fa-solid fa-id-badge"></i>
           </div>
-          <h4 class="font-bold text-base text-slate-800">ডিজিটাল পিভিসি আইডি কার্ড (৮ স্টাইল)</h4>
-          <p class="text-xs text-slate-500 mt-1">ছাত্র ও শিক্ষকদের জন্য কিউআর কোড এবং বারকোডযুক্ত ভার্টিক্যাল ও হরিজন্টাল আইডি কার্ড।</p>
+          <h4 class="font-bold text-base text-slate-800" data-i18n="doc4_title">ডিজিটাল পিভিসি আইডি কার্ড (৮ স্টাইল)</h4>
+          <p class="text-xs text-slate-500 mt-1" data-i18n="doc4_desc">ছাত্র ও শিক্ষকদের জন্য কিউআর কোড এবং বারকোডযুক্ত ভার্টিক্যাল ও হরিজন্টাল আইডি কার্ড।</p>
           <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span class="text-emerald-700 font-bold">৮টি ভেরিয়েন্ট</span>
-            <button onclick="previewPrintDoc(\'id-card\')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
-              <i class="fa-solid fa-eye text-xs"></i> <span>নমুনা দেখুন</span>
+            <span class="text-emerald-700 font-bold" data-i18n="doc4_tag">৮টি ভেরিয়েন্ট</span>
+            <button onclick="previewPrintDoc('id-card')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
+              <i class="fa-solid fa-eye text-xs"></i> <span data-i18n="doc_view_sample">নমুনা দেখুন</span>
             </button>
           </div>
         </div>
@@ -1128,12 +1122,12 @@
           <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-600 flex items-center justify-center text-xl mb-3 group-hover:bg-gold-500 group-hover:text-slate-950 transition">
             <i class="fa-solid fa-chair"></i>
           </div>
-          <h4 class="font-bold text-base text-slate-800">সিট প্ল্যান ও বেঞ্চ স্টিকার</h4>
-          <p class="text-xs text-slate-500 mt-1">পরীক্ষা হলের বেঞ্চে রোল নম্বরসহ লাগানোর স্টিকার এবং হল গেটের সিট প্ল্যান তালিকা।</p>
+          <h4 class="font-bold text-base text-slate-800" data-i18n="doc5_title">সিট প্ল্যান ও বেঞ্চ স্টিকার</h4>
+          <p class="text-xs text-slate-500 mt-1" data-i18n="doc5_desc">পরীক্ষা হলের বেঞ্চে রোল নম্বরসহ লাগানোর স্টিকার এবং হল গেটের সিট প্ল্যান তালিকা।</p>
           <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span class="text-emerald-700 font-bold">হল ম্যানেজমেন্ট</span>
-            <button onclick="previewPrintDoc(\'seat-plan\')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
-              <i class="fa-solid fa-eye text-xs"></i> <span>নমুনা দেখুন</span>
+            <span class="text-emerald-700 font-bold" data-i18n="doc5_tag">হল ম্যানেজমেন্ট</span>
+            <button onclick="previewPrintDoc('seat-plan')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
+              <i class="fa-solid fa-eye text-xs"></i> <span data-i18n="doc_view_sample">নমুনা দেখুন</span>
             </button>
           </div>
         </div>
@@ -1143,12 +1137,12 @@
           <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl mb-3 group-hover:bg-emerald-700 group-hover:text-white transition">
             <i class="fa-solid fa-certificate"></i>
           </div>
-          <h4 class="font-bold text-base text-slate-800">চারিত্রিক সনদ ও ছাড়পত্র (TC)</h4>
-          <p class="text-xs text-slate-500 mt-1">মাদ্রাসার প্যাডে আরবি ও বাংলা লিপিতে প্রশংসাপত্র, প্রত্যয়নপত্র ও কওমি দস্তারবন্দী সনদ।</p>
+          <h4 class="font-bold text-base text-slate-800" data-i18n="doc6_title">চারিত্রিক সনদ ও ছাড়পত্র (TC)</h4>
+          <p class="text-xs text-slate-500 mt-1" data-i18n="doc6_desc">মাদ্রাসার প্যাডে আরবি ও বাংলা লিপিতে প্রশংসাপত্র, প্রত্যয়নপত্র ও কওমি দস্তারবন্দী সনদ।</p>
           <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span class="text-emerald-700 font-bold">অফিসিয়াল সিলসহ</span>
-            <button onclick="previewPrintDoc(\'certificate\')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
-              <i class="fa-solid fa-eye text-xs"></i> <span>নমুনা দেখুন</span>
+            <span class="text-emerald-700 font-bold" data-i18n="doc6_tag">অফিসিয়াল সিলসহ</span>
+            <button onclick="previewPrintDoc('certificate')" class="h-10 inline-flex items-center gap-2 px-3.5 rounded-lg text-xs font-bold border border-slate-200 hover:border-emerald-300 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 shadow-sm transition-all duration-200">
+              <i class="fa-solid fa-eye text-xs"></i> <span data-i18n="doc_view_sample">নমুনা দেখুন</span>
             </button>
           </div>
         </div>
@@ -1164,12 +1158,12 @@
         <div class="lg:col-span-5 space-y-6">
           <div>
             <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300 mb-3">
-              <i class="fa-solid fa-circle-question text-emerald-700"></i> সাধারণ জিজ্ঞাসা
+              <i class="fa-solid fa-circle-question text-emerald-700"></i> <span data-i18n="faq_badge">সাধারণ জিজ্ঞাসা</span>
             </span>
-            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 tracking-tight leading-tight" data-i18n="faq_title">
               সচরাচর জানতে চাওয়া প্রশ্ন ও উত্তর
             </h2>
-            <p class="text-base text-slate-600 mt-3 leading-relaxed">
+            <p class="text-base text-slate-600 mt-3 leading-relaxed" data-i18n="faq_subtitle">
               মাদ্রাসা পরিচালনা, ডাটা ব্যাকআপ ও ক্লাউড সিকিউরিটি নিয়ে সর্বাধিক জিজ্ঞাসিত বিষয়গুলোর স্বচ্ছ উত্তর।
             </p>
           </div>
@@ -1180,17 +1174,17 @@
               <i class="fa-solid fa-headset"></i>
             </div>
             <div>
-              <h4 class="font-bold text-lg text-white mb-1">অন্য কোনো প্রশ্ন আছে?</h4>
-              <p class="text-xs sm:text-sm text-emerald-100/80 leading-relaxed">
+              <h4 class="font-bold text-lg text-white mb-1" data-i18n="faq_card_title">অন্য কোনো প্রশ্ন আছে?</h4>
+              <p class="text-xs sm:text-sm text-emerald-100/80 leading-relaxed" data-i18n="faq_card_desc">
                 আমাদের বিশেষজ্ঞ টিম আপনার মাদ্রাসার প্রয়োজন অনুযায়ী বিনামূল্যে লাইভ ডেমো ও সঠিক দিকনির্দেশনা দিতে সর্বদা প্রস্তুত।
               </p>
             </div>
             <div class="space-y-2.5 pt-1">
               <a href="https://wa.me/8801884636312" target="_blank" class="w-full h-11 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold rounded-lg text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition">
-                <i class="fa-brands fa-whatsapp text-lg"></i> হোয়াটসঅ্যাপে সরাসরি চ্যাট করুন
+                <i class="fa-brands fa-whatsapp text-lg"></i> <span data-i18n="faq_card_wa">হোয়াটসঅ্যাপে সরাসরি চ্যাট করুন</span>
               </a>
               <a href="tel:+8801884636312" class="w-full h-11 bg-white/10 hover:bg-white/20 text-white font-bold rounded-lg text-xs sm:text-sm flex items-center justify-center gap-2 border border-emerald-500/40 transition">
-                <i class="fa-solid fa-phone text-gold-400"></i> হেল্পলাইনে কল করুন
+                <i class="fa-solid fa-phone text-gold-400"></i> <span data-i18n="faq_card_call">হেল্পলাইনে কল করুন</span>
               </a>
             </div>
           </div>
@@ -1201,66 +1195,66 @@
           <!-- প্রশ্ন ১ -->
           <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm hover:border-emerald-300 transition-all">
             <button onclick="toggleFaq('faq1')" class="w-full p-4 sm:p-5 text-left font-bold text-sm sm:text-base text-slate-800 flex justify-between items-center hover:bg-slate-50 transition">
-              <span>১. মাদ্রাসার তথ্য কি সম্পূর্ণ নিরাপদ থাকবে? ব্যাকআপ কীভাবে পাবো?</span>
+              <span data-i18n="faq_q1">১. মাদ্রাসার তথ্য কি সম্পূর্ণ নিরাপদ থাকবে? ব্যাকআপ কীভাবে পাবো?</span>
               <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition" id="faq1-icon"></i>
             </button>
             <div id="faq1" class="hidden p-4 sm:p-5 pt-0 text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/40">
-              জি, শতভাগ নিরাপদ। আমাদের সার্ভার ২৫৬-বিট এনক্রিপ্টেড এবং প্রতিদিন স্বয়ংক্রিয় ব্যাকআপ তৈরি হয়। এছাড়াও অ্যাডমিন ড্যাশবোর্ড থেকে ১ ক্লিকে যেকোনো সময় আপনার কম্পিউটারে সম্পূর্ণ ডাটাবেজ ব্যাকআপ ফাইল ডাউনলোড করে অফলাইনে সুরক্ষিত রাখতে পারবেন।
+              <span data-i18n="faq_a1">জি, শতভাগ নিরাপদ। আমাদের সার্ভার ২৫৬-বিট এনক্রিপ্টেড এবং প্রতিদিন স্বয়ংক্রিয় ব্যাকআপ তৈরি হয়। এছাড়াও অ্যাডমিন ড্যাশবোর্ড থেকে ১ ক্লিকে যেকোনো সময় আপনার কম্পিউটারে সম্পূর্ণ ডাটাবেজ ব্যাকআপ ফাইল ডাউনলোড করে অফলাইনে সুরক্ষিত রাখতে পারবেন।</span>
             </div>
           </div>
 
           <!-- প্রশ্ন ২ -->
           <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm hover:border-emerald-300 transition-all">
             <button onclick="toggleFaq('faq2')" class="w-full p-4 sm:p-5 text-left font-bold text-sm sm:text-base text-slate-800 flex justify-between items-center hover:bg-slate-50 transition">
-              <span>২. বিদ্যুৎ বা ইন্টারনেট সাময়িক না থাকলে কি সফটওয়্যার চলবে?</span>
+              <span data-i18n="faq_q2">২. বিদ্যুৎ বা ইন্টারনেট সাময়িক না থাকলে কি সফটওয়্যার চলবে?</span>
               <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition" id="faq2-icon"></i>
             </button>
             <div id="faq2" class="hidden p-4 sm:p-5 pt-0 text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/40">
-              আমাদের সফটওয়্যারটি লোকাল অফলাইন নেটওয়ার্কেও স্থাপন করা যায়। এছাড়া মোবাইল ব্রাউজারে বা অ্যাপে অফলাইন ক্যাশিং প্রযুক্তি সক্রিয় থাকে, ফলে নেট সাময়িক বন্ধ থাকলেও আগের তথ্য অনায়াসে দেখা যায় এবং ইন্টারনেট সংযোগ এলে স্বয়ংক্রিয়ভাবে ক্লাউডে সিঙ্ক হয়ে যায়।
+              <span data-i18n="faq_a2">আমাদের সফটওয়্যারটি লোকাল অফলাইন নেটওয়ার্কেও স্থাপন করা যায়। এছাড়া মোবাইল ব্রাউজারে বা অ্যাপে অফলাইন ক্যাশিং প্রযুক্তি সক্রিয় থাকে, ফলে নেট সাময়িক বন্ধ থাকলেও আগের তথ্য অনায়াসে দেখা যায় এবং ইন্টারনেট সংযোগ এলে স্বয়ংক্রিয়ভাবে ক্লাউডে সিঙ্ক হয়ে যায়।</span>
             </div>
           </div>
 
           <!-- প্রশ্ন ৩ -->
           <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm hover:border-emerald-300 transition-all">
             <button onclick="toggleFaq('faq3')" class="w-full p-4 sm:p-5 text-left font-bold text-sm sm:text-base text-slate-800 flex justify-between items-center hover:bg-slate-50 transition">
-              <span>৩. হিফজখানার দৈনিক পড়া কি অভিভাবকরা দেখতে পারবেন?</span>
+              <span data-i18n="faq_q3">৩. হিফজখানার দৈনিক পড়া কি অভিভাবকরা দেখতে পারবেন?</span>
               <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition" id="faq3-icon"></i>
             </button>
             <div id="faq3" class="hidden p-4 sm:p-5 pt-0 text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/40">
-              অবশ্যই। প্রতিদিনের সবক, সাত সবক ও আমোখতা এন্ট্রি নেওয়ার সাথে সাথেই অভিভাবকের কাছে স্বয়ংক্রিয় বাংলা এসএমএস অথবা অভিভাবক পোর্টালে দৈনিক অগ্রগতি ও উস্তাদের মন্তব্য পৌঁছে যায়।
+              <span data-i18n="faq_a3">অবশ্যই। প্রতিদিনের সবক, সাত সবক ও আমোখতা এন্ট্রি নেওয়ার সাথে সাথেই অভিভাবকের কাছে স্বয়ংক্রিয় বাংলা এসএমএস অথবা অভিভাবক পোর্টালে দৈনিক অগ্রগতি ও উস্তাদের মন্তব্য পৌঁছে যায়।</span>
             </div>
           </div>
 
           <!-- প্রশ্ন ৪ -->
           <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm hover:border-emerald-300 transition-all">
             <button onclick="toggleFaq('faq4')" class="w-full p-4 sm:p-5 text-left font-bold text-sm sm:text-base text-slate-800 flex justify-between items-center hover:bg-slate-50 transition">
-              <span>৪. লিল্লাহ বোর্ডিং ও মেসের কাঁচা বাজার কীভাবে সমন্বয় হয়?</span>
+              <span data-i18n="faq_q4">৪. লিল্লাহ বোর্ডিং ও মেসের কাঁচা বাজার কীভাবে সমন্বয় হয়?</span>
               <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition" id="faq4-icon"></i>
             </button>
             <div id="faq4" class="hidden p-4 sm:p-5 pt-0 text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/40">
-              বাবুর্চি বা বাজার কমিটির দৈনিক কেনাকাটার হিসাব সফটওয়্যারে তোলার সাথে সাথে ক্যাশ খাতার ব্যয় ভাউচারে সমন্বয় হয় এবং স্বয়ংক্রিয়ভাবে ছাত্র ও শিক্ষকদের খাবারের মিল রেট তৈরি হয়।
+              <span data-i18n="faq_a4">বাবুর্চি বা বাজার কমিটির দৈনিক কেনাকাটার হিসাব সফটওয়্যারে তোলার সাথে সাথে ক্যাশ খাতার ব্যয় ভাউচারে সমন্বয় হয় এবং স্বয়ংক্রিয়ভাবে ছাত্র ও শিক্ষকদের খাবারের মিল রেট তৈরি হয়।</span>
             </div>
           </div>
 
           <!-- প্রশ্ন ৫ -->
           <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm hover:border-emerald-300 transition-all">
             <button onclick="toggleFaq('faq5')" class="w-full p-4 sm:p-5 text-left font-bold text-sm sm:text-base text-slate-800 flex justify-between items-center hover:bg-slate-50 transition">
-              <span>৫. ভর্তি ফরম ও এডমিট কার্ড কি মাদ্রাসার নিজস্ব সিল ও প্যাডসহ প্রিন্ট হবে?</span>
+              <span data-i18n="faq_q5">৫. ভর্তি ফরম ও এডমিট কার্ড কি মাদ্রাসার নিজস্ব সিল ও প্যাডসহ প্রিন্ট হবে?</span>
               <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition" id="faq5-icon"></i>
             </button>
             <div id="faq5" class="hidden p-4 sm:p-5 pt-0 text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/40">
-              হ্যাঁ, আপনার মাদ্রাসার নাম, মনোগ্রাম, অফিসিয়াল সিল ও মুহতামিমের স্বাক্ষর সংযুক্ত করে রেডিমেড ১২টি ভিন্ন প্রবেশপত্র, ৩ কপি কার্বনলেস রসিদ ও চারিত্রিক প্রশংসাপত্র যেকোনো কালার প্রিন্টারে সরাসরি প্রিন্ট করা যায়।
+              <span data-i18n="faq_a5">হ্যাঁ, আপনার মাদ্রাসার নাম, মনোগ্রাম, অফিসিয়াল সিল ও মুহতামিমের স্বাক্ষর সংযুক্ত করে রেডিমেড ১২টি ভিন্ন প্রবেশপত্র, ৩ কপি কার্বনলেস রসিদ ও চারিত্রিক প্রশংসাপত্র যেকোনো কালার প্রিন্টারে সরাসরি প্রিন্ট করা যায়।</span>
             </div>
           </div>
 
           <!-- প্রশ্ন ৬ -->
           <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm hover:border-emerald-300 transition-all">
             <button onclick="toggleFaq('faq6')" class="w-full p-4 sm:p-5 text-left font-bold text-sm sm:text-base text-slate-800 flex justify-between items-center hover:bg-slate-50 transition">
-              <span>৬. সফটওয়্যার ব্যবহারে আমাদের শিক্ষক ও স্টাফদের কি প্রশিক্ষণ দেওয়া হবে?</span>
+              <span data-i18n="faq_q6">৬. সফটওয়্যার ব্যবহারে আমাদের শিক্ষক ও স্টাফদের কি প্রশিক্ষণ দেওয়া হবে?</span>
               <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition" id="faq6-icon"></i>
             </button>
             <div id="faq6" class="hidden p-4 sm:p-5 pt-0 text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/40">
-              জি, সফটওয়্যার ইনস্টলেশনের পর আমাদের এক্সপার্ট টিম মাদ্রাসার হিসাবরক্ষক ও শিক্ষকদের সম্পূর্ণ বিনামূল্যে বিস্তারিত ভিডিও টিউটোরিয়াল এবং এনিডেস্ক/গুগল মিটের মাধ্যমে হাতে-কলমে প্রশিক্ষণ প্রদান করে।
+              <span data-i18n="faq_a6">জি, সফটওয়্যার ইনস্টলেশনের পর আমাদের এক্সপার্ট টিম মাদ্রাসার হিসাবরক্ষক ও শিক্ষকদের সম্পূর্ণ বিনামূল্যে বিস্তারিত ভিডিও টিউটোরিয়াল এবং এনিডেস্ক/গুগল মিটের মাধ্যমে হাতে-কলমে প্রশিক্ষণ প্রদান করে।</span>
             </div>
           </div>
         </div>
@@ -1271,13 +1265,13 @@
     <!-- ১০. আমাদের সম্মানিত গ্রাহক ও মাদ্রাসাসমূহ সেকশন -->
     <section id="clients-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 border-t border-slate-200">
       <div class="text-center max-w-2xl mx-auto mb-10">
-        <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300" data-i18n="clients_badge">
           ৭৫০+ শিক্ষা প্রতিষ্ঠানের আস্থা
         </span>
-        <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mt-3 tracking-tight">
+        <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mt-3 tracking-tight" data-i18n="clients_title">
           দেশজুড়ে শীর্ষ মাদ্রাসাসমূহ পরিচালিত হচ্ছে হেদায়েত টেক-এ
         </h3>
-        <p class="text-base text-slate-600 mt-2 leading-relaxed">
+        <p class="text-base text-slate-600 mt-2 leading-relaxed" data-i18n="clients_subtitle">
           কওমি, আলিয়া ও হিফজখানা পরিচালনায় ৬৪ জেলার নির্ভরযোগ্য ইসলামিক ইআরপি
         </p>
       </div>
@@ -1294,22 +1288,22 @@
                     <i class="fa-solid fa-mosque"></i>
                   </div>
                   <div>
-                    <h4 class="font-heading font-bold text-base text-slate-900 group-hover:text-emerald-800 transition-colors">মক্কাতুল মুকাররমা মাদ্রাসা</h4>
-                    <p class="text-xs text-slate-500">খাজার রোড, চান্দগাঁও, চট্টগ্রাম</p>
+                    <h4 class="font-heading font-bold text-base text-slate-900 group-hover:text-emerald-800 transition-colors" data-i18n="review1_name">মক্কাতুল মুকাররমা মাদ্রাসা</h4>
+                    <p class="text-xs text-slate-500" data-i18n="review1_address">খাজার রোড, চান্দগাঁও, চট্টগ্রাম</p>
                   </div>
                 </div>
               </div>
 
               <div class="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 mb-3">
                 <i class="fa-solid fa-circle-check text-emerald-600"></i>
-                <span>ভেরিফাইড প্রতিষ্ঠান • ১২০০+ শিক্ষার্থী</span>
+                <span data-i18n="review1_badge">ভেরিফাইড প্রতিষ্ঠান • ১২০০+ শিক্ষার্থী</span>
               </div>
 
               <!-- টেস্টোমেনিয়াল টেক্সট বক্স (কোনো আঁকাবাঁকা বা ডিসটর্টেড ইটালিক ছাড়া সুবিন্যস্ত হরফ) -->
               <div class="relative bg-slate-50/80 rounded-2xl p-4 border border-slate-100 text-xs sm:text-[13px] text-slate-700 leading-relaxed">
                 <i class="fa-solid fa-quote-left text-emerald-400/40 text-base mb-1 block"></i>
                 <p>
-                  "হিফজখানার দৈনিক সবক ট্র্যাকিং এবং ফি কালেকশনে খাতা-কলমের ঝামেলা চিরতরে দূর হয়েছে। প্রতি মাসের স্বয়ংক্রিয় হিসাব এখন এক ক্লিকেই পাচ্ছি।"
+                  <span data-i18n="review1_quote">"হিফজখানার দৈনিক সবক ট্র্যাকিং এবং ফি কালেকশনে খাতা-কলমের ঝামেলা চিরতরে দূর হয়েছে। প্রতি মাসের স্বয়ংক্রিয় হিসাব এখন এক ক্লিকেই পাচ্ছি।"</span>
                 </p>
               </div>
             </div>
@@ -1323,7 +1317,7 @@
                 <i class="fa-solid fa-star"></i>
                 <span class="text-slate-800 font-extrabold ml-1">৫.০/৫</span>
               </div>
-              <span class="text-slate-600 font-semibold text-[11px]">মুহতামিম মুফতি আব্দুর রহিম</span>
+              <span class="text-slate-600 font-semibold text-[11px]" data-i18n="review1_author">মুহতামিম মুফতি আব্দুর রহিম</span>
             </div>
           </div>
         </div>
@@ -1339,22 +1333,22 @@
                     <i class="fa-solid fa-quran"></i>
                   </div>
                   <div>
-                    <h4 class="font-heading font-bold text-base text-slate-900 group-hover:text-amber-800 transition-colors">সানাউল্লাহ মুন্সিবাড়ি মাদ্রাসা</h4>
-                    <p class="text-xs text-slate-500">সাতকানিয়া, চট্টগ্রাম</p>
+                    <h4 class="font-heading font-bold text-base text-slate-900 group-hover:text-amber-800 transition-colors" data-i18n="review2_name">সানাউল্লাহ মুন্সিবাড়ি মাদ্রাসা</h4>
+                    <p class="text-xs text-slate-500" data-i18n="review2_address">সাতকানিয়া, চট্টগ্রাম</p>
                   </div>
                 </div>
               </div>
 
               <div class="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200/80 mb-3">
                 <i class="fa-solid fa-shield-halved text-amber-600"></i>
-                <span>প্রিমিয়াম ক্লায়েন্ট • ৬৫০+ শিক্ষার্থী</span>
+                <span data-i18n="review2_badge">প্রিমিয়াম ক্লায়েন্ট • ৬৫০+ শিক্ষার্থী</span>
               </div>
 
               <!-- টেস্টোমেনিয়াল টেক্সট বক্স -->
               <div class="relative bg-slate-50/80 rounded-2xl p-4 border border-slate-100 text-xs sm:text-[13px] text-slate-700 leading-relaxed">
                 <i class="fa-solid fa-quote-left text-amber-400/50 text-base mb-1 block"></i>
                 <p>
-                  "অভিভাবকদের মোবাইলে স্বয়ংক্রিয় এসএমএস এবং অনলাইন থেকে পরীক্ষার পূর্ণাঙ্গ ফলাফল দেখার সুবিধাটি আমাদের মাদ্রাসার সুনাম বহুগুণ বাড়িয়ে দিয়েছে।"
+                  <span data-i18n="review2_quote">"অভিভাবকদের মোবাইলে স্বয়ংক্রিয় এসএমএস এবং অনলাইন থেকে পরীক্ষার পূর্ণাঙ্গ ফলাফল দেখার সুবিধাটি আমাদের মাদ্রাসার সুনাম বহুগুণ বাড়িয়ে দিয়েছে।"</span>
                 </p>
               </div>
             </div>
@@ -1368,7 +1362,7 @@
                 <i class="fa-solid fa-star"></i>
                 <span class="text-slate-800 font-extrabold ml-1">৫.০/৫</span>
               </div>
-              <span class="text-slate-600 font-semibold text-[11px]">হাফেজ মাওলানা জহিরুল ইসলাম</span>
+              <span class="text-slate-600 font-semibold text-[11px]" data-i18n="review2_author">হাফেজ মাওলানা জহিরুল ইসলাম</span>
             </div>
           </div>
         </div>
@@ -1384,22 +1378,22 @@
                     <i class="fa-solid fa-graduation-cap"></i>
                   </div>
                   <div>
-                    <h4 class="font-heading font-bold text-base text-slate-900 group-hover:text-teal-800 transition-colors">দারুচ্ছালাম আলিয়া কামিল মাদরাসা</h4>
-                    <p class="text-xs text-slate-500">বরিশাল সদর</p>
+                    <h4 class="font-heading font-bold text-base text-slate-900 group-hover:text-teal-800 transition-colors" data-i18n="review3_name">দারুচ্ছালাম আলিয়া কামিল মাদরাসা</h4>
+                    <p class="text-xs text-slate-500" data-i18n="review3_address">বরিশাল সদর</p>
                   </div>
                 </div>
               </div>
 
               <div class="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200/80 mb-3">
                 <i class="fa-solid fa-award text-teal-600"></i>
-                <span>শীর্ষ কামিল প্রতিষ্ঠান • ৮৫০+ শিক্ষার্থী</span>
+                <span data-i18n="review3_badge">শীর্ষ কামিল প্রতিষ্ঠান • ৮৫০+ শিক্ষার্থী</span>
               </div>
 
               <!-- টেস্টোমেনিয়াল টেক্সট বক্স -->
               <div class="relative bg-slate-50/80 rounded-2xl p-4 border border-slate-100 text-xs sm:text-[13px] text-slate-700 leading-relaxed">
                 <i class="fa-solid fa-quote-left text-teal-400/50 text-base mb-1 block"></i>
                 <p>
-                  "লিল্লাহ বোর্ডিং ও মেসের দৈনিক বাজার খরচের পর স্বয়ংক্রিয় মিল রেট ক্যালকুলেশন এবং শিক্ষকদের বেতন ভাউচার ফিচারটি এককথায় অসাধারণ।"
+                  <span data-i18n="review3_quote">"লিল্লাহ বোর্ডিং ও মেসের দৈনিক বাজার খরচের পর স্বয়ংক্রিয় মিল রেট ক্যালকুলেশন এবং শিক্ষকদের বেতন ভাউচার ফিচারটি এককথায় অসাধারণ।"</span>
                 </p>
               </div>
             </div>
@@ -1413,7 +1407,7 @@
                 <i class="fa-solid fa-star"></i>
                 <span class="text-slate-800 font-extrabold ml-1">৫.০/৫</span>
               </div>
-              <span class="text-slate-600 font-semibold text-[11px]">অধ্যক্ষ ড. মো: নুরুল ইসলাম</span>
+              <span class="text-slate-600 font-semibold text-[11px]" data-i18n="review3_author">অধ্যক্ষ ড. মো: নুরুল ইসলাম</span>
             </div>
           </div>
         </div>
@@ -1428,12 +1422,12 @@
         <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold border border-emerald-300 shadow-2xs mb-3">
             <i class="fa-solid fa-headset text-emerald-700"></i>
-            <span>সরাসরি যোগাযোগ ও সহায়তা</span>
+            <span data-i18n="contact_sec_badge">সরাসরি যোগাযোগ ও সহায়তা</span>
           </div>
-          <h2 class="font-bold text-2xl md:text-3xl text-slate-900 tracking-tight mb-3">
+          <h2 class="font-bold text-2xl md:text-3xl text-slate-900 tracking-tight mb-3" data-i18n="contact_sec_title">
             যেকোনো পরামর্শ, ডেমো বা সফটওয়্যারের তথ্যের জন্য যোগাযোগ করুন
           </h2>
-          <p class="text-base text-slate-600 leading-relaxed">
+          <p class="text-base text-slate-600 leading-relaxed" data-i18n="contact_sec_subtitle">
             মাদ্রাসা পরিচালনা সহজ ও স্বয়ংক্রিয় করতে Hedayet Tech টিম আপনার পাশে আছে সার্বক্ষণিক।
           </p>
         </div>
@@ -1445,10 +1439,10 @@
             <div>
               <!-- কার্ড হেডার (ডানপাশের সাথে হুবহু সমান উচ্চতা ও মার্জিন) -->
               <div class="mb-5">
-                <h3 class="font-bold text-lg sm:text-xl text-slate-900 mb-1">
+                <h3 class="font-bold text-lg sm:text-xl text-slate-900 mb-1" data-i18n="contact_details_title">
                   সরাসরি যোগাযোগের বিবরণ
                 </h3>
-                <p class="text-xs text-slate-500">
+                <p class="text-xs text-slate-500" data-i18n="contact_details_sub">
                   সরাসরি কল, হোয়াটসঅ্যাপ বা ইমেইলে আমাদের প্রতিনিধির সাথে কথা বলুন
                 </p>
               </div>
@@ -1456,7 +1450,7 @@
               <!-- ইনফো ও নোটিশ ব্যাজ (ডানপাশের সিকিউরিটি ব্যাজের সাথে সমান্তরাল) -->
               <div class="bg-emerald-50 text-emerald-950 border border-emerald-200 rounded-xl p-3 text-xs mb-5 flex items-center gap-2 font-medium">
                 <i class="fa-solid fa-headset text-emerald-700 text-sm flex-shrink-0"></i>
-                <span>তাত্ক্ষণিক সহায়তা — রবি থেকে বৃহস্পতিবার সকাল ৯টা থেকে রাত ১০টা পর্যন্ত খোলা।</span>
+                <span data-i18n="contact_hours_note">তাত্ক্ষণিক সহায়তা — রবি থেকে বৃহস্পতিবার সকাল ৯টা থেকে রাত ১০টা পর্যন্ত খোলা।</span>
               </div>
 
               <!-- ৪টি যোগাযোগ চ্যানেল -->
@@ -1468,7 +1462,7 @@
                     <i class="fa-solid fa-phone"></i>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <span class="text-[11px] font-semibold text-slate-500 block mb-0.5">সরাসরি কল (সকাল ৯টা - রাত ১০টা)</span>
+                    <span class="text-[11px] font-semibold text-slate-500 block mb-0.5" data-i18n="contact_chan_call">সরাসরি কল (সকাল ৯টা - রাত ১০টা)</span>
                     <span class="font-mono font-bold text-slate-900 text-sm sm:text-base group-hover:text-emerald-700 transition block">+880 1884-636312</span>
                   </div>
                   <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-emerald-600 transition"></i>
@@ -1480,7 +1474,7 @@
                     <i class="fa-brands fa-whatsapp"></i>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <span class="text-[11px] font-semibold text-slate-500 block mb-0.5">অফিসিয়াল হোয়াটসঅ্যাপ সাপোর্ট</span>
+                    <span class="text-[11px] font-semibold text-slate-500 block mb-0.5" data-i18n="contact_chan_wa">অফিসিয়াল হোয়াটসঅ্যাপ সাপোর্ট</span>
                     <span class="font-mono font-bold text-slate-900 text-sm sm:text-base group-hover:text-emerald-700 transition block">+880 1884-636312</span>
                   </div>
                   <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-emerald-600 transition"></i>
@@ -1492,7 +1486,7 @@
                     <i class="fa-solid fa-envelope"></i>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <span class="text-[11px] font-semibold text-slate-500 block mb-0.5">কোটেশন ও সাধারণ তথ্য</span>
+                    <span class="text-[11px] font-semibold text-slate-500 block mb-0.5" data-i18n="contact_chan_email">কোটেশন ও সাধারণ তথ্য</span>
                     <span class="font-mono font-bold text-slate-900 text-sm group-hover:text-indigo-700 transition block truncate">hello@hedayettech.com</span>
                   </div>
                   <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-indigo-600 transition"></i>
@@ -1504,8 +1498,8 @@
                     <i class="fa-solid fa-location-dot"></i>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <span class="text-[11px] font-semibold text-slate-500 block mb-0.5">টেক সেন্টার ও হেড অফিস</span>
-                    <p class="font-bold text-slate-800 text-xs leading-relaxed">লেভেল-৪, তিতাস টুইন টাওয়ার, খাজার রোড, চান্দগাঁও, চট্টগ্রাম, বাংলাদেশ</p>
+                    <span class="text-[11px] font-semibold text-slate-500 block mb-0.5" data-i18n="contact_chan_addr">টেক সেন্টার ও হেড অফিস</span>
+                    <p class="font-bold text-slate-800 text-xs leading-relaxed" data-i18n="contact_addr_val">লেভেল-৪, তিতাস টুইন টাওয়ার, খাজার রোড, চান্দগাঁও, চট্টগ্রাম, বাংলাদেশ</p>
                   </div>
                 </div>
 
@@ -1515,9 +1509,9 @@
             <!-- বটম অনলাইন স্ট্যাটাস বার (নিখুঁত বটম এলাইনমেন্ট) -->
             <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
               <span class="inline-flex items-center gap-1.5 text-emerald-700 font-bold">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> সাপোর্ট টিম সক্রিয়
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <span data-i18n="contact_status_online">সাপোর্ট টিম সক্রিয়</span>
               </span>
-              <span class="font-medium text-slate-500">গড় রেসপন্স টাইম: ৫ মিনিট</span>
+              <span class="font-medium text-slate-500" data-i18n="contact_response_time">গড় রেসপন্স টাইম: ৫ মিনিট</span>
             </div>
           </div>
 
@@ -1526,10 +1520,10 @@
             <div>
               <!-- কার্ড হেডার (বামপাশের সাথে হুবহু সমান উচ্চতা ও মার্জিন) -->
               <div class="mb-5">
-                <h3 class="font-bold text-lg sm:text-xl text-slate-900 mb-1">
+                <h3 class="font-bold text-lg sm:text-xl text-slate-900 mb-1" data-i18n="contact_form_title">
                   আমাদের কাছে আপনার বার্তা পাঠান
                 </h3>
-                <p class="text-xs text-slate-500">
+                <p class="text-xs text-slate-500" data-i18n="contact_form_sub">
                   যেকোনো প্রশ্ন, কাস্টমাইজেশন বা ডেমোর জন্য নিচের তথ্য পূরণ করে পাঠান
                 </p>
               </div>
@@ -1537,7 +1531,7 @@
               <!-- প্রাইভেসি সিকিউরিটি নোটিশ (বামপাশের ব্যানারটির সাথে সমান্তরাল) -->
               <div class="bg-emerald-50 text-emerald-950 border border-emerald-200 rounded-xl p-3 text-xs mb-5 flex items-center gap-2 font-medium">
                 <i class="fa-solid fa-shield-halved text-emerald-700 text-sm flex-shrink-0"></i>
-                <span>এনক্রিপ্টেড ও সম্পূর্ণ সুরক্ষিত বার্তা প্রেরণ — আপনার জিজ্ঞাসা সরাসরি ম্যানেজমেন্টের কাছে পৌঁছাবে।</span>
+                <span data-i18n="contact_privacy_note">এনক্রিপ্টেড ও সম্পূর্ণ সুরক্ষিত বার্তা প্রেরণ — আপনার জিজ্ঞাসা সরাসরি ম্যানেজমেন্টের কাছে পৌঁছাবে।</span>
               </div>
 
               <!-- অ্যালার্ট মেসেজ ব্যানার -->
@@ -1548,21 +1542,21 @@
 
               <form id="publicContactForm" onsubmit="handleContactSubmit(event)" class="space-y-4 text-xs">
                 <div>
-                  <label class="font-bold text-slate-700 block mb-1">আপনার নাম <span class="text-rose-600 font-extrabold">*</span></label>
-                  <input type="text" id="contactMsgName" required maxlength="100" placeholder="যেমন: মাও. আব্দুস সালাম..." class="w-full h-11 border border-slate-200 rounded-lg px-3.5 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
+                  <label class="font-bold text-slate-700 block mb-1"><span data-i18n="contact_lbl_name">আপনার নাম</span> <span class="text-rose-600 font-extrabold">*</span></label>
+                  <input type="text" id="contactMsgName" required maxlength="100" data-i18n-placeholder="contact_ph_name" placeholder="যেমন: মাও. আব্দুস সালাম..." class="w-full h-11 border border-slate-200 rounded-lg px-3.5 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
                     <div class="flex items-center justify-between mb-1">
-                      <label class="font-bold text-slate-700 block">মোবাইল নম্বর <span class="text-rose-600 font-extrabold">*</span></label>
+                      <label class="font-bold text-slate-700 block"><span data-i18n="contact_lbl_phone">মোবাইল নম্বর</span> <span class="text-rose-600 font-extrabold">*</span></label>
                       <span id="contactPhoneCounter" class="text-[10px] font-mono text-slate-500 font-semibold bg-slate-100 px-1.5 py-0.5 rounded-full">০/১১</span>
                     </div>
                     <input type="tel" id="contactMsgPhone" required maxlength="11" placeholder="018XXXXXXXX" class="w-full h-11 border border-slate-200 rounded-lg px-3.5 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
                   </div>
                   <div>
                     <div class="flex items-center justify-between mb-1">
-                      <label class="font-bold text-slate-700 block">আপনার ইমেইল <span class="text-rose-600 font-extrabold">*</span></label>
+                      <label class="font-bold text-slate-700 block"><span data-i18n="contact_lbl_email">আপনার ইমেইল</span> <span class="text-rose-600 font-extrabold">*</span></label>
                       <span id="contactEmailStatus" class="text-[10px] text-slate-400 font-medium">@gmail.com</span>
                     </div>
                     <input type="email" id="contactMsgEmail" required placeholder="example@gmail.com" class="w-full h-11 border border-slate-200 rounded-lg px-3.5 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
@@ -1570,18 +1564,18 @@
                 </div>
 
                 <div>
-                  <label class="font-bold text-slate-700 block mb-1">প্রতিষ্ঠানের নাম</label>
-                  <input type="text" id="contactMsgInst" maxlength="150" placeholder="মাদ্রাসা বা স্কুলের নাম..." class="w-full h-11 border border-slate-200 rounded-lg px-3.5 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
+                  <label class="font-bold text-slate-700 block mb-1" data-i18n="contact_lbl_inst">প্রতিষ্ঠানের নাম</label>
+                  <input type="text" id="contactMsgInst" maxlength="150" data-i18n-placeholder="contact_ph_inst" placeholder="মাদ্রাসা বা স্কুলের নাম..." class="w-full h-11 border border-slate-200 rounded-lg px-3.5 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
                 </div>
 
                 <div>
-                  <label class="font-bold text-slate-700 block mb-1">আপনার বার্তা / জিজ্ঞাসা <span class="text-rose-600 font-extrabold">*</span></label>
-                  <textarea id="contactMsgText" required rows="3" minlength="3" maxlength="1500" placeholder="সফটওয়্যার সম্পর্কে বিস্তারিত জানতে চাই..." class="w-full border border-slate-200 rounded-lg p-3 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition"></textarea>
+                  <label class="font-bold text-slate-700 block mb-1"><span data-i18n="contact_lbl_msg">আপনার বার্তা / জিজ্ঞাসা</span> <span class="text-rose-600 font-extrabold">*</span></label>
+                  <textarea id="contactMsgText" required rows="3" minlength="3" maxlength="1500" data-i18n-placeholder="contact_ph_msg" placeholder="সফটওয়্যার সম্পর্কে বিস্তারিত জানতে চাই..." class="w-full border border-slate-200 rounded-lg p-3 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition"></textarea>
                 </div>
 
                 <button type="submit" id="contactSubmitBtn" class="w-full h-11 bg-[#165333] hover:bg-[#114027] text-white font-bold rounded-lg shadow-sm hover:shadow transition text-sm flex items-center justify-center gap-2 cursor-pointer">
                   <i class="fa-solid fa-paper-plane"></i>
-                  <span id="contactSubmitBtnText">বার্তা পাঠান</span>
+                  <span id="contactSubmitBtnText" data-i18n="contact_btn_send">বার্তা পাঠান</span>
                 </button>
               </form>
             </div>
@@ -1606,7 +1600,7 @@
                 <p class="text-[11px] text-emerald-300">অ্যাপ্লিকেশন ম্যানেজমেন্ট সফটওয়্যার</p>
               </div>
             </div>
-            <p class="text-xs text-emerald-100/80 leading-relaxed">
+            <p class="text-xs text-emerald-100/80 leading-relaxed" data-i18n="footer_desc">
               মাদ্রাসা, স্কুল ও ক্যাডেট একাডেমির সর্বাধুনিক ক্লাউড ও লোকাল সফটওয়্যার সমাধান। খাতা-কলম মুক্ত পূর্ণাঙ্গ স্মার্ট ডিজিটাল ক্যাম্পাসের নিশ্চয়তা।
             </p>
             <div class="flex items-center gap-3 pt-1">
@@ -1624,31 +1618,31 @@
 
           <!-- কলাম ২: কুইক লিংকস -->
           <div>
-            <h4 class="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-4">কুইক লিংকস</h4>
+            <h4 class="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-4" data-i18n="footer_quick_links">কুইক লিংকস</h4>
             <ul class="space-y-2.5 text-xs text-emerald-100/80">
-              <li><button onclick="openModal('onlineAdmissionModal')" class="hover:text-gold-400 transition text-left">🎓 অনলাইন ভর্তি আবেদন</button></li>
-              <li><button onclick="openModal('onlineResultModal')" class="hover:text-gold-400 transition text-left">📊 অনলাইন ফলাফল যাচাই</button></li>
-              <li><button onclick="openModal('onlineDonationModal')" class="hover:text-gold-400 transition text-left">🤝 দান ও যাকাত ফান্ড</button></li>
-              <li><button onclick="openModal('quickPaymentModal')" class="hover:text-gold-400 transition text-left">💳 দ্রুত ফি পেমেন্ট গেটওয়ে</button></li>
-              <li><button onclick="openModal('bookDemoModal')" class="hover:text-gold-400 transition text-left">🖥️ লাইভ ডেমো বুকিং</button></li>
+              <li><button onclick="openModal('onlineAdmissionModal')" class="hover:text-gold-400 transition text-left" data-i18n="footer_link_adm">🎓 অনলাইন ভর্তি আবেদন</button></li>
+              <li><button onclick="openModal('onlineResultModal')" class="hover:text-gold-400 transition text-left" data-i18n="footer_link_res">📊 অনলাইন ফলাফল যাচাই</button></li>
+              <li><button onclick="openModal('onlineDonationModal')" class="hover:text-gold-400 transition text-left" data-i18n="footer_link_don">🤝 দান ও যাকাত ফান্ড</button></li>
+              <li><button onclick="openModal('quickPaymentModal')" class="hover:text-gold-400 transition text-left" data-i18n="footer_link_pay">💳 দ্রুত ফি পেমেন্ট গেটওয়ে</button></li>
+              <li><button onclick="openModal('bookDemoModal')" class="hover:text-gold-400 transition text-left" data-i18n="footer_link_demo">🖥️ লাইভ ডেমো বুকিং</button></li>
             </ul>
           </div>
 
           <!-- কলাম ৩: সফটওয়্যার ফিচারসমূহ -->
           <div>
-            <h4 class="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-4">সফটওয়্যার ফিচার</h4>
+            <h4 class="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-4" data-i18n="footer_features_title">সফটওয়্যার ফিচার</h4>
             <ul class="space-y-2.5 text-xs text-emerald-100/80">
-              <li><a href="#hifz-section" onclick="scrollToSection('hifz-section'); return false;" class="hover:text-gold-400 transition">হিফজখানা ও সবক ট্র্যাকিং</a></li>
-              <li><a href="#exam-section" onclick="scrollToSection('exam-section'); return false;" class="hover:text-gold-400 transition">পরীক্ষা ও রেজাল্ট প্রসেসিং</a></li>
-              <li><a href="#fees-section" onclick="scrollToSection('fees-section'); return false;" class="hover:text-gold-400 transition">ফি কালেকশন ও ভাউচার</a></li>
-              <li><a href="#mess-section" onclick="scrollToSection('mess-section'); return false;" class="hover:text-gold-400 transition">মেস ও বোর্ডিং মিল ক্যালকুলেশন</a></li>
-              <li><a href="#about-section" onclick="scrollToSection('about-section'); return false;" class="hover:text-gold-400 transition">ডিজিটাল আইডি ও এডমিট কার্ড</a></li>
+              <li><a href="#hifz-section" onclick="scrollToSection('hifz-section'); return false;" class="hover:text-gold-400 transition" data-i18n="footer_feat_hifz">হিফজখানা ও সবক ট্র্যাকিং</a></li>
+              <li><a href="#exam-section" onclick="scrollToSection('exam-section'); return false;" class="hover:text-gold-400 transition" data-i18n="footer_feat_exam">পরীক্ষা ও রেজাল্ট প্রসেসিং</a></li>
+              <li><a href="#fees-section" onclick="scrollToSection('fees-section'); return false;" class="hover:text-gold-400 transition" data-i18n="footer_feat_fee">ফি কালেকশন ও ভাউচার</a></li>
+              <li><a href="#mess-section" onclick="scrollToSection('mess-section'); return false;" class="hover:text-gold-400 transition" data-i18n="footer_feat_mess">মেস ও বোর্ডিং মিল ক্যালকুলেশন</a></li>
+              <li><a href="#about-section" onclick="scrollToSection('about-section'); return false;" class="hover:text-gold-400 transition" data-i18n="footer_feat_id">ডিজিটাল আইডি ও এডমিট কার্ড</a></li>
             </ul>
           </div>
 
           <!-- কলাম ৪: যোগাযোগ বিবরণ -->
           <div>
-            <h4 class="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-4">যোগাযোগ ও হেল্পডেস্ক</h4>
+            <h4 class="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-4" data-i18n="footer_contact_title">যোগাযোগ ও হেল্পডেস্ক</h4>
             <div class="space-y-3 text-xs text-emerald-100/90">
               <div class="flex items-start gap-2.5">
                 <i class="fa-solid fa-phone text-gold-400 text-xs mt-0.5"></i>
@@ -1664,7 +1658,7 @@
               </div>
               <div class="flex items-start gap-2.5">
                 <i class="fa-solid fa-location-dot text-gold-400 text-xs mt-0.5"></i>
-                <span>খাজার রোড, চান্দগাঁও, চট্টগ্রাম</span>
+                <span data-i18n="footer_addr_short">খাজার রোড, চান্দগাঁও, চট্টগ্রাম</span>
               </div>
             </div>
           </div>
@@ -1673,17 +1667,17 @@
 
         <!-- কপিরাইট ও স্টেলথ অ্যাডমিন লিংক বার -->
         <div class="pt-6 flex flex-wrap items-center justify-between text-xs text-emerald-300/80 gap-3">
-          <div id="stealthHedayetBrand" onclick="handleStealthAdminClick(event)" class="cursor-pointer select-none hover:text-emerald-200 transition font-medium" title="Hedayet Tech Engineering">
+          <div id="stealthHedayetBrand" onclick="handleStealthAdminClick(event)" class="cursor-pointer select-none hover:text-emerald-200 transition font-medium" title="Hedayet Tech Engineering" data-i18n="footer_copyright">
             © ২০২৬ Hedayet Tech. সর্বস্বত্ব সংরক্ষিত।
           </div>
           <div class="flex items-center gap-4 text-emerald-400/80 text-[11px]">
-            <span>গোপনীয়তা নীতি</span>
+            <span data-i18n="footer_privacy">গোপনীয়তা নীতি</span>
             <span>•</span>
-            <span>ব্যবহারের শর্তাবলী</span>
+            <span data-i18n="footer_terms">ব্যবহারের শর্তাবলী</span>
             <span>•</span>
             <span class="inline-flex items-center gap-1 text-emerald-300 font-semibold">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              সিস্টেম সচল
+              <span data-i18n="footer_status">সিস্টেম সচল</span>
             </span>
           </div>
         </div>
@@ -3231,7 +3225,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <div class="flex items-center justify-between mb-1">
-              <label class="font-bold text-slate-700 block">মোবাইল নম্বর <span class="text-rose-600 font-extrabold">*</span></label>
+              <label class="font-bold text-slate-700 block"><span data-i18n="contact_lbl_phone">মোবাইল নম্বর</span> <span class="text-rose-600 font-extrabold">*</span></label>
               <span id="modalContactPhoneCounter" class="text-[10px] font-mono text-slate-500 font-semibold bg-slate-100 px-1.5 py-0.5 rounded-full">০/১১</span>
             </div>
             <input type="tel" id="modalContactPhone" required maxlength="11" placeholder="018XXXXXXXX" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
@@ -4150,7 +4144,7 @@
           </div>
           <div>
             <div class="flex items-center justify-between mb-1">
-              <label class="font-bold text-slate-700 block">মোবাইল নম্বর <span class="text-rose-600 font-extrabold">*</span></label>
+              <label class="font-bold text-slate-700 block"><span data-i18n="contact_lbl_phone">মোবাইল নম্বর</span> <span class="text-rose-600 font-extrabold">*</span></label>
               <span id="admPhoneCounter" class="text-[11px] font-mono text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded-full">০/১১</span>
             </div>
             <div class="relative">

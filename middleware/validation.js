@@ -1,6 +1,6 @@
 const { z } = require('zod');
 
-// ১. ইনপুট স্যানিটাইজার (OWASP A05: Cross-Site Scripting (XSS) প্রতিরোধ)
+// ১. ইনপুট স্যানিটাইজার (OWASP A05: Cross-Site Scripting (XSS) ও Injection প্রতিরোধ)
 function sanitizeString(str) {
   if (typeof str !== 'string') return str;
   return str
@@ -60,7 +60,7 @@ function validateBody(schema) {
   };
 }
 
-// ৩. জড স্কিমাসমূহ
+// ৩. জড স্কিমাসমূহ (OWASP Top 10 Compliant)
 const schemas = {
   // অ্যাডমিন পিন ভেরিফিকেশন
   verifyPin: z.object({
@@ -81,34 +81,27 @@ const schemas = {
       .max(32, 'নতুন পিন কোড সর্বোচ্চ ৩২ অক্ষরের হতে পারবে।')
   }),
 
-  // ভর্তি আবেদন
+  // ভর্তি আবেদন (অনলাইন ফর্ম)
   admissionApply: z.object({
-    name_bn: z.string({ required_error: 'শিক্ষার্থীর নাম বাধ্যতামূলক।' })
-      .trim()
-      .min(2, 'শিক্ষার্থীর নাম কমপক্ষে ২ অক্ষরের হতে হবে।')
-      .max(100, 'নাম সর্বোচ্চ ১০০ অক্ষরের হতে পারবে।'),
-    name_en: z.string().trim().max(100).optional().or(z.literal('')),
-    class_id: z.coerce.number({ required_error: 'শ্রেণি নির্বাচন বাধ্যতামূলক।' })
-      .int()
-      .positive('সঠিক শ্রেণি নির্বাচন করুন।'),
-    gender: z.string().trim().max(20).optional().default('MALE'),
-    birth_date: z.string().trim().max(30).optional().or(z.literal('')),
+    applicant_name: z.string().trim().min(2, 'শিক্ষার্থীর নাম কমপক্ষে ২ অক্ষরের হতে হবে।').max(100).optional(),
+    name_bn: z.string().trim().min(2, 'শিক্ষার্থীর নাম কমপক্ষে ২ অক্ষরের হতে হবে।').max(100).optional(),
+    father_name: z.string().trim().max(100).optional().or(z.literal('')),
     guardian_name: z.string().trim().max(100).optional().or(z.literal('')),
-    guardian_relation: z.string().trim().max(50).optional().default('পিতা'),
     phone: z.string({ required_error: 'যোগাযোগের মোবাইল নম্বর দিন।' })
       .trim()
       .min(6, 'সঠিক মোবাইল নম্বর দিন (কমপক্ষে ৬ সংখ্যা)।')
       .max(20, 'মোবাইল নম্বর সর্বোচ্চ ২০ সংখ্যার হতে পারবে।'),
+    desired_class_id: z.coerce.number().int().positive('সঠিক শ্রেণি নির্বাচন করুন।').optional(),
+    class_id: z.coerce.number().int().positive('সঠিক শ্রেণি নির্বাচন করুন।').optional(),
+    residential_type: z.string().trim().max(50).optional().default('অনাবাসিক (Non-Residential)'),
+    address: z.string().trim().max(250).optional().or(z.literal('')),
     present_address: z.string().trim().max(250).optional().or(z.literal('')),
-    permanent_address: z.string().trim().max(250).optional().or(z.literal('')),
-    previous_madrasa: z.string().trim().max(150).optional().or(z.literal('')),
-    is_residential: z.union([z.boolean(), z.number(), z.string()]).optional().default(0),
-    is_orphan: z.union([z.boolean(), z.number(), z.string()]).optional().default(0),
-    blood_group: z.string().trim().max(10).optional().or(z.literal('')),
-    notes: z.string().trim().max(500).optional().or(z.literal(''))
+    previous_institute: z.string().trim().max(150).optional().or(z.literal(''))
+  }).refine(data => data.applicant_name || data.name_bn, {
+    message: 'শিক্ষার্থীর নাম পূরণ করা আবশ্যক।'
   }),
 
-  // যোগাযোগ বার্তা
+  // যোগাযোগ বার্তা (কন্টাক্ট ফর্ম)
   contact: z.object({
     name: z.string({ required_error: 'আপনার নাম প্রদান করুন।' })
       .trim()
@@ -119,6 +112,7 @@ const schemas = {
       .min(6, 'সঠিক মোবাইল নম্বর দিন।')
       .max(20, 'মোবাইল নম্বর সর্বোচ্চ ২০ সংখ্যার হতে পারবে।'),
     email: z.string().trim().email('সঠিক ইমেইল ঠিকানা দিন।').optional().or(z.literal('')),
+    institution: z.string().trim().max(150).optional().or(z.literal('')),
     subject: z.string().trim().max(150).optional().or(z.literal('')),
     message: z.string({ required_error: 'বার্তার বিবরণ লিখুন।' })
       .trim()
@@ -128,54 +122,59 @@ const schemas = {
 
   // ফ্রি ডেমো লিড
   demoLead: z.object({
-    name: z.string({ required_error: 'আপনার নাম দিন।' })
+    madrasa_name: z.string({ required_error: 'মাদরাসা বা স্কুলের নাম দিন।' })
       .trim()
-      .min(2, 'নাম কমপক্ষে ২ অক্ষরের হতে হবে।')
-      .max(100),
+      .min(3, 'মাদরাসা বা স্কুলের নাম অন্তত ৩ অক্ষরের হতে হবে।')
+      .max(150),
+    person_name: z.string().trim().min(2, 'আপনার নাম ও পদবী দিন।').max(100).optional(),
+    name: z.string().trim().min(2, 'আপনার নাম ও পদবী দিন।').max(100).optional(),
     phone: z.string({ required_error: 'মোবাইল নম্বর দিন।' })
       .trim()
       .min(6, 'সঠিক মোবাইল নম্বর দিন।')
       .max(20),
-    madrasa_name: z.string().trim().max(150).optional().or(z.literal('')),
-    location: z.string().trim().max(100).optional().or(z.literal('')),
-    total_students: z.union([z.number(), z.string()]).optional().or(z.literal('')),
-    interest: z.string().trim().max(100).optional().or(z.literal(''))
+    institution_type: z.string().trim().max(60).optional().default('কওমি মাদ্রাসা'),
+    website_hp: z.string().trim().max(100).optional().or(z.literal(''))
+  }).refine(data => data.person_name || data.name, {
+    message: 'আপনার নাম ও পদবী দেওয়া আবশ্যক।'
   }),
 
-  // অনলাইন অনুদান / যাকাত
+  // অনলাইন অনুদান / যাকাত ফান্ড
   publicDonate: z.object({
-    donor_name: z.string({ required_error: 'দাতার নাম বাধ্যতামূলক।' })
-      .trim()
-      .min(2, 'দাতার নাম কমপক্ষে ২ অক্ষরের হতে হবে।')
-      .max(100),
-    donor_phone: z.string({ required_error: 'মোবাইল নম্বর বাধ্যতামূলক।' })
-      .trim()
-      .min(6, 'সঠিক মোবাইল নম্বর দিন।')
-      .max(20),
+    name: z.string().trim().min(2, 'দাতার নাম বাধ্যতামূলক।').max(100).optional(),
+    donor_name: z.string().trim().min(2, 'দাতার নাম বাধ্যতামূলক।').max(100).optional(),
+    phone: z.string().trim().min(6, 'মোবাইল নম্বর বাধ্যতামূলক।').max(20).optional(),
+    donor_phone: z.string().trim().min(6, 'মোবাইল নম্বর বাধ্যতামূলক।').max(20).optional(),
     donor_email: z.string().trim().email('সঠিক ইমেইল দিন।').optional().or(z.literal('')),
-    amount: z.coerce.number({ required_error: 'দানের পরিমাণ সংখ্যায় দিন।' })
+    amount: z.coerce.number({ required_error: 'দানের পরিমাণ সংখ্যায় দিন।' })
       .positive('দানের পরিমাণ শূন্যের চেয়ে বেশি হতে হবে।')
       .max(10000000, 'অনলাইনে সর্বোচ্চ ১ কোটি টাকা পর্যন্ত অনুদান গ্রহণীয়।'),
+    category: z.string().trim().max(60).optional().default('লিল্লাহ বোর্ডিং দান'),
     fund_type: z.string().trim().max(60).optional().default('সাধারণ দান ফান্ড'),
     payment_method: z.string().trim().max(30).optional().default('bKash'),
     trx_id: z.string({ required_error: 'ট্রানজ্যাকশন আইডি (TrxID) বাধ্যতামূলক।' })
       .trim()
-      .min(4, 'সঠিক ট্রানজ্যাকশন আইডি দিন।')
+      .min(3, 'সঠিক ট্রানজ্যাকশন আইডি দিন।')
       .max(50),
     notes: z.string().trim().max(300).optional().or(z.literal(''))
+  }).refine(data => (data.name || data.donor_name) && (data.phone || data.donor_phone), {
+    message: 'দাতার নাম এবং মোবাইল নম্বর উভয়ই প্রদান করা বাধ্যতামূলক।'
   }),
 
   // দ্রুত ফি পরিশোধ
   payFee: z.object({
-    student_id: z.union([z.string().trim().min(1, 'দাখেলা বা রোল নম্বর দিন।'), z.number().int().positive()]),
-    amount: z.coerce.number({ required_error: 'পরিশোধের পরিমাণ সংখ্যায় দিন।' })
+    admission_no: z.string().trim().min(1, 'দাখেলা বা রোল নম্বর দিন।').max(50).optional(),
+    student_id: z.union([z.string().trim().min(1), z.number().int().positive()]).optional(),
+    amount: z.coerce.number({ required_error: 'পরিশোধের পরিমাণ সংখ্যায় দিন।' })
       .positive('পরিশোধের পরিমাণ শূন্যের চেয়ে বেশি হতে হবে।')
       .max(500000, 'অনলাইনে সর্বোচ্চ ৫ লক্ষ টাকা পরিশোধ করা যাবে।'),
+    payment_method: z.string().trim().max(30).optional().default('bKash'),
     gateway: z.string().trim().max(30).optional().default('bKash'),
     trx_id: z.string({ required_error: 'ট্রানজ্যাকশন আইডি (TrxID) বাধ্যতামূলক।' })
       .trim()
-      .min(4, 'সঠিক ট্রানজ্যাকশন আইডি দিন।')
+      .min(3, 'সঠিক ট্রানজ্যাকশন আইডি দিন।')
       .max(50)
+  }).refine(data => data.admission_no || data.student_id, {
+    message: 'শিক্ষার্থীর দাখেলা বা রোল নম্বর প্রদান করুন।'
   })
 };
 

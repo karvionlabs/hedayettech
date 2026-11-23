@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 const { strictLeadLimiter } = require('../middleware/security');
+const { validateBody, schemas } = require('../middleware/validation');
 
 // ১. সর্বজনীন নিরাপদ ফলাফল অনুসন্ধান (জিরো-লিক: কোনো ফোন/ঠিকানা/আর্থিক তথ্য প্রকাশ পাবে না)
 router.get('/public/results', (req, res) => {
@@ -102,8 +103,8 @@ router.get('/public/student-lookup', (req, res) => {
   }
 });
 
-// ১.২ পাবলিক দ্রুত ফি পরিশোধ রুট (ক্যাশবুকে স্বয়ংক্রিয় পোস্টিং)
-router.post('/public/pay-fee', strictLeadLimiter, (req, res) => {
+// ১.২ পাবলিক দ্রুত ফি পরিশোধ রুট (ক্যাশবুকে স্বয়ংক্রিয় পোস্টিং - Zod Validated)
+router.post('/public/pay-fee', strictLeadLimiter, validateBody(schemas.payFee), (req, res) => {
   try {
     const { admission_no, amount, payment_method, trx_id } = req.body;
     if (!admission_no || !admission_no.trim() || !amount) {
@@ -263,8 +264,8 @@ function validateAndSanitizeBDPhone(phoneInput) {
   return { valid: true, phone: digits };
 }
 
-// ৪. অনলাইন ভর্তি আবেদন জমা (Rate Limited + Strict Sanitized Data Guard)
-router.post('/admissions/apply', strictLeadLimiter, (req, res) => {
+// ৪. অনলাইন ভর্তি আবেদন জমা (Rate Limited + Zod Validated)
+router.post('/admissions/apply', strictLeadLimiter, validateBody(schemas.admissionApply), (req, res) => {
   try {
     const { applicant_name, father_name, phone, desired_class_id, residential_type, address, previous_institute } = req.body;
 

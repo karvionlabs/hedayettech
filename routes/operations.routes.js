@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 const { strictLeadLimiter } = require('../middleware/security');
+const { validateBody, schemas } = require('../middleware/validation');
 
 // ইনপুট স্যানিটাইজার (XSS / SQL Injection প্রিভেনশন)
 function sanitizeInput(str, maxLength = 255) {
@@ -66,8 +67,8 @@ router.get('/staff', (req, res) => {
   }
 });
 
-// ৪. ফ্রি ডেমো বুকিং (Rate Limited & Honeypot Protected)
-router.post('/leads/demo', strictLeadLimiter, (req, res) => {
+// ৪. ফ্রি ডেমো বুকিং (Rate Limited, Honeypot Protected & Zod Validated)
+router.post('/leads/demo', strictLeadLimiter, validateBody(schemas.demoLead), (req, res) => {
   try {
     const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
     const userAgent = req.headers['user-agent'] || 'unknown';
@@ -212,8 +213,8 @@ router.post('/donors/contribute', (req, res) => {
   }
 });
 
-// ৮.১ সর্বজনীন অনলাইন দান ও যাকাত ফান্ড গ্রহণ (Public Endpoint - Rate Limited)
-router.post('/donors/public-donate', strictLeadLimiter, (req, res) => {
+// ৮.১ সর্বজনীন অনলাইন দান ও যাকাত ফান্ড গ্রহণ (Public Endpoint - Rate Limited & Zod Validated)
+router.post('/donors/public-donate', strictLeadLimiter, validateBody(schemas.publicDonate), (req, res) => {
   try {
     const { name, phone, amount, category, trx_id } = req.body;
     if (!name || !name.trim() || !phone || !phone.trim() || !amount) {
@@ -373,8 +374,8 @@ router.get('/loans', (req, res) => {
   }
 });
 
-// ১৪. গ্রাহক বার্তা ও হেল্পডেস্ক যোগাযোগ (Rate Limited & Strict Validation)
-router.post('/contact', strictLeadLimiter, (req, res) => {
+// ১৪. গ্রাহক বার্তা ও হেল্পডেস্ক যোগাযোগ (Rate Limited, Strict Sanitized & Zod Validated)
+router.post('/contact', strictLeadLimiter, validateBody(schemas.contact), (req, res) => {
   try {
     const { name, email, phone, institution, message } = req.body;
 

@@ -778,29 +778,113 @@
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-12">
-        <div onclick="openModal('onlineAdmissionModal')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm cursor-pointer transition group">
-          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl mb-3 group-hover:bg-emerald-700 group-hover:text-white transition">
-            <i class="fa-solid fa-id-card"></i>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12">
+        <!-- মডিউল ১: স্মার্ট QR ও বায়োমেট্রিক হাজিরা + অটো SMS -->
+        <div onclick="openModal('whatsappMessengerModal')" class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm hover:shadow-md cursor-pointer transition-all duration-300 group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl group-hover:bg-emerald-700 group-hover:text-white transition duration-300 shadow-2xs">
+                <i class="fa-solid fa-qrcode"></i>
+              </div>
+              <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200" data-i18n="feat_card1_tag">রিয়েলটাইম SMS অ্যালার্ট</span>
+            </div>
+            <h4 data-i18n="feat_card1_title" class="font-bold text-lg text-slate-900 tracking-tight">স্মার্ট QR ও বায়োমেট্রিক হাজিরা + অটো SMS</h4>
+            <p data-i18n="feat_card1_desc" class="text-xs text-slate-600 mt-2 leading-relaxed">শিক্ষার্থী প্রতিষ্ঠানে প্রবেশ ও প্রস্থানের সাথে সাথে ডিজিটাল পাঞ্চ বা স্ক্যানিং এবং অভিভাবকের মোবাইলে তাৎক্ষণিক SMS অ্যালার্ট।</p>
           </div>
-          <h4 data-i18n="feat_card1_title" class="font-semibold text-lg text-slate-900">শিক্ষার্থী ভর্তি ও কিউআর আইডি কার্ড</h4>
-          <p data-i18n="feat_card1_desc" class="text-base text-slate-600 mt-2 leading-relaxed">স্বয়ংক্রিয় দাখেলা নম্বর তৈরি, পিতা-মাতার সম্পূর্ণ ডাটাবেজ ও রঙিন আইডি কার্ড প্রিন্ট।</p>
+          <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-800 group-hover:text-emerald-900">
+            <span data-i18n="feat_card_more">মডিউল বিস্তারিত</span>
+            <i class="fa-solid fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
         </div>
 
-        <div onclick="openModal('onlineAdmissionModal')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-gold-500 shadow-sm cursor-pointer transition group">
-          <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-600 flex items-center justify-center text-xl mb-3 group-hover:bg-gold-500 group-hover:text-slate-900 transition">
-            <i class="fa-solid fa-quran"></i>
+        <!-- মডিউল ২: অনলাইন পেমেন্ট ও বকেয়া রিমাইন্ডার -->
+        <div onclick="openModal('quickPaymentModal')" class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-gold-500 shadow-sm hover:shadow-md cursor-pointer transition-all duration-300 group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-600 flex items-center justify-center text-xl group-hover:bg-gold-500 group-hover:text-slate-950 transition duration-300 shadow-2xs">
+                <i class="fa-solid fa-credit-card"></i>
+              </div>
+              <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200" data-i18n="feat_card2_tag">bKash • Nagad • Card</span>
+            </div>
+            <h4 data-i18n="feat_card2_title" class="font-bold text-lg text-slate-900 tracking-tight">অনলাইন পেমেন্ট ও বকেয়া রিমাইন্ডার</h4>
+            <p data-i18n="feat_card2_desc" class="text-xs text-slate-600 mt-2 leading-relaxed">bKash, Nagad ও কার্ডের মাধ্যমে ঘরে বসেই মাসিক বেতন পরিশোধ, ডিজিটাল ভাউচার এবং অটোমেটিক বকেয়া ফি নোটিফিকেশন।</p>
           </div>
-          <h4 data-i18n="feat_card2_title" class="font-semibold text-lg text-slate-900">হিফজ তথ্য খাতা ও দৈনিক সবক ডায়েরি</h4>
-          <p data-i18n="feat_card2_desc" class="text-base text-slate-600 mt-2 leading-relaxed">প্রতিদিনের সবক, সাত সবক ও আমোখতা রিভিশন, ভুলের সংখ্যা ও উস্তাদের মন্তব্য ট্র্যাকার।</p>
+          <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-800 group-hover:text-gold-600">
+            <span data-i18n="feat_card_more">মডিউল বিস্তারিত</span>
+            <i class="fa-solid fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
         </div>
 
-        <div onclick="openModal('onlineDonationModal')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm cursor-pointer transition group">
-          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl mb-3 group-hover:bg-emerald-700 group-hover:text-white transition">
-            <i class="fa-solid fa-utensils"></i>
+        <!-- মডিউল ৩: মাদ্রাসা হিফজ ও কিতাব ট্র্যাকার -->
+        <div onclick="openModal('addHifzModal')" class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm hover:shadow-md cursor-pointer transition-all duration-300 group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl group-hover:bg-emerald-700 group-hover:text-white transition duration-300 shadow-2xs">
+                <i class="fa-solid fa-book-quran"></i>
+              </div>
+              <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200" data-i18n="feat_card3_tag">হিফজ ও কিতাব বিভাগ</span>
+            </div>
+            <h4 data-i18n="feat_card3_title" class="font-bold text-lg text-slate-900 tracking-tight">মাদ্রাসা হিফজ ও কিতাব ট্র্যাকার</h4>
+            <p data-i18n="feat_card3_desc" class="text-xs text-slate-600 mt-2 leading-relaxed">হিফজ বিভাগের দৈনিক সবক, সাতসবক, আমুখতা মূল্যায়ন এবং বেফাক ও জাতীয় মাদ্রাসা বোর্ড রেজিস্ট্রেশন ম্যানেজমেন্ট।</p>
           </div>
-          <h4 data-i18n="feat_card3_title" class="font-semibold text-lg text-slate-900">লিল্লাহ বোর্ডিং ও মেস বাজার খাতা</h4>
-          <p data-i18n="feat_card3_desc" class="text-base text-slate-600 mt-2 leading-relaxed">চাল, ডাল, তেল ও মাছ-মাংসের দৈনিক কাঁচা বাজার হিসাব, মিল ট্র্যাকিং ও ক্যাশ সমন্বয়।</p>
+          <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-800 group-hover:text-emerald-900">
+            <span data-i18n="feat_card_more">মডিউল বিস্তারিত</span>
+            <i class="fa-solid fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- মডিউল ৪: অভিভাবক ও শিক্ষার্থী পোর্টাল (OTP লগইন) -->
+        <div onclick="openModal('onlineResultModal')" class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm hover:shadow-md cursor-pointer transition-all duration-300 group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl group-hover:bg-emerald-700 group-hover:text-white transition duration-300 shadow-2xs">
+                <i class="fa-solid fa-user-shield"></i>
+              </div>
+              <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200" data-i18n="feat_card4_tag">OTP সিকিউর এক্সেস</span>
+            </div>
+            <h4 data-i18n="feat_card4_title" class="font-bold text-lg text-slate-900 tracking-tight">অভিভাবক ও শিক্ষার্থী পোর্টাল (OTP লগইন)</h4>
+            <p data-i18n="feat_card4_desc" class="text-xs text-slate-600 mt-2 leading-relaxed">পাসওয়ার্ড ছাড়াই মোবাইল OTP দিয়ে সন্তানের লাইভ হাজিরা, পরীক্ষার ফলাফল এবং ডিজিটাল মানি রসিদ ডাউনলোড করার নিরাপদ সুবিধা।</p>
+          </div>
+          <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-800 group-hover:text-emerald-900">
+            <span data-i18n="feat_card_more">মডিউল বিস্তারিত</span>
+            <i class="fa-solid fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- মডিউল ৫: আবাসিক ছাত্রাবাস ও লিল্লাহ ফান্ড অ্যাকাউন্টিং -->
+        <div onclick="openModal('onlineDonationModal')" class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-gold-500 shadow-sm hover:shadow-md cursor-pointer transition-all duration-300 group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-600 flex items-center justify-center text-xl group-hover:bg-gold-500 group-hover:text-slate-950 transition duration-300 shadow-2xs">
+                <i class="fa-solid fa-building-columns"></i>
+              </div>
+              <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200" data-i18n="feat_card5_tag">স্বচ্ছ ব্যালেন্স শিট</span>
+            </div>
+            <h4 data-i18n="feat_card5_title" class="font-bold text-lg text-slate-900 tracking-tight">আবাসিক ছাত্রাবাস ও লিল্লাহ ফান্ড অ্যাকাউন্টিং</h4>
+            <p data-i18n="feat_card5_desc" class="text-xs text-slate-600 mt-2 leading-relaxed">আবাসিক সিট ও মিল ম্যানেজমেন্ট, শিক্ষক পে-রোল এবং সাধারণ তহবিল ও যাকাত-লিল্লাহ তহবিলের আলাদা স্বচ্ছ হিসাব।</p>
+          </div>
+          <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-800 group-hover:text-gold-600">
+            <span data-i18n="feat_card_more">মডিউল বিস্তারিত</span>
+            <i class="fa-solid fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+
+        <!-- মডিউল ৬: অটোমেটিক ক্লাস রুটিন ও অনলাইন পরীক্ষা -->
+        <div onclick="previewPrintDoc('admit-card')" class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-emerald-600 shadow-sm hover:shadow-md cursor-pointer transition-all duration-300 group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl group-hover:bg-emerald-700 group-hover:text-white transition duration-300 shadow-2xs">
+                <i class="fa-solid fa-calendar-days"></i>
+              </div>
+              <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200" data-i18n="feat_card6_tag">স্মার্ট শিডিউলার ও ওএমআর</span>
+            </div>
+            <h4 data-i18n="feat_card6_title" class="font-bold text-lg text-slate-900 tracking-tight">অটোমেটিক ক্লাস রুটিন ও অনলাইন পরীক্ষা</h4>
+            <p data-i18n="feat_card6_desc" class="text-xs text-slate-600 mt-2 leading-relaxed">শিক্ষকদের ক্লাস ওভারল্যাপ মুক্ত স্মার্ট রুটিন জেনারেশন এবং এমসিকিউ ও লিখিত পরীক্ষার ডিজিটাল মূল্যায়ন ও মেধা তালিকা।</p>
+          </div>
+          <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-800 group-hover:text-emerald-900">
+            <span data-i18n="feat_card_more">মডিউল বিস্তারিত</span>
+            <i class="fa-solid fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
         </div>
       </div>
     </section>

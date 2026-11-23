@@ -491,9 +491,11 @@ function switchLanguage(lang) {
       navBtnEn.className = 'px-2.5 py-1 rounded-full transition-all duration-200 text-slate-600 hover:text-emerald-800 font-bold';
     }
     document.documentElement.lang = 'bn';
-    document.body.style.fontFamily = "'Hind Siliguri', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif";
+    document.body.style.fontFamily = "'Hind Siliguri', -apple-system, BlinkMacSystemFont, sans-serif";
+    document.body.style.letterSpacing = "normal";
     document.querySelectorAll('h1, h2, h3, h4, .font-heading').forEach(el => {
-      el.style.fontFamily = "'Anek Bangla', 'Hind Siliguri', sans-serif";
+      el.style.fontFamily = "'Hind Siliguri', -apple-system, BlinkMacSystemFont, sans-serif";
+      el.style.letterSpacing = "normal";
     });
   } else {
     if (btnEn) {
@@ -510,8 +512,10 @@ function switchLanguage(lang) {
     }
     document.documentElement.lang = 'en';
     document.body.style.fontFamily = "'Inter', system-ui, -apple-system, sans-serif";
+    document.body.style.letterSpacing = "-0.011em";
     document.querySelectorAll('h1, h2, h3, h4, .font-heading').forEach(el => {
       el.style.fontFamily = "'Inter', system-ui, -apple-system, sans-serif";
+      el.style.letterSpacing = "-0.02em";
     });
   }
 

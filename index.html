@@ -19,10 +19,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Google Fonts -->
+  <!-- Google Fonts: Hind Siliguri, Inter, Anek Bangla, Noto Sans Bengali & Amiri -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Anek+Bangla:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Anek+Bangla:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Bengali:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
@@ -60,6 +60,7 @@
           },
           fontFamily: {
             bangla: ['Hind Siliguri', 'Noto Sans Bengali', 'Anek Bangla', 'sans-serif'],
+            english: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
             arabic: ['Amiri', 'serif'],
           }
         }
@@ -78,6 +79,19 @@
     h1, h2, h3, h4, .font-heading {
       font-family: 'Anek Bangla', 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
       letter-spacing: -0.012em;
+    }
+    /* ইংরেজি ভাষা অ্যাক্টিভ থাকাকালীন আধুনিক ইন্টার (Inter) টাইপোগ্রাফি */
+    html[lang="en"] body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+      letter-spacing: -0.011em;
+    }
+    html[lang="en"] h1, 
+    html[lang="en"] h2, 
+    html[lang="en"] h3, 
+    html[lang="en"] h4, 
+    html[lang="en"] .font-heading {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+      letter-spacing: -0.02em;
     }
     .custom-scrollbar::-webkit-scrollbar {
       width: 5px;
@@ -417,50 +431,44 @@
   <!-- ============================================================== -->
   <div id="public-homepage" class="min-h-screen flex flex-col">
     
-    <!-- ১. টপ বার (সবুজ ব্যাকগ্রাউন্ড) -->
-    <div class="bg-[#0b2b1a] text-white text-[13px] py-2 px-4 sm:px-8 border-b border-emerald-900/40">
-      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 font-medium">
-        <!-- বাম অংশ: ফোন ও ইমেইল -->
-        <div class="flex items-center gap-6">
-          <a href="tel:+8801884636312" class="flex items-center gap-2 hover:text-emerald-300 transition">
-            <i class="fa-solid fa-phone text-xs text-emerald-400"></i>
-            <span>+880 1884-636312</span>
+    <!-- ১. টপ বার (গাঢ় সবুজ ব্যাকগ্রাউন্ড - স্লিম ৩৬ পিক্সেল / h-9) -->
+    <div class="bg-[#071f12] text-white text-xs h-9 min-h-[36px] flex items-center px-4 sm:px-8 border-b border-emerald-900/60 select-none z-50">
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between gap-4 font-medium">
+        <!-- বাম পাশ: ফোন নম্বর ও ইমেইল -->
+        <div class="flex items-center gap-4 sm:gap-6 text-[12px]">
+          <a href="tel:+8801884636312" class="flex items-center gap-1.5 text-emerald-100 hover:text-white transition group" title="আমাদের সাথে কল করুন">
+            <i class="fa-solid fa-phone text-[11px] text-emerald-400 group-hover:scale-110 transition-transform"></i>
+            <span class="font-sans font-semibold tracking-wide">+880 1884-636312</span>
           </a>
-          <a href="mailto:hello@hedayettech.com" class="flex items-center gap-2 hover:text-emerald-300 transition hidden sm:flex">
-            <i class="fa-solid fa-envelope text-xs text-emerald-400"></i>
-            <span>hello@hedayettech.com</span>
+          <span class="text-emerald-800/80 hidden sm:inline">•</span>
+          <a href="mailto:hello@hedayettech.com" class="items-center gap-1.5 text-emerald-100 hover:text-white transition group hidden sm:flex" title="অফিসিয়াল ইমেইল">
+            <i class="fa-solid fa-envelope text-[11px] text-emerald-400 group-hover:scale-110 transition-transform"></i>
+            <span class="font-sans text-[11px] tracking-wide">hello@hedayettech.com</span>
           </a>
         </div>
 
-        <!-- ডান অংশ: রিমোট সাপোর্ট, ভাষা ও সোশ্যাল -->
-        <div class="flex items-center gap-5 text-xs">
-          <!-- রিমোট সাপোর্ট -->
-          <div class="relative group cursor-pointer hidden md:flex items-center gap-1.5 hover:text-emerald-300 transition">
-            <i class="fa-solid fa-desktop text-emerald-400"></i>
-            <span>রিমোট সাপোর্ট (AnyDesk / UltraViewer)</span>
-            <i class="fa-solid fa-chevron-down text-[10px]"></i>
-            <!-- ড্রপডাউন -->
-            <div class="absolute right-0 top-full mt-2 w-48 bg-white text-slate-800 rounded-xl shadow-xl py-2 hidden group-hover:block z-50 border border-slate-200">
-              <a href="https://anydesk.com" target="_blank" class="block px-4 py-2 hover:bg-slate-100 flex items-center gap-2">
-                <i class="fa-solid fa-download text-red-500"></i> AnyDesk ডাউনলোড
-              </a>
-              <a href="https://ultraviewer.net" target="_blank" class="block px-4 py-2 hover:bg-slate-100 flex items-center gap-2">
-                <i class="fa-solid fa-download text-blue-500"></i> UltraViewer ডাউনলোড
-              </a>
-            </div>
+        <!-- ডান পাশ: ভাষা পরিবর্তন টগল ও সোশ্যাল আইকন -->
+        <div class="flex items-center gap-3 sm:gap-4">
+          <!-- বাংলা / English প্রফেশনাল সেগমেন্টেড টগল বাটন -->
+          <div class="inline-flex items-center p-0.5 rounded-full bg-emerald-950/90 border border-emerald-700/70 text-[11px] font-bold shadow-inner" id="langSwitchContainer">
+            <button id="langBtnBn" onclick="switchLanguage('bn')" class="px-2.5 py-0.5 rounded-full transition-all duration-200 bg-emerald-500 text-white font-extrabold shadow-xs flex items-center gap-1" title="বাংলা ভাষা">
+              <span class="text-[10px]">বাং</span>
+            </button>
+            <button id="langBtnEn" onclick="switchLanguage('en')" class="px-2.5 py-0.5 rounded-full transition-all duration-200 text-emerald-300 hover:text-white font-bold flex items-center gap-1" title="English Language">
+              <span class="text-[10px]">EN</span>
+            </button>
           </div>
 
-          <!-- ভাষা সিলেক্টর -->
-          <div class="flex items-center gap-1 cursor-pointer hover:text-emerald-300 transition">
-            <i class="fa-solid fa-globe text-emerald-400"></i>
-            <span>বা</span>
-            <i class="fa-solid fa-chevron-down text-[10px]"></i>
-          </div>
+          <div class="h-3.5 w-px bg-emerald-800/80"></div>
 
-          <!-- সোশ্যাল লিঙ্ক -->
-          <div class="flex items-center gap-3 pl-2 border-l border-emerald-800 text-sm">
-            <a href="https://wa.me/8801884636312" target="_blank" class="hover:text-emerald-400 transition" title="হোয়াটসঅ্যাপ"><i class="fa-brands fa-whatsapp"></i></a>
-            <a href="https://facebook.com" target="_blank" class="hover:text-emerald-400 transition" title="ফেসবুক"><i class="fa-brands fa-facebook-f"></i></a>
+          <!-- সোশ্যাল লিঙ্ক: হোয়াটসঅ্যাপ ও ফেসবুক -->
+          <div class="flex items-center gap-2.5 text-sm">
+            <a href="https://wa.me/8801884636312" target="_blank" rel="noopener noreferrer" class="w-6 h-6 rounded-full bg-emerald-900/60 hover:bg-[#25D366] text-emerald-300 hover:text-white flex items-center justify-center transition-all duration-200 shadow-2xs" title="WhatsApp Chat">
+              <i class="fa-brands fa-whatsapp text-xs"></i>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="w-6 h-6 rounded-full bg-emerald-900/60 hover:bg-[#1877F2] text-emerald-300 hover:text-white flex items-center justify-center transition-all duration-200 shadow-2xs" title="Facebook Page">
+              <i class="fa-brands fa-facebook-f text-xs"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -477,47 +485,47 @@
         <!-- সেন্টার মেনু লিঙ্ক -->
         <nav class="hidden lg:flex items-center gap-7 text-[15px] font-bold text-slate-700">
           <div class="relative group cursor-pointer py-2 hover:text-hedayet-800 transition flex items-center gap-1">
-            <span>আমাদের সেবা</span>
+            <span data-i18n="nav_services">আমাদের সেবা</span>
             <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-hover:rotate-180 transition"></i>
             <div class="absolute left-0 top-full w-56 bg-white rounded-2xl shadow-xl py-2 hidden group-hover:block border border-slate-100 z-50">
-              <a href="#qawmi" onclick="filterHomeCategory('কওমি')" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-hedayet-800">কওমি মাদ্রাসা সফটওয়্যার</a>
-              <a href="#alia" onclick="filterHomeCategory('আলিয়া')" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-hedayet-800">আলিয়া মাদ্রাসা ইআরপি</a>
-              <a href="#hifz" onclick="filterHomeCategory('হিফজ')" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-hedayet-800">হিফজখানা ডায়েরি ও ট্র্যাকার</a>
-              <a href="#school" onclick="filterHomeCategory('স্কুল')" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-hedayet-800">স্কুল ও কলেজ ম্যানেজমেন্ট</a>
+              <a href="#qawmi" onclick="filterHomeCategory('কওমি')" data-i18n="nav_qawmi" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-hedayet-800">কওমি মাদ্রাসা সফটওয়্যার</a>
+              <a href="#alia" onclick="filterHomeCategory('আলিয়া')" data-i18n="nav_alia" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-hedayet-800">আলিয়া মাদ্রাসা ইআরপি</a>
+              <a href="#hifz" onclick="filterHomeCategory('হিফজ')" data-i18n="nav_hifz" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-hedayet-800">হিফজখানা ডায়েরি ও ট্র্যাকার</a>
+              <a href="#school" onclick="filterHomeCategory('স্কুল')" data-i18n="nav_school" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-hedayet-800">স্কুল ও কলেজ ম্যানেজমেন্ট</a>
             </div>
           </div>
-          <a href="#features-section" onclick="scrollToSection('features-section'); return false;" class="hover:text-hedayet-800 transition">সব ফিচার</a>
-          <a href="#pricing-section" onclick="scrollToSection('pricing-section'); return false;" class="hover:text-hedayet-800 transition">দাম ও প্যাকেজ</a>
+          <a href="#features-section" onclick="scrollToSection('features-section'); return false;" data-i18n="nav_features" class="hover:text-hedayet-800 transition">সব ফিচার</a>
+          <a href="#pricing-section" onclick="scrollToSection('pricing-section'); return false;" data-i18n="nav_pricing" class="hover:text-hedayet-800 transition">দাম ও প্যাকেজ</a>
           
           <!-- গ্রাহক ড্রপডাউন ও ডিরেক্ট স্ক্রল -->
           <div class="relative group cursor-pointer py-2 hover:text-hedayet-800 transition flex items-center gap-1">
             <a href="#clients-section" onclick="scrollToSection('clients-section'); return false;" class="hover:text-hedayet-800 transition flex items-center gap-1">
-              <span>গ্রাহক</span>
+              <span data-i18n="nav_clients">গ্রাহক</span>
               <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-hover:rotate-180 transition"></i>
             </a>
             <div class="absolute left-0 top-full w-56 bg-white rounded-2xl shadow-xl py-2 hidden group-hover:block border border-slate-100 z-50">
               <a href="#clients-section" onclick="scrollToSection('clients-section'); return false;" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-hedayet-800">
-                <i class="fa-solid fa-mosque mr-2 text-emerald-700"></i>শীর্ষ মাদ্রাসাসমূহ (৭৫০+)
+                <i class="fa-solid fa-mosque mr-2 text-emerald-700"></i><span data-i18n="nav_top_madrasas">শীর্ষ মাদ্রাসাসমূহ (৭৫০+)</span>
               </a>
               <a href="#clients-section" onclick="scrollToSection('clients-section'); return false;" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-hedayet-800">
-                <i class="fa-solid fa-star mr-2 text-amber-500"></i>মুহতামিমদের প্রশংসাপত্র
+                <i class="fa-solid fa-star mr-2 text-amber-500"></i><span data-i18n="nav_testimonials">মুহতামিমদের প্রশংসাপত্র</span>
               </a>
               <a href="javascript:void(0)" onclick="openModal('customersModal')" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-hedayet-800 border-t border-slate-100">
-                <i class="fa-solid fa-users mr-2 text-emerald-800"></i>সকল গ্রাহক তালিকা ও রেটিং
+                <i class="fa-solid fa-users mr-2 text-emerald-800"></i><span data-i18n="nav_client_list">সকল গ্রাহক তালিকা ও রেটিং</span>
               </a>
             </div>
           </div>
 
-          <a href="#contact-section" onclick="scrollToSection('contact-section'); return false;" class="hover:text-hedayet-800 transition">যোগাযোগ</a>
+          <a href="#contact-section" onclick="scrollToSection('contact-section'); return false;" data-i18n="nav_contact" class="hover:text-hedayet-800 transition">যোগাযোগ</a>
         </nav>
 
         <!-- ডানপাশের বাটন: অনলাইন ভর্তি ও ফ্রি ডেমো -->
         <div class="flex items-center gap-3">
           <button onclick="openModal('onlineAdmissionModal')" class="px-5 py-2 text-sm font-bold text-emerald-800 border-2 border-emerald-600 hover:bg-emerald-50 rounded-full transition shadow-sm flex items-center gap-1.5">
-            <i class="fa-solid fa-graduation-cap"></i> অনলাইন ভর্তি
+            <i class="fa-solid fa-graduation-cap"></i> <span data-i18n="nav_admission">অনলাইন ভর্তি</span>
           </button>
           <button onclick="openModal('bookDemoModal')" class="px-5 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-hedayet-900 to-hedayet-700 hover:from-hedayet-800 hover:to-hedayet-600 rounded-full transition shadow-md flex items-center gap-2">
-            <span>ফ্রি ডেমো বুক করুন</span>
+            <span data-i18n="nav_demo">ফ্রি ডেমো বুক করুন</span>
           </button>
           <!-- মোবাইল মেনু টগল বাটন -->
           <button onclick="toggleMobileNav()" class="lg:hidden p-2 text-slate-700 hover:text-emerald-800 text-xl rounded-lg border border-slate-200" title="মেনু">
@@ -530,29 +538,31 @@
       <div id="mobileNavMenu" class="hidden lg:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-3 shadow-xl">
         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
           <img src="assets/hedayet_logo.png" alt="Hedayet Tech" class="h-9 w-auto object-contain">
-          <span class="text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">স্মার্ট ওএস</span>
+          <span data-i18n="mobile_smart_os" class="text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">স্মার্ট ওএস</span>
         </div>
         <div class="space-y-2 border-b border-slate-100 pb-3 text-sm font-bold text-slate-700">
-          <div class="text-xs text-slate-400 uppercase tracking-wider mb-1 font-semibold">আমাদের সেবা</div>
-          <a href="#qawmi" onclick="filterHomeCategory('কওমি'); toggleMobileNav();" class="block py-1 hover:text-emerald-800">কওমি মাদ্রাসা সফটওয়্যার</a>
-          <a href="#alia" onclick="filterHomeCategory('আলিয়া'); toggleMobileNav();" class="block py-1 hover:text-emerald-800">আলিয়া মাদ্রাসা ইআরপি</a>
-          <a href="#hifz" onclick="filterHomeCategory('হিফজ'); toggleMobileNav();" class="block py-1 hover:text-emerald-800">হিফজখানা ডায়েরি ও ট্র্যাকার</a>
-          <a href="#school" onclick="filterHomeCategory('স্কুল'); toggleMobileNav();" class="block py-1 hover:text-emerald-800">স্কুল ও কলেজ ম্যানেজমেন্ট</a>
+          <div data-i18n="nav_services" class="text-xs text-slate-400 uppercase tracking-wider mb-1 font-semibold">আমাদের সেবা</div>
+          <a href="#qawmi" onclick="filterHomeCategory('কওমি'); toggleMobileNav();" data-i18n="nav_qawmi" class="block py-1 hover:text-emerald-800">কওমি মাদ্রাসা সফটওয়্যার</a>
+          <a href="#alia" onclick="filterHomeCategory('আলিয়া'); toggleMobileNav();" data-i18n="nav_alia" class="block py-1 hover:text-emerald-800">আলিয়া মাদ্রাসা ইআরপি</a>
+          <a href="#hifz" onclick="filterHomeCategory('হিফজ'); toggleMobileNav();" data-i18n="nav_hifz" class="block py-1 hover:text-emerald-800">হিফজখানা ডায়েরি ও ট্র্যাকার</a>
+          <a href="#school" onclick="filterHomeCategory('স্কুল'); toggleMobileNav();" data-i18n="nav_school" class="block py-1 hover:text-emerald-800">স্কুল ও কলেজ ম্যানেজমেন্ট</a>
         </div>
         <div class="space-y-2 text-sm font-bold text-slate-800">
-          <a href="#features-section" onclick="scrollToSection('features-section'); toggleMobileNav(); return false;" class="block py-1.5 hover:text-emerald-800">সব ফিচার</a>
-          <a href="#pricing-section" onclick="scrollToSection('pricing-section'); toggleMobileNav(); return false;" class="block py-1.5 hover:text-emerald-800">দাম ও প্যাকেজ</a>
-          <a href="#clients-section" onclick="scrollToSection('clients-section'); toggleMobileNav(); return false;" class="block py-1.5 hover:text-emerald-800">গ্রাহক (৭৫০+ শীর্ষ মাদ্রাসা)</a>
-          <a href="#contact-section" onclick="scrollToSection('contact-section'); toggleMobileNav(); return false;" class="block py-1.5 hover:text-emerald-800">যোগাযোগ ও হেল্পডেস্ক</a>
+          <a href="#features-section" onclick="scrollToSection('features-section'); toggleMobileNav(); return false;" data-i18n="nav_features" class="block py-1.5 hover:text-emerald-800">সব ফিচার</a>
+          <a href="#pricing-section" onclick="scrollToSection('pricing-section'); toggleMobileNav(); return false;" data-i18n="nav_pricing" class="block py-1.5 hover:text-emerald-800">দাম ও প্যাকেজ</a>
+          <a href="#clients-section" onclick="scrollToSection('clients-section'); toggleMobileNav(); return false;" data-i18n="nav_clients_full" class="block py-1.5 hover:text-emerald-800">গ্রাহক (৭৫০+ শীর্ষ মাদ্রাসা)</a>
+          <a href="#contact-section" onclick="scrollToSection('contact-section'); toggleMobileNav(); return false;" data-i18n="nav_contact_full" class="block py-1.5 hover:text-emerald-800">যোগাযোগ ও হেল্পডেস্ক</a>
         </div>
         <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
           <a href="tel:+8801884636312" class="text-emerald-800 font-bold flex items-center gap-1.5">
             <i class="fa-solid fa-phone"></i> +880 1884-636312
           </a>
           <a href="https://wa.me/8801884636312" target="_blank" class="text-[#25D366] font-bold flex items-center gap-1">
-            <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপ
+            <i class="fa-brands fa-whatsapp"></i> <span data-i18n="wa_label">হোয়াটসঅ্যাপ</span>
           </a>
         </div>
+      </div>
+    </header>
       </div>
     </header>
 
@@ -564,9 +574,9 @@
           <div class="pl-5 text-slate-400">
             <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
           </div>
-          <input type="text" id="universalSearchInput" placeholder="আপনার মাদ্রাসা বা স্কুলের নাম কিংবা EIIN/ID দিয়ে খুঁজুন..." class="w-full pl-3 pr-4 py-2.5 text-xs sm:text-sm font-medium text-slate-800 bg-transparent focus:outline-none">
+          <input type="text" id="universalSearchInput" data-i18n-placeholder="search_placeholder" placeholder="আপনার মাদ্রাসা বা স্কুলের নাম কিংবা EIIN/ID দিয়ে খুঁজুন..." class="w-full pl-3 pr-4 py-2.5 text-xs sm:text-sm font-medium text-slate-800 bg-transparent focus:outline-none">
           <button type="submit" class="bg-gradient-to-r from-gold-600 to-gold-500 hover:from-gold-700 hover:to-gold-600 text-white font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full shadow-md transition flex items-center gap-1.5 flex-shrink-0">
-            <span>খুঁজে দেখুন</span>
+            <span data-i18n="search_button">খুঁজে দেখুন</span>
           </button>
         </form>
 
@@ -576,38 +586,38 @@
             <!-- কুইক এক্সেস লেবেল ব্যাজ -->
             <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-900 to-emerald-800 text-white text-[11px] font-bold shadow-xs flex-shrink-0">
               <i class="fa-solid fa-bolt text-amber-400 text-xs"></i>
-              <span>কুইক এক্সেস:</span>
+              <span data-i18n="qa_label">কুইক এক্সেস:</span>
             </div>
 
             <!-- বাটন ১: অনলাইন ফলাফল -->
             <button onclick="openModal('onlineResultModal')" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 text-xs font-bold border border-slate-200 hover:border-emerald-300 shadow-2xs hover:shadow-xs transition-all duration-200">
               <i class="fa-solid fa-square-poll-vertical text-emerald-600 group-hover:scale-110 text-xs transition-transform"></i>
-              <span>অনলাইন ফলাফল</span>
+              <span data-i18n="qa_results">অনলাইন ফলাফল</span>
             </button>
 
             <!-- বাটন ২: অনলাইন ভর্তি ফরম -->
             <button onclick="openModal('onlineAdmissionModal')" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-xs font-bold border border-emerald-300 shadow-2xs hover:shadow-xs transition-all duration-200">
               <i class="fa-solid fa-graduation-cap text-emerald-700 group-hover:scale-110 text-xs transition-transform"></i>
-              <span>অনলাইন ভর্তি ফরম</span>
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-600 text-white tracking-wider animate-pulse">নতুন</span>
+              <span data-i18n="qa_admission">অনলাইন ভর্তি ফরম</span>
+              <span data-i18n="qa_new_badge" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-600 text-white tracking-wider animate-pulse">নতুন</span>
             </button>
 
             <!-- বাটন ৩: দান ও যাকাত ফান্ড -->
             <button onclick="openModal('onlineDonationModal')" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-950 text-xs font-bold border border-amber-300 shadow-2xs hover:shadow-xs transition-all duration-200">
               <i class="fa-solid fa-hand-holding-heart text-amber-600 group-hover:scale-110 text-xs transition-transform"></i>
-              <span>দান ও যাকাত ফান্ড</span>
+              <span data-i18n="qa_donation">দান ও যাকাত ফান্ড</span>
             </button>
 
             <!-- বাটন ৪: দ্রুত ফি পেমেন্ট -->
             <button onclick="openModal('quickPaymentModal')" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-950 text-xs font-bold border border-indigo-200 shadow-2xs hover:shadow-xs transition-all duration-200">
               <i class="fa-solid fa-receipt text-indigo-600 group-hover:scale-110 text-xs transition-transform"></i>
-              <span>দ্রুত ফি পেমেন্ট</span>
+              <span data-i18n="qa_payment">দ্রুত ফি পেমেন্ট</span>
             </button>
 
             <!-- বাটন ৫: যোগাযোগ ও হেল্পডেস্ক -->
             <button onclick="openModal('contactModal')" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-700 hover:text-rose-900 text-xs font-bold border border-slate-200 hover:border-rose-300 shadow-2xs hover:shadow-xs transition-all duration-200">
               <i class="fa-solid fa-headset text-rose-500 group-hover:scale-110 text-xs transition-transform"></i>
-              <span>যোগাযোগ ও হেল্পডেস্ক</span>
+              <span data-i18n="qa_helpdesk">যোগাযোগ ও হেল্পডেস্ক</span>
             </button>
           </div>
         </div>
@@ -615,9 +625,9 @@
         <!-- ডিজিটাল নোটিশ টেক্সটবার (Premium Live Broadcast Ticker) -->
         <div class="mt-2.5 bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 text-white rounded-xl px-3 py-2 flex items-center gap-2.5 border border-emerald-800/80 shadow-md">
           <span class="bg-amber-400 text-emerald-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md flex items-center gap-1.5 tracking-wider shadow-sm flex-shrink-0">
-            <i class="fa-solid fa-bullhorn animate-pulse text-emerald-950"></i> লাইভ নোটিশ
+            <i class="fa-solid fa-bullhorn animate-pulse text-emerald-950"></i> <span data-i18n="ticker_label">লাইভ নোটিশ</span>
           </span>
-          <marquee class="font-medium text-xs text-emerald-100" id="homeNoticeTicker">
+          <marquee class="font-medium text-xs text-emerald-100" id="homeNoticeTicker" data-i18n="ticker_content">
             📢 আসন্ন দ্বিতীয় সাময়িক পরীক্ষা আগামী ১৫ ডিসেম্বর হতে অনুষ্ঠিত হবে ✦ পবিত্র রমজানুল মুবারকের ছুটি ২০ রমজান হতে শুরু হবে ✦ মাদ্রাসার বার্ষিক ওয়াজ ও পুরস্কার বিতরণী মাহফিল আগামী ২৮ জানুয়ারি।
           </marquee>
         </div>
@@ -639,43 +649,43 @@
             <!-- টপ ব্যাজ -->
             <div class="inline-flex items-center gap-2 bg-emerald-800/40 border border-emerald-600/40 px-3.5 py-1.5 rounded-lg text-xs font-bold text-emerald-200">
               <img src="assets/hedayet_icon.png" alt="Hedayet Tech" class="w-4 h-4 object-contain">
-              <span>হেদায়েত টেক — শিক্ষা প্রতিষ্ঠান ব্যবস্থাপনা সফটওয়্যার</span>
+              <span data-i18n="hero_badge">হেদায়েত টেক — শিক্ষা প্রতিষ্ঠান ব্যবস্থাপনা সফটওয়্যার</span>
             </div>
 
             <!-- প্রধান হেডলাইন -->
             <div class="space-y-1 sm:space-y-2">
-              <h2 class="text-2xl sm:text-4xl md:text-5xl font-black text-amber-400 leading-tight tracking-tight drop-shadow-[0_2px_12px_rgba(251,191,36,0.35)]">
+              <h2 data-i18n="hero_h1_1" class="text-2xl sm:text-4xl md:text-5xl font-black text-amber-400 leading-tight tracking-tight drop-shadow-[0_2px_12px_rgba(251,191,36,0.35)]">
                 খাতা-কলমের দিন শেষ—
               </h2>
-              <h1 class="text-2xl sm:text-4xl md:text-5xl font-black text-white leading-tight tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
+              <h1 data-i18n="hero_h1_2" class="text-2xl sm:text-4xl md:text-5xl font-black text-white leading-tight tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
                 স্মার্ট ম্যানেজমেন্টে এগিয়ে থাকুক আপনার প্রতিষ্ঠান বেশ!
               </h1>
             </div>
 
             <!-- সাবটাইটেল ডেসক্রিপশন -->
-            <p class="text-sm sm:text-base text-emerald-100/90 leading-relaxed max-w-xl font-medium">
+            <p data-i18n="hero_desc" class="text-sm sm:text-base text-emerald-100/90 leading-relaxed max-w-xl font-medium">
               আলিয়া ও কওমি মাদ্রাসা, স্কুল ও কলেজের ফি কালেকশন, আইডি কার্ড, নোটিশ, রুটিন এবং পরীক্ষার ফলাফল এখন একটি সুরক্ষিত ডিজিটাল ড্যাশবোর্ডে।
             </p>
 
             <!-- সিটিএ বাটন গ্রুপ -->
             <div class="flex flex-wrap items-center gap-3.5 pt-2">
               <button onclick="openModal('bookDemoModal')" class="bg-gradient-to-r from-emerald-800 to-emerald-700 hover:from-emerald-700 hover:to-emerald-600 text-white border border-emerald-500/50 font-bold px-6 py-3 rounded-xl text-sm shadow-lg transition">
-                ডেমো রিকোয়েস্ট করুন
+                <span data-i18n="hero_btn_demo">ডেমো রিকোয়েস্ট করুন</span>
               </button>
               <button onclick="openModal('videoTourModal')" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold px-5 py-3 rounded-xl text-sm transition flex items-center gap-2 backdrop-blur-sm">
                 <i class="fa-regular fa-circle-play text-base text-gold-400"></i>
-                <span>২ মিনিটের ভিডিও</span>
+                <span data-i18n="hero_btn_video">২ মিনিটের ভিডিও</span>
               </button>
               <button onclick="openModal('onlineAdmissionModal')" class="bg-gold-500 hover:bg-gold-600 text-slate-950 font-extrabold px-5 py-3 rounded-xl text-sm shadow-lg transition flex items-center gap-1.5">
                 <i class="fa-solid fa-graduation-cap"></i>
-                <span>অনলাইন ভর্তি ফরম</span>
+                <span data-i18n="hero_btn_admission">অনলাইন ভর্তি ফরম</span>
               </button>
             </div>
 
             <!-- ফোন নম্বর ডিরেক্ট কল -->
             <div class="pt-1 flex items-center gap-2 text-sm text-emerald-200 font-bold">
               <i class="fa-solid fa-phone text-gold-400"></i>
-              <span>সরাসরি কথা বলুন:</span>
+              <span data-i18n="hero_call_label">সরাসরি কথা বলুন:</span>
               <a href="tel:+8801884636312" class="text-white hover:text-gold-400 font-mono tracking-wide underline decoration-emerald-500 underline-offset-4">+8801884636312</a>
             </div>
 
@@ -683,19 +693,19 @@
             <div class="pt-4 border-t border-emerald-800/60 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-semibold text-emerald-200">
               <div class="flex items-center gap-1.5">
                 <i class="fa-solid fa-check text-emerald-400"></i>
-                <span>৭+ বছরের অভিজ্ঞতা</span>
+                <span data-i18n="trust_badge_1">৭+ বছরের অভিজ্ঞতা</span>
               </div>
               <div class="flex items-center gap-1.5">
                 <i class="fa-solid fa-check text-emerald-400"></i>
-                <span>৬৪ জেলায় সেবা</span>
+                <span data-i18n="trust_badge_2">৬৪ জেলায় সেবা</span>
               </div>
               <div class="flex items-center gap-1.5">
                 <i class="fa-solid fa-check text-emerald-400"></i>
-                <span>২৪/৭ কাস্টমার সাপোর্ট</span>
+                <span data-i18n="trust_badge_3">২৪/৭ কাস্টমার সাপোর্ট</span>
               </div>
               <div class="flex items-center gap-1.5">
                 <i class="fa-solid fa-check text-emerald-400"></i>
-                <span>সহজে ব্যবহার উপযোগী</span>
+                <span data-i18n="trust_badge_4">সহজে ব্যবহার উপযোগী</span>
               </div>
             </div>
           </div>

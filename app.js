@@ -289,7 +289,27 @@ const i18nTranslations = {
     "hero_btn_video": "২ মিনিটের ভিডিও",
     "doc_view_sample": "নমুনা দেখুন",
     "calc_total_label": "মোট প্রাথমিক বিনিয়োগ:",
-    "hero_btn_admission": "অনলাইন ভর্তি ফরম"
+    "hero_btn_admission": "অনলাইন ভর্তি ফরম",
+    "modal_doc_title": "অফিসিয়াল প্রিন্ট ও রেডিমেড ডকুমেন্ট লাইভ ভিউয়ার",
+    "modal_doc_badge": "রেডিমেড স্পেসিমেন",
+    "modal_doc_sub": "হেদায়েত টেক স্মার্ট প্রিন্ট ইঞ্জিন • ১০০% এ৪, পিভিসি ও থার্মাল প্রিন্টার বান্ধব",
+    "modal_close_title": "বন্ধ করুন",
+    "modal_tab_admit": "১. এডমিট কার্ড",
+    "modal_tab_receipt": "২. ৩-কপি মানি রসিদ",
+    "modal_tab_marksheet": "৩. মার্কশিট ও রেজাল্ট",
+    "modal_tab_id": "৪. পিভিসি আইডি কার্ড",
+    "modal_tab_seat": "৫. সিট প্ল্যান স্টিকার",
+    "modal_tab_cert": "৬. চারিত্রিক সনদ (TC)",
+    "modal_doc_footer_note": "আপনার নিজস্ব মাদ্রাসার নাম, লোগো ও শিক্ষার্থীর ডাটা দিয়ে অটোমেটিক প্রিন্ট হবে",
+    "modal_doc_print_btn": "টেস্ট প্রিন্ট দিন",
+    "modal_doc_demo_btn": "ফ্রি লাইভ ডেমো বুক করুন",
+    "calc_scale_20": "২০ জন",
+    "calc_scale_250": "২৫০ জন",
+    "calc_scale_500": "৫০০ জন",
+    "calc_scale_1000": "১০০০ জন",
+    "calc_price_yearly": "৫,০০০ ৳",
+    "calc_price_monthly": "৫০০ ৳/মাস",
+    "calc_price_lifetime": "২০,০০০ ৳"
 },
   en: {
     "topbar_phone": "+880 1884-636312",
@@ -536,7 +556,27 @@ const i18nTranslations = {
     "hero_btn_video": "2-Minute Video Tour",
     "doc_view_sample": "View Sample",
     "calc_total_label": "Total Initial Investment:",
-    "hero_btn_admission": "Online Admission Form"
+    "hero_btn_admission": "Online Admission Form",
+    "modal_doc_title": "Official Print & Ready-Made Document Live Viewer",
+    "modal_doc_badge": "Ready-Made Specimen",
+    "modal_doc_sub": "Hedayet Tech Smart Print Engine • 100% Compatible with A4, PVC & Thermal Printers",
+    "modal_close_title": "Close",
+    "modal_tab_admit": "1. Admit Card",
+    "modal_tab_receipt": "2. 3-Part Money Receipt",
+    "modal_tab_marksheet": "3. Marksheet & Results",
+    "modal_tab_id": "4. PVC ID Card",
+    "modal_tab_seat": "5. Seat Plan Sticker",
+    "modal_tab_cert": "6. Character Certificate (TC)",
+    "modal_doc_footer_note": "Automatically printed with your own madrasa name, logo, and student records",
+    "modal_doc_print_btn": "Test Print",
+    "modal_doc_demo_btn": "Book Free Live Demo",
+    "calc_scale_20": "20 Students",
+    "calc_scale_250": "250 Students",
+    "calc_scale_500": "500 Students",
+    "calc_scale_1000": "1000 Students",
+    "calc_price_yearly": "5,000 BDT",
+    "calc_price_monthly": "500 BDT/Mo",
+    "calc_price_lifetime": "20,000 BDT"
 }
 };
 
@@ -3278,7 +3318,7 @@ function initContactFormLiveValidator() {
       input.value = val;
 
       if (counter) {
-        counter.textContent = `${val.length}/১১`;
+        counter.textContent = `${val.length}/${(window.currentAppLang === 'en' ? '11' : '১১')}`;
         if (val.length === 11 && /^01[3-9]\d{8}$/.test(val)) {
           counter.className = 'text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full';
           input.classList.remove('border-rose-400');
@@ -4082,5 +4122,15 @@ function initSplashSequence() {
 document.addEventListener('DOMContentLoaded', () => {
   initSplashSequence();
   updateCostCalculator();
+
+  // আপডেট ফোন কাউন্টার ডিজিট ফরম্যাট
+  const isEnglishNow = (lang === 'en');
+  ['contactPhoneCounter', 'modalContactPhoneCounter', 'phone-digit-counter', 'admPhoneCounter'].forEach(cid => {
+    const cel = document.getElementById(cid);
+    if (cel && (cel.textContent.includes('০/১১') || cel.textContent.includes('0/11'))) {
+      cel.textContent = isEnglishNow ? '0/11' : '০/১১';
+    }
+  });
+
   loadNotices();
 });

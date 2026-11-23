@@ -2003,19 +2003,80 @@ function toggleFaq(id) {
 }
 
 // ==========================================
-// প্রিন্ট ডকুমেন্ট প্রিভিউয়ার
+// প্রিন্ট ডকুমেন্ট স্পেসিমেন প্রিভিউয়ার ও ট্যাব কন্ট্রোলার
 // ==========================================
-function previewPrintDoc(type) {
-  const titles = {
-    'admit-card': '১২টি ভিন্ন ইসলামিক ও আধুনিক এডমিট কার্ড ডিজাইন',
-    'money-receipt': '৩ কপি কার্বনলেস মানি রসিদ (ছাত্র, অফিস ও ক্যাশিয়ার কপি)',
-    'marksheet': 'বেফাকুল মাদারিসিল আরাবিয়া ও সাধারণ মার্কশিট শিট',
-    'id-card': '৮টি ভিন্ন রেডিমেড ডিজিটাল পিভিসি আইডি কার্ড',
-    'seat-plan': 'পরীক্ষা হলের সিট প্ল্যান ও বেঞ্চ নম্বর স্টিকার',
-    'certificate': 'চারিত্রিক সনদপত্র, টিসি ও প্রশংসাপত্র'
-  };
+window.currentDocSampleType = 'admit-card';
 
-  alert(`📄 ${titles[type] || 'ডকুমেন্ট প্রিভিউ'}\n\nহেদায়েত টেক মাদ্রাসা সফটওয়্যার থেকে এই ডকুমেন্টটি স্বয়ংক্রিয়ভাবে মাদ্রাসার নাম, লোগো ও শিক্ষার্থীর ছবিসহ সরাসরি এ৪ ও থার্মাল পেপারে প্রিন্ট হবে।`);
+function previewPrintDoc(type = 'admit-card') {
+  openModal('documentSampleModal');
+  switchDocSampleTab(type);
+}
+
+function switchDocSampleTab(type) {
+  const validTabs = ['admit-card', 'money-receipt', 'marksheet', 'id-card', 'seat-plan', 'certificate'];
+  if (!validTabs.includes(type)) type = 'admit-card';
+  window.currentDocSampleType = type;
+
+  // ১. সব ট্যাব বাটন আন-সিলেক্ট এবং টার্গেট ট্যাব এক্টিভ
+  validTabs.forEach(t => {
+    const tabBtn = document.getElementById(`docTab-${t}`);
+    const viewEl = document.getElementById(`docView-${t}`);
+
+    if (tabBtn) {
+      if (t === type) {
+        tabBtn.className = 'doc-sample-tab px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-emerald-700 text-white shadow-xs';
+      } else {
+        tabBtn.className = 'doc-sample-tab px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap bg-white text-slate-700 hover:bg-slate-200 border border-slate-200';
+      }
+    }
+
+    if (viewEl) {
+      if (t === type) {
+        viewEl.classList.remove('hidden');
+      } else {
+        viewEl.classList.add('hidden');
+      }
+    }
+  });
+
+  // স্ক্রল টপ
+  const canvas = document.getElementById('docSampleCanvas');
+  if (canvas) canvas.scrollTop = 0;
+}
+
+function printCurrentDocSample() {
+  const currentView = document.getElementById(`docView-${window.currentDocSampleType || 'admit-card'}`);
+  if (!currentView) return;
+
+  const w = window.open('', '', 'width=850,height=900');
+  w.document.write(`
+    <!DOCTYPE html>
+    <html lang="bn">
+      <head>
+        <meta charset="UTF-8">
+        <title>হেদায়েত টেক - প্রিন্ট ডকুমেন্ট নমুনা</title>
+        <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+          body { font-family: 'Hind Siliguri', 'Anek Bangla', sans-serif; background: #fff; margin: 10mm; }
+          @media print {
+            body { margin: 0; }
+          }
+        </style>
+      </head>
+      <body class="p-4 flex justify-center">
+        <div class="w-full max-w-2xl">
+          ${currentView.outerHTML}
+        </div>
+        <script>
+          window.onload = function() {
+            window.print();
+          };
+        </script>
+      </body>
+    </html>
+  `);
+  w.document.close();
 }
 
 // ==========================================
